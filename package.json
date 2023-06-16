@@ -1,0 +1,21 @@
+{
+	"name": "ltype",
+	"version": "0.0.0",
+	"scripts": {
+		"dev": "npm-ez dev",
+		"build": "npm-ez build"
+	},
+	"main": "./dist-cjs/index.cjs",
+	"module": "./dist-mjs/index.mjs",
+	"exports": {
+		".": {
+			"require": "./dist-cjs/index.cjs",
+			"import": "./dist-mjs/index.mjs",
+			"types": "./dist-mjs/index.mts"
+		}
+	},
+	"devDependencies": {
+		"npm-ez": "^2.0.6",
+		"typescript": "^5.1.3"
+	}
+}
