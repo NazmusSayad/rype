@@ -2,10 +2,20 @@ import w from './index'
 import { TypeArray, TypeString, TypeTuple } from './LType'
 import { LTypeExtract } from './Extract-type'
 
-const check = {
-  name: w.string('hello'),
-  ages: w.tuple(w.optional.string('hello')),
-}
+// const check = {
+//   name: w.string('hello'),
+//   ages: w.tuple(w.optional.string('hello')),
+// }
+
+type GreaterThan<N1, N2> = [N1] extends [N2]
+  ? false
+  : [N2] extends [N1]
+  ? false
+  : true
+
+// Example usage
+type Result1 = GreaterThan<5, 3> // true
+type Result2 = GreaterThan<2, 7> // false
 
 // const result = w(check, { name: 'hello', ages: ['hello'] })
 

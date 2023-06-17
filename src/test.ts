@@ -1,5 +1,17 @@
 import t from './index'
 
+t(t.number(10))(10)
+
+t(1, t.number())
+t(true, t.boolean())
+t(false, t.boolean())
+t('2435', t.string())
+
+t(t.any(t.boolean(), t.string('wwe')))('wwe')
+
+t([], t.tuple())
+t(t.array(t.string('World')))(['World'])
+
 t('string', t.string('string'))
 t('String', t.string('string', 'String'))
 
