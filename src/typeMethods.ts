@@ -3,32 +3,38 @@ import { ConstArgs, Mutable, ValidConstructor } from './utils-type'
 
 function createMethods<TB extends boolean>(required: TB) {
   return {
-    string<const T>(...args: ConstArgs<T, string>) {
-      return new LT.TypeString(args as Mutable<typeof args>, required)
+    string<const T>(...string: ConstArgs<T, string>) {
+      return new LT.TypeString(string as Mutable<T>, required)
     },
 
-    number<const T>(...args: ConstArgs<T, number>) {
-      return new LT.TypeNumber(args as Mutable<typeof args>, required)
+    number<const T>(...number: ConstArgs<T, number>) {
+      return new LT.TypeNumber(number as Mutable<T>, required)
     },
 
-    boolean<const T>(...args: ConstArgs<T, boolean>) {
-      return new LT.TypeBoolean(args as Mutable<typeof args>, required)
+    boolean<const T>(...boolean: ConstArgs<T, boolean>) {
+      return new LT.TypeBoolean(boolean as Mutable<T>, required)
     },
 
-    tuple<const T>(
-      ...args: T extends readonly LT.SchemaAndPrimitives[] ? T : never
-    ) {
-      return new LT.TypeTuple(args as Mutable<typeof args>, required)
+    tuple<const T>(...element: ConstArgs<T, LT.SchemaAndPrimitives>) {
+      return new LT.TypeTuple(element as Mutable<typeof element>, required)
     },
 
-    array<const T>(
-      ...args: T extends readonly LT.SchemaAndPrimitives[] ? T : never
-    ) {
-      return new LT.TypeArray(args as Mutable<typeof args>[number][], required)
+    array<const T>(...element: ConstArgs<T, LT.SchemaAndPrimitives>) {
+      return new LT.TypeArray(
+        element as Mutable<typeof element>[number][],
+        required
+      )
     },
 
-    instance<const T>(constructor: T extends ValidConstructor ? T : never) {
-      return new LT.TypeConstructor(constructor, required)
+    instance<const T>(...constructor: ConstArgs<T, ValidConstructor>) {
+      return new LT.TypeConstructor(constructor as Mutable<T>, required)
+    },
+
+    any<const T>(...options: ConstArgs<T, LT.Schema>) {
+      return new LT.TypeAny(
+        options as Mutable<typeof options>[number][],
+        required
+      )
     },
   }
 }

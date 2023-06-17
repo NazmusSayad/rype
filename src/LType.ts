@@ -53,11 +53,19 @@ export class TypeArray<
   check(input: unknown) {}
 }
 
-export class TypeConstructor<
-  const T = ValidConstructor,
+export class TypeAny<
+  const T extends Schema[] = Schema[],
   U extends boolean = any
 > extends Core<T, U> {
-  name = 'TypeInstance' as const
+  name = 'TypeAny' as const
+  check(input: unknown) {}
+}
+
+export class TypeConstructor<
+  const T = ValidConstructor[],
+  U extends boolean = any
+> extends Core<T, U> {
+  name = 'TypeConstructor' as const
   check(input: unknown) {}
 }
 
@@ -70,5 +78,5 @@ export type Array = TypeArray | TypeTuple
 export type Object = { [i: string]: Schema }
 export type Refference = Array | Object | TypeConstructor
 
-export type Schema = Primitive | Refference
+export type Schema = Primitive | Refference | TypeAny
 export type SchemaAndPrimitives = Schema | primitiveValues

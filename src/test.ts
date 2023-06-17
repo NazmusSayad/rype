@@ -22,7 +22,8 @@ t(
   {
     name: 'John Doe',
     hobbies: ['Play'],
-    image: new Blob(),
+    image: new ArrayBuffer(0),
+    images: new Blob(),
     intro: { address: 'BD' },
     jobs: [{ name: 200 }],
   },
@@ -30,7 +31,8 @@ t(
   {
     name: t.string('John Doe'),
     hobbies: t.tuple('Play'),
-    image: t.instance(Blob),
+    image: t.instance(Blob, ArrayBuffer),
+    images: t.any(t.instance(Blob), t.instance(ArrayBuffer), t.string('http')),
     intro: { address: t.string('BD') },
     jobs: t.tuple({ name: t.number(200) }),
   }
