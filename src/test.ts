@@ -1,36 +1,38 @@
-import t from './index'
+import r from './index'
 
-t(t.number(10))(10)
+const str = r('false', r.string())
+console.log(str)
 
-t(1, t.number())
-t(true, t.boolean())
-t(false, t.boolean())
-t('2435', t.string())
+/* 
+r(1, r.number())
+r(true, r.boolean())
+r(false, r.boolean())
+r('2435', r.string())
 
-t(t.any(t.boolean(), t.string('wwe')))('wwe')
+r(r.any(r.boolean(), r.string('wwe')))('wwe')
 
-t([], t.tuple())
-t(t.array(t.string('World')))(['World'])
+r([], r.tuple())
+r(r.array(r.string('World')))(['World'])
 
-t('string', t.string('string'))
-t('String', t.string('string', 'String'))
+r('string', r.string('string'))
+r('String', r.string('string', 'String'))
 
-t(1, t.number(1, 2, 3))
-t(2, t.number(1, 2, 3))
-t(3, t.number(1, 2, 3))
+r(1, r.number(1, 2, 3))
+r(2, r.number(1, 2, 3))
+r(3, r.number(1, 2, 3))
 
-t(true, t.boolean(true))
-t(false, t.boolean(false))
-t(true, t.boolean(true, false))
-t(false, t.boolean(true, false))
+r(true, r.boolean(true))
+r(false, r.boolean(false))
+r(true, r.boolean(true, false))
+r(false, r.boolean(true, false))
 
-t([1, 2, 3], t.tuple(1, 2, 3))
-t(['1', '2', '3'], t.tuple('1', '2', '3'))
+r([1, 2, 3], r.tuple(1, 2, 3))
+r(['1', '2', '3'], r.tuple('1', '2', '3'))
 
-t([1, 2, 3, 3, 1, 2], t.array(1, 2, 3))
-t(['1', '2', '3'], t.array('1', '2', '3'))
+r([1, 2, 3, 3, 1, 2], r.array(1, 2, 3))
+r(['1', '2', '3'], r.array('1', '2', '3'))
 
-t(
+r(
   {
     name: 'John Doe',
     hobbies: ['Play'],
@@ -41,16 +43,16 @@ t(
   },
 
   {
-    name: t.string('John Doe'),
-    hobbies: t.tuple('Play'),
-    image: t.instance(Blob, ArrayBuffer),
-    images: t.any(t.instance(Blob), t.instance(ArrayBuffer), t.string('http')),
-    intro: { address: t.string('BD') },
-    jobs: t.tuple({ name: t.number(200) }),
+    name: r.string('John Doe'),
+    hobbies: r.tuple('Play'),
+    image: r.instance(Blob, ArrayBuffer),
+    images: r.any(r.instance(Blob), r.instance(ArrayBuffer), r.string('http')),
+    intro: { address: r.string('BD') },
+    jobs: r.tuple({ name: r.number(200) }),
   }
 )
 
-t(
+r(
   [
     'BD',
 
@@ -74,22 +76,23 @@ t(
     ],
   ],
 
-  t.tuple(
-    t.string('BD'),
+  r.tuple(
+    r.string('BD'),
 
-    t.array(
-      t.tuple(
-        t.array(
-          t.tuple({
-            hi: t.string("l.string('hello')"),
+    r.array(
+      r.tuple(
+        r.array(
+          r.tuple({
+            hi: r.string("l.string('hello')"),
           })
         )
       )
     ),
 
-    t.tuple({
-      name: t.string('hello'),
-      ages: t.tuple(10),
+    r.tuple({
+      name: r.string('hello'),
+      ages: r.tuple(10),
     })
   )
 )
+ */

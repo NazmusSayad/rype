@@ -1,46 +1,47 @@
-import * as LT from './LType'
+import * as Type from './Type'
+import * as TType from './Type-type'
 import { Mutable } from './utils-type'
 
-export type ExtractPrimitiveType<T extends LT.Primitive> = T['args'][number]
+export type ExtractPrimitiveType<T extends TType.Primitive> = T['args'][number]
 
-type ExtractConstructor<T extends LT.TypeConstructor> = InstanceType<
+export type ExtractConstructor<T extends Type.TypeConstructor> = InstanceType<
   T['args'][number]
 >
 
-type ExtractArray<T extends LT.Array> = {
-  [K in keyof T['args']]: T['args'][K] extends LT.Schema
+export type ExtractArray<T extends TType.ArrayLike> = {
+  [K in keyof T['args']]: T['args'][K] extends TType.Schema
     ? LTypeExtract<T['args'][K]>
     : Mutable<T['args'][K]>
 }
 
-type ExtractAny<T extends LT.TypeAny> = {
-  [K in keyof T['args']]: T['args'][K] extends LT.Schema
+export type ExtractAny<T extends Type.TypeAny> = {
+  [K in keyof T['args']]: T['args'][K] extends TType.Schema
     ? LTypeExtract<T['args'][K]>
     : Mutable<T['args'][K]>
 }[number]
 
-type ExtractObjectType<T extends LT.Object> = {
-  [K in keyof T as T extends LT.Object
+export type ExtractObjectType<T extends TType.ObjectLike> = {
+  [K in keyof T as T extends TType.ObjectLike
     ? K
     : T[K]['required'] extends true
     ? K
     : never]: LTypeExtract<T[K]>
 } & {
-  [K in keyof T as T extends LT.Object
+  [K in keyof T as T extends TType.ObjectLike
     ? K
     : T[K]['required'] extends false
     ? K
     : never]?: LTypeExtract<T[K]>
 }
 
-export type LTypeExtract<T extends LT.Schema> = T extends LT.Primitive
+export type LTypeExtract<T extends TType.Schema> = T extends TType.Primitive
   ? ExtractPrimitiveType<T>
-  : T extends LT.Array
+  : T extends TType.ArrayLike
   ? ExtractArray<T>
-  : T extends LT.TypeAny
+  : T extends Type.TypeAny
   ? ExtractAny<T>
-  : T extends LT.Object
+  : T extends TType.ObjectLike
   ? ExtractObjectType<T>
-  : T extends LT.TypeConstructor
+  : T extends Type.TypeConstructor
   ? ExtractConstructor<T>
   : never

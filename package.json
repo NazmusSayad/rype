@@ -1,21 +1,34 @@
 {
-	"name": "rype",
-	"version": "0.0.0",
-	"scripts": {
-		"dev": "npm-ez dev",
-		"build": "npm-ez build"
-	},
-	"main": "./dist-cjs/index.cjs",
-	"module": "./dist-mjs/index.mjs",
-	"exports": {
-		".": {
-			"require": "./dist-cjs/index.cjs",
-			"import": "./dist-mjs/index.mjs",
-			"types": "./dist-mjs/index.mts"
-		}
-	},
-	"devDependencies": {
-		"npm-ez": "^2.0.6",
-		"typescript": "^5.1.3"
-	}
+  "name": "rype",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "npm-ez dev",
+    "build": "npm-ez build",
+    "test": "node --watch ./dist-cjs/test.js"
+  },
+  "main": "./dist-cjs/index.cjs",
+  "module": "./dist-mjs/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist-cjs/index.d.cts",
+      "require": "./dist-cjs/index.cjs",
+      "import": "./dist-mjs/index.mjs"
+    },
+    "./global": {
+      "types": "./dist-cjs/global.d.cts",
+      "require": "./dist-cjs/global.cjs",
+      "import": "./dist-mjs/global.mjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "global": [
+        "./dist-cjs/global.d.cts"
+      ]
+    }
+  },
+  "devDependencies": {
+    "npm-ez": "^2.0.6",
+    "typescript": "^5.1.3"
+  }
 }

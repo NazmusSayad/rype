@@ -2,7 +2,10 @@ import base from './base'
 import typeMethods from './typeMethods'
 import { combine } from './utils'
 
-const l = combine(base, typeMethods)
-export default l
+const r = combine(base, typeMethods)
+export { r }
+export default r
 
-import './test'
+export * from './Type'
+export * from './Type-type'
+export * from './Extract-type'

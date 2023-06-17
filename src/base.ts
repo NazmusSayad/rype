@@ -1,15 +1,15 @@
-import * as LT from './LType'
+import * as TType from './Type-type'
 import { LTypeExtract } from './Extract-type'
 import checkType from './checkType'
 import { combine, combineForTwoArgs } from './utils'
 
 function baseDual<
   TInput extends LTypeExtract<TSchema>,
-  TSchema extends LT.Schema
+  TSchema extends TType.Schema
 >(input: TInput, schema: TSchema) {
   return checkType(schema, input, true)
 }
-function baseSingle<TSchema extends LT.Schema>(schema: TSchema) {
+function baseSingle<TSchema extends TType.Schema>(schema: TSchema) {
   return function <TInput extends LTypeExtract<TSchema>>(input: TInput) {
     return baseDual(input, schema)
   }
@@ -17,35 +17,35 @@ function baseSingle<TSchema extends LT.Schema>(schema: TSchema) {
 
 function noErrorDual<
   TInput extends LTypeExtract<TSchema>,
-  TSchema extends LT.Schema
+  TSchema extends TType.Schema
 >(input: TInput, schema: TSchema) {
   return checkType(schema, input, false)
 }
-function noErrorSingle<TSchema extends LT.Schema>(schema: TSchema) {
+function noErrorSingle<TSchema extends TType.Schema>(schema: TSchema) {
   return function <TInput extends LTypeExtract<TSchema>>(input: TInput) {
     return noErrorDual(input, schema)
   }
 }
 
-function noTypeDual<TSchema extends LT.Schema>(
+function noTypeDual<TSchema extends TType.Schema>(
   input: unknown,
   schema: TSchema
 ) {
   return checkType(schema, input, true)
 }
-function noTypeSingle<TSchema extends LT.Schema>(schema: TSchema) {
+function noTypeSingle<TSchema extends TType.Schema>(schema: TSchema) {
   return function (input: unknown) {
     return noTypeDual(input, schema)
   }
 }
 
-function noCheckDual<TSchema extends LT.Schema>(
+function noCheckDual<TSchema extends TType.Schema>(
   input: unknown,
   schema: TSchema
 ) {
   return checkType(schema, input, false)
 }
-function noCheckSingle<TSchema extends LT.Schema>(schema: TSchema) {
+function noCheckSingle<TSchema extends TType.Schema>(schema: TSchema) {
   return function (input: unknown) {
     return noCheckDual(input, schema)
   }
