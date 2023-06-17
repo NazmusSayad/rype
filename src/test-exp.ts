@@ -7,7 +7,7 @@ const check = {
   ages: w.tuple(w.optional.string('hello')),
 }
 
-const result = w(check, { name: 'hello', ages: ['hello'] })
+// const result = w(check, { name: 'hello', ages: ['hello'] })
 
 /* 
 

@@ -8,10 +8,10 @@ export class Core<TArgs = any, TRequired extends boolean = any> {
   }
 }
 
-export class LTypeString<const T = string[], U extends boolean = any> extends Core<
-  T,
-  U
-> {
+export class LTypeString<
+  const T = string[],
+  U extends boolean = any
+> extends Core<T, U> {
   name = 'LTypeString' as const
   check(input: unknown) {
     if (this.args) {
@@ -19,10 +19,10 @@ export class LTypeString<const T = string[], U extends boolean = any> extends Co
   }
 }
 
-export class LTypeNumber<const T = number[], U extends boolean = any> extends Core<
-  T,
-  U
-> {
+export class LTypeNumber<
+  const T = number[],
+  U extends boolean = any
+> extends Core<T, U> {
   name = 'LTypeNumber' as const
   check(input: unknown) {}
 }

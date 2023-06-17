@@ -1,9 +1,8 @@
-import lFn from './l'
-import lmethods from './lmethods'
+import base from './base'
+import typeMethods from './typeMethods'
 import { combine } from './utils'
-const l = combine(lFn, lmethods)
 
-export { l }
+const l = combine(base, typeMethods)
 export default l
 
 import './test'

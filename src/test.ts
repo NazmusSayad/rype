@@ -1,60 +1,44 @@
-import l from './index'
+import t from './index'
 
-l(l.string('string'), 'string')
-l(l.string('string', 'String'), 'String')
+t('string', t.string('string'))
+t('String', t.string('string', 'String'))
 
-l(l.number(1, 2, 3), 1)
-l(l.number(1, 2, 3), 2)
-l(l.number(1, 2, 3), 3)
+t(1, t.number(1, 2, 3))
+t(2, t.number(1, 2, 3))
+t(3, t.number(1, 2, 3))
 
-l(l.boolean(true), true)
-l(l.boolean(false), false)
-l(l.boolean(true, false), true)
-l(l.boolean(true, false), false)
+t(true, t.boolean(true))
+t(false, t.boolean(false))
+t(true, t.boolean(true, false))
+t(false, t.boolean(true, false))
 
-l(l.tuple(1, 2, 3), [1, 2, 3])
-l(l.tuple('1', '2', '3'), ['1', '2', '3'])
+t([1, 2, 3], t.tuple(1, 2, 3))
+t(['1', '2', '3'], t.tuple('1', '2', '3'))
 
-l(l.array(1, 2, 3), [1, 2, 3, 3, 1, 2])
-l(l.array('1', '2', '3'), ['1', '2', '3'])
+t([1, 2, 3, 3, 1, 2], t.array(1, 2, 3))
+t(['1', '2', '3'], t.array('1', '2', '3'))
 
-l(
-  {
-    name: l.string('John Doe'),
-    hobbies: l.tuple('Play'),
-    intro: {
-      address: l.string('BD'),
-    },
-
-    jobs: l.tuple({ name: l.number(200) }),
-  },
+t(
   {
     name: 'John Doe',
     hobbies: ['Play'],
+    intro: { address: 'BD' },
 
     jobs: [{ name: 200 }],
+  },
+
+  {
+    name: t.string('John Doe'),
+    hobbies: t.tuple('Play'),
+    intro: {
+      address: t.string('BD'),
+    },
+
+    jobs: t.tuple({ name: t.number(200) }),
   }
 )
 
-l(
-  l.tuple(
-    l.string('BD'),
-
-    l.array(
-      l.tuple(
-        l.array(
-          l.tuple({
-            hi: l.string("l.string('hello')"),
-          })
-        )
-      )
-    ),
-
-    l.tuple({
-      name: l.string('hello'),
-      ages: l.tuple(10),
-    })
-  ),
+t(
   [
     'BD',
 
@@ -76,5 +60,24 @@ l(
         ages: [10],
       },
     ],
-  ]
+  ],
+
+  t.tuple(
+    t.string('BD'),
+
+    t.array(
+      t.tuple(
+        t.array(
+          t.tuple({
+            hi: t.string("l.string('hello')"),
+          })
+        )
+      )
+    ),
+
+    t.tuple({
+      name: t.string('hello'),
+      ages: t.tuple(10),
+    })
+  )
 )

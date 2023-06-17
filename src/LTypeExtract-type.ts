@@ -10,13 +10,17 @@ type ExtractArray<T extends LT.Array> = {
 }
 
 type ExtractObjectType<T extends LT.Object> = {
-  [K in keyof T as T[K]['required'] extends true ? K : never]: LTypeExtract<
-    T[K]
-  >
+  [K in keyof T as T extends LT.Object
+    ? K
+    : T[K]['required'] extends true
+    ? K
+    : never]: LTypeExtract<T[K]>
 } & {
-  [K in keyof T as T[K]['required'] extends false ? K : never]?: LTypeExtract<
-    T[K]
-  >
+  [K in keyof T as T extends LT.Object
+    ? K
+    : T[K]['required'] extends false
+    ? K
+    : never]?: LTypeExtract<T[K]>
 }
 
 export type LTypeExtract<T extends LT.Schema> = T extends LT.Primitive

@@ -3,8 +3,8 @@ import { LTypeExtract } from './LTypeExtract-type'
 
 export default function <S extends LT.Schema>(
   schema: S,
-  input: unknown
+  input: unknown,
+  throwError: boolean
 ): LTypeExtract<S> {
-  // console.log(schema)
-  return [] as any
+  return {} as any
 }

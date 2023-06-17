@@ -8,14 +8,16 @@ export function combine<T extends Function, U extends ValidObject>(
   return fn as U & T
 }
 
-export function suffixedKeys<T extends object, const S extends string>(
-  methods: T,
-  suffix: S
-) {
-  const result: any = {}
-  for (let key in methods) {
-    result[key + suffix] = methods[key]
+export function combineForTwoArgs<
+  T extends (...args: any[]) => any,
+  U extends (...args: any[]) => any
+>(oneArg: T, twoArg: U) {
+  const dualFn = function (...args: any[]) {
+    if (args.length === 0) throw new Error('')
+    if (args.length === 1) return oneArg(args[0])
+    if (args.length === 2) return twoArg(args[0], args[1])
+    throw new Error('')
   }
 
-  return result as SuffixedKeys<T, typeof suffix>
+  return dualFn as T & U
 }
