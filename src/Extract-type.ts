@@ -3,6 +3,8 @@ import { Mutable } from './utils-type'
 
 export type ExtractPrimitiveType<T extends LT.Primitive> = T['args'][number]
 
+type ExtractConstructor<T extends LT.TypeConstructor> = InstanceType<T['args']>
+
 type ExtractArray<T extends LT.Array> = {
   [K in keyof T['args']]: T['args'][K] extends LT.Schema
     ? LTypeExtract<T['args'][K]>
@@ -29,4 +31,6 @@ export type LTypeExtract<T extends LT.Schema> = T extends LT.Primitive
   ? ExtractArray<T>
   : T extends LT.Object
   ? ExtractObjectType<T>
+  : T extends LT.TypeConstructor
+  ? ExtractConstructor<T>
   : never

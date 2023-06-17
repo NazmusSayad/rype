@@ -22,18 +22,16 @@ t(
   {
     name: 'John Doe',
     hobbies: ['Play'],
+    image: new Blob(),
     intro: { address: 'BD' },
-
     jobs: [{ name: 200 }],
   },
 
   {
     name: t.string('John Doe'),
     hobbies: t.tuple('Play'),
-    intro: {
-      address: t.string('BD'),
-    },
-
+    image: t.instance(Blob),
+    intro: { address: t.string('BD') },
     jobs: t.tuple({ name: t.number(200) }),
   }
 )

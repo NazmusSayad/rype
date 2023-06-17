@@ -1,5 +1,5 @@
 import * as LT from './LType'
-import { LTypeExtract } from './LTypeExtract-type'
+import { LTypeExtract } from './Extract-type'
 import checkType from './checkType'
 import { combine, combineForTwoArgs } from './utils'
 

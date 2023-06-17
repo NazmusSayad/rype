@@ -1,6 +1,6 @@
 import w from './index'
-import { LTypeArray, LTypeString, LTypeTuple } from './LType'
-import { LTypeExtract } from './LTypeExtract-type'
+import { TypeArray, TypeString, TypeTuple } from './LType'
+import { LTypeExtract } from './Extract-type'
 
 const check = {
   name: w.string('hello'),

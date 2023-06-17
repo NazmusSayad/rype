@@ -1,4 +1,4 @@
-import { SuffixedKeys, ValidObject } from './utils-type'
+import { ValidObject } from './utils-type'
 
 export function combine<T extends Function, U extends ValidObject>(
   fn: T,

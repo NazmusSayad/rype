@@ -1,4 +1,6 @@
-export class Core<TArgs = any, TRequired extends boolean = any> {
+import { ValidConstructor } from './utils-type'
+
+class Core<TArgs = any, TRequired extends boolean = any> {
   args: TArgs
   required: TRequired
 
@@ -8,7 +10,7 @@ export class Core<TArgs = any, TRequired extends boolean = any> {
   }
 }
 
-export class LTypeString<
+export class TypeString<
   const T = string[],
   U extends boolean = any
 > extends Core<T, U> {
@@ -19,7 +21,7 @@ export class LTypeString<
   }
 }
 
-export class LTypeNumber<
+export class TypeNumber<
   const T = number[],
   U extends boolean = any
 > extends Core<T, U> {
@@ -27,7 +29,7 @@ export class LTypeNumber<
   check(input: unknown) {}
 }
 
-export class LTypeBoolean<
+export class TypeBoolean<
   const T = boolean[],
   U extends boolean = any
 > extends Core<T, U> {
@@ -35,25 +37,38 @@ export class LTypeBoolean<
   check(input: unknown) {}
 }
 
-export class LTypeTuple<
-  const T extends readonly any[] = readonly any[],
+export class TypeTuple<
+  const T extends readonly SchemaAndPrimitives[] = readonly SchemaAndPrimitives[],
   U extends boolean = any
 > extends Core<T, U> {
   name = 'LTypeTuple' as const
   check(input: unknown) {}
 }
 
-export class LTypeArray<
-  const T extends any[] = any[],
+export class TypeArray<
+  const T extends SchemaAndPrimitives[] = SchemaAndPrimitives[],
   U extends boolean = any
 > extends Core<T, U> {
   name = 'LTypeArray' as const
   check(input: unknown) {}
 }
 
+export class TypeConstructor<
+  const T = ValidConstructor,
+  U extends boolean = any
+> extends Core<T, U> {
+  name = 'TypeInstance' as const
+  check(input: unknown) {}
+}
+
 // Types:
-export type Primitive = LTypeString | LTypeNumber | LTypeBoolean
-export type Array = LTypeArray | LTypeTuple
+export type primitiveValues = string | number | boolean
+export type Base = typeof Core
+export type Primitive = TypeString | TypeNumber | TypeBoolean
+
+export type Array = TypeArray | TypeTuple
 export type Object = { [i: string]: Schema }
-export type Refference = Array | Object
+export type Refference = Array | Object | TypeConstructor
+
 export type Schema = Primitive | Refference
+export type SchemaAndPrimitives = Schema | primitiveValues
