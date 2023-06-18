@@ -1,7 +1,7 @@
 import r from './index'
 
-const str = r('false', r.string())
-console.log(str)
+const result = r.noError([0], r.instance(Blob, Array))
+console.log(result)
 
 /* 
 r(1, r.number())

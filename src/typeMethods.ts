@@ -18,7 +18,7 @@ function createMethods<TB extends boolean>(required: TB) {
       return new Type.TypeBoolean(boolean as Mutate1<T, boolean[]>, required)
     },
 
-    tuple<const T>(...element: ConstArgs<T, TType.SchemaAndPrimitives>) {
+    tuple<const T>(...element: ConstArgs<T, TType.Schema>) {
       return new Type.TypeTuple(
         element as Mutate1<typeof element, never[]>,
         required
@@ -26,9 +26,7 @@ function createMethods<TB extends boolean>(required: TB) {
     },
 
     array<const T>(
-      ...element: T extends readonly []
-        ? any[]
-        : ConstArgs<T, TType.SchemaAndPrimitives>
+      ...element: T extends readonly [] ? any[] : ConstArgs<T, TType.Schema>
     ) {
       return new Type.TypeArray(
         element as Mutable<typeof element>[number][],
@@ -47,12 +45,12 @@ function createMethods<TB extends boolean>(required: TB) {
       )
     },
 
-    any<const T>(
+    or<const T>(
       ...options: T extends readonly [] | readonly [TType.Schema]
         ? readonly [TType.Schema, TType.Schema]
         : ConstArgs<T, TType.Schema>
     ) {
-      return new Type.TypeAny(
+      return new Type.TypeOr(
         options as Mutable<typeof options>[number][],
         required
       )

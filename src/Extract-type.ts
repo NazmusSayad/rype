@@ -14,7 +14,7 @@ export type ExtractArray<T extends TType.ArrayLike> = {
     : Mutable<T['args'][K]>
 }
 
-export type ExtractAny<T extends Type.TypeAny> = {
+export type ExtractAny<T extends Type.TypeOr> = {
   [K in keyof T['args']]: T['args'][K] extends TType.Schema
     ? LTypeExtract<T['args'][K]>
     : Mutable<T['args'][K]>
@@ -38,7 +38,7 @@ export type LTypeExtract<T extends TType.Schema> = T extends TType.Primitive
   ? ExtractPrimitiveType<T>
   : T extends TType.ArrayLike
   ? ExtractArray<T>
-  : T extends Type.TypeAny
+  : T extends Type.TypeOr
   ? ExtractAny<T>
   : T extends TType.ObjectLike
   ? ExtractObjectType<T>
