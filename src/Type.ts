@@ -1,28 +1,32 @@
 import { RypeError, RypeRequiredError, RypeTypeError } from './Error'
-import { Schema } from './Type-type'
-import { ValidConstructor } from './utils-type'
+import { ObjectLike, Schema } from './Type-type'
+import { ValidConstructor, ValidObject } from './utils-type'
 type CheckConf = { path: string; throw: boolean; meta?: boolean }
 
-export class TypeBase<TArgs = any, TRequired extends boolean = any> {
-  args: TArgs
+export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
+  schema: TSchemaArgs
   required: TRequired
   name = 'base'
 
   getErr(message: string) {
-    return new RypeTypeError(message, this.args as any, this.required)
+    return new RypeTypeError(message, this.schema as any, this.required)
   }
 
   getRErr(message: string) {
-    return new RypeRequiredError(message, this.args as any, this.required)
+    return new RypeRequiredError(message, this.schema as any, this.required)
   }
 
-  checkType(input: unknown, conf: CheckConf) {}
+  checkType(input: unknown, conf: CheckConf) {
+    return (this.name + " isn't implemented yet!") as any
+  }
+
   #check(input: unknown, conf: CheckConf) {
     if (!this.required && !input) return
     if (input == null)
       return this.getRErr(`${conf.path || 'Input'} is required`)
     return this.checkType(input, conf)
   }
+
   check(input: unknown, conf: CheckConf) {
     const output = this.#check(input, conf)
     if (!(output instanceof RypeError) || conf.meta) return output
@@ -30,26 +34,46 @@ export class TypeBase<TArgs = any, TRequired extends boolean = any> {
   }
 
   static check(input: unknown, schema: Schema, conf: CheckConf): unknown {
-    console.log(schema instanceof TypeOr, 'wh')
-    if (schema instanceof TypeOr) {
-      // return new RypeError('working on it')
-    }
+    if (input instanceof RypeError) return
 
-    if (schema instanceof TypePrimitive) {
+    if (schema instanceof TypeBase) {
       return schema.check(input, conf)
     }
-
-    if (schema instanceof TypeConstructor) {
-      return schema.check(input, conf)
-    }
-
-    if (schema instanceof TypeTuple || schema instanceof TypeArray) {
-      return schema.check(input, conf)
-    }
+    return TypeBase.checkObject(input, schema, conf)
   }
 
-  constructor(args: TArgs, required: TRequired) {
-    this.args = args
+  static checkObject(
+    inputObject: unknown,
+    schema: ObjectLike,
+    conf: CheckConf
+  ) {
+    function getResult() {
+      const result: any = {}
+
+      for (let key in schema) {
+        const nestedSchema = schema[key]
+        const nestedInput = (inputObject as ValidObject)[key]
+        const output = TypeBase.check(nestedInput, nestedSchema, {
+          ...conf,
+          meta: true,
+          path: `${conf.path || 'object'}.${key}`,
+        })
+
+        if (output instanceof RypeError) return output
+        result[key] = output
+      }
+
+      return result
+    }
+
+    const result = getResult()
+    if (!(result instanceof RypeError) || conf.meta) return result
+    if (conf.throw) throw result
+    return {}
+  }
+
+  constructor(schema: TSchemaArgs, required: TRequired) {
+    this.schema = schema
     this.required = required
   }
 }
@@ -61,16 +85,16 @@ export class TypePrimitive<const T, U extends boolean = any> extends TypeBase<
   checkType(input: unknown, conf: CheckConf) {
     if (typeof input !== this.name) {
       return this.getErr(
-        `Input need to a ${this.name} not ${typeof input}(${input}) at ${
-          conf.path
-        }`
+        `Input need to a ${this.name} not ${typeof input}(${JSON.stringify(
+          input
+        )}) at ${conf.path}`
       )
     }
 
-    const args = this.args as any[]
-    if (args.length && !args.includes(input as any)) {
+    const schema = this.schema as any[]
+    if (schema.length && !schema.includes(input as any)) {
       return this.getErr(
-        `Input '${input}' at ${conf.path} is not kasdjfksadf for type (${args
+        `Input '${input}' at ${conf.path} is not kasdjfksadf for type (${schema
           .map((i) => `'${i}'`)
           .join(' | ')})`
       )
@@ -107,9 +131,9 @@ export class TypeConstructor<
 > extends TypeBase<T, U> {
   name = 'instance' as const
   checkType(input: unknown, conf: CheckConf) {
-    const args = this.args as any[]
-    const constructorNames = args.map((a) => a.name)
-    const matched = args.some((constructor) => {
+    const schema = this.schema as any[]
+    const constructorNames = schema.map((a) => a.name)
+    const matched = schema.some((constructor) => {
       return input instanceof constructor
     })
 
@@ -130,20 +154,20 @@ export class TypeTuple<
 > extends TypeBase<T, U> {
   name = 'tuple' as const
   checkType(input: unknown[], conf: CheckConf) {
-    if (this.args.length !== input.length) {
+    if (this.schema.length !== input.length) {
       return this.getErr(
-        `Input length need to be as same as schema length: ${this.args.length}`
+        `Input length need to be as same as schema length: ${this.schema.length}`
       )
     }
 
     const result = []
-    for (let i = 0; i <= this.args.length - 1; i++) {
+    for (let i = 0; i <= this.schema.length - 1; i++) {
       const inputElement = input[i]
-      const argsElement = this.args[i]
+      const argsElement = this.schema[i]
       result.push(
         TypeBase.check(inputElement, argsElement, {
           ...conf,
-          path: `${conf.path}[tuple:${i}]`,
+          path: `${conf.path}tuple:[${i}]`,
         })
       )
     }
@@ -153,37 +177,24 @@ export class TypeTuple<
 }
 
 export class TypeArray<
-  const T extends Schema[] = Schema[],
+  const T extends Schema | TypeOr = Schema | TypeOr,
   U extends boolean = any
 > extends TypeBase<T, U> {
   name = 'array' as const
   checkType(inputs: unknown[], conf: CheckConf) {
-    const types = this.args.map((a) => a.name).join(' | ')
-    const isInputMatched = (input: unknown, path: string) => {
-      for (let schema of this.args) {
-        const result = TypeBase.check(input, schema, {
-          ...conf,
-          path,
-          meta: true,
-        })
-        if (!(result instanceof RypeError)) return true
-      }
-
-      return false
-    }
-
     const result = []
+
     for (let i = 0; i <= inputs.length - 1; i++) {
       const input = inputs[i]
-      const path = `${conf.path}[array:${i}]`
+      const path = `${conf.path}array[${i}]`
+      const output = TypeBase.check(input, this.schema, {
+        ...conf,
+        meta: true,
+        path,
+      })
 
-      if (this.args.length && !isInputMatched(input, path)) {
-        return this.getErr(
-          `Input: '${input}' at ${path} needs to be typof ${types}`
-        )
-      }
-
-      result.push(input)
+      if (output instanceof RypeError) return output.message
+      result.push(output)
     }
 
     return result
@@ -191,7 +202,7 @@ export class TypeArray<
 }
 
 export class TypeOr<
-  const T extends Schema[] = Schema[],
+  const T extends readonly Schema[] = readonly Schema[],
   U extends boolean = any
 > extends TypeBase<T, U> {
   name = 'or' as const

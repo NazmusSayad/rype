@@ -6,6 +6,14 @@ type Mutate1<T, TFallback> = T extends readonly [] ? TFallback : Mutable<T>
 
 function createMethods<TB extends boolean>(required: TB) {
   return {
+    or<const T>(
+      ...options: T extends readonly []
+        ? readonly [TType.Schema]
+        : ConstArgs<T, TType.Schema>
+    ) {
+      return new Type.TypeOr(options, required)
+    },
+
     string<const T>(...string: ConstArgs<T, string>) {
       return new Type.TypeString(string as Mutate1<T, string[]>, required)
     },
@@ -18,40 +26,26 @@ function createMethods<TB extends boolean>(required: TB) {
       return new Type.TypeBoolean(boolean as Mutate1<T, boolean[]>, required)
     },
 
-    tuple<const T>(...element: ConstArgs<T, TType.Schema>) {
+    tuple<const T>(...elements: ConstArgs<T, TType.Schema>) {
       return new Type.TypeTuple(
-        element as Mutate1<typeof element, never[]>,
+        elements as Mutate1<typeof elements, never[]>,
         required
       )
     },
 
     array<const T>(
-      ...element: T extends readonly [] ? any[] : ConstArgs<T, TType.Schema>
+      ...elements: T extends readonly [] ? any[] : ConstArgs<T, TType.Schema>
     ) {
-      return new Type.TypeArray(
-        element as Mutable<typeof element>[number][],
-        required
-      )
+      return new Type.TypeArray(new Type.TypeOr(elements, required), required)
     },
 
     instance<const T>(
-      ...constructor: T extends readonly []
+      ...constructors: T extends readonly []
         ? [ValidConstructor]
         : ConstArgs<T, ValidConstructor>
     ) {
       return new Type.TypeConstructor(
-        constructor as Mutable<typeof constructor>,
-        required
-      )
-    },
-
-    or<const T>(
-      ...options: T extends readonly [] | readonly [TType.Schema]
-        ? readonly [TType.Schema, TType.Schema]
-        : ConstArgs<T, TType.Schema>
-    ) {
-      return new Type.TypeOr(
-        options as Mutable<typeof options>[number][],
+        constructors as Mutable<typeof constructors>,
         required
       )
     },

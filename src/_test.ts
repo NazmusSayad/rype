@@ -2,8 +2,8 @@ import r from './index'
 
 try {
   const result = r(
-    ['Hello', 'Hello', false, 129321983],
-    r.array(r.string('Hello'), r.boolean())
+    { name: 'hello', fav: {} },
+    { name: r.string(), fav: { work: r.o.string('any') } }
   )
 
   console.log(result)
@@ -11,13 +11,12 @@ try {
   console.log({ message })
 }
 
-/* 
 r(1, r.number())
 r(true, r.boolean())
 r(false, r.boolean())
 r('2435', r.string())
 
-r(r.any(r.boolean(), r.string('wwe')))('wwe')
+r(r.or(r.boolean(), r.string('wwe')))('wwe')
 
 r([], r.tuple())
 r(r.array(r.string('World')))(['World'])
@@ -34,27 +33,25 @@ r(false, r.boolean(false))
 r(true, r.boolean(true, false))
 r(false, r.boolean(true, false))
 
-r([1, 2, 3], r.tuple(1, 2, 3))
-r(['1', '2', '3'], r.tuple('1', '2', '3'))
-
-r([1, 2, 3, 3, 1, 2], r.array(1, 2, 3))
-r(['1', '2', '3'], r.array('1', '2', '3'))
+// r([1, 2, 3], r.tuple(1, 2, 3))
+// r(['1', '2', '3'], r.tuple('1', '2', '3'))
+//
+// r([1, 2, 3, 3, 1, 2], r.array(1, 2, 3))
+// r(['1', '2', '3'], r.array('1', '2', '3'))
 
 r(
   {
     name: 'John Doe',
     hobbies: ['Play'],
     image: new ArrayBuffer(0),
-    images: new Blob(),
     intro: { address: 'BD' },
     jobs: [{ name: 200 }],
   },
 
   {
     name: r.string('John Doe'),
-    hobbies: r.tuple('Play'),
+    hobbies: r.tuple(r.string('Play')),
     image: r.instance(Blob, ArrayBuffer),
-    images: r.any(r.instance(Blob), r.instance(ArrayBuffer), r.string('http')),
     intro: { address: r.string('BD') },
     jobs: r.tuple({ name: r.number(200) }),
   }
@@ -99,8 +96,7 @@ r(
 
     r.tuple({
       name: r.string('hello'),
-      ages: r.tuple(10),
+      ages: r.tuple(r.number(10)),
     })
   )
 )
- */

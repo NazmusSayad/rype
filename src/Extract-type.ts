@@ -1,45 +1,47 @@
 import * as Type from './Type'
 import * as TType from './Type-type'
-import { Mutable } from './utils-type'
+import { MakeOptional, Mutable } from './utils-type'
 
-export type ExtractPrimitiveType<T extends TType.Primitive> = T['args'][number]
+export type ExtractPrimitiveType<T extends TType.Primitive> =
+  T['schema'][number]
 
 export type ExtractConstructor<T extends Type.TypeConstructor> = InstanceType<
-  T['args'][number]
+  T['schema'][number]
 >
 
-export type ExtractArray<T extends TType.ArrayLike> = {
-  [K in keyof T['args']]: T['args'][K] extends TType.Schema
-    ? LTypeExtract<T['args'][K]>
-    : Mutable<T['args'][K]>
+export type ExtractArray<T extends Type.TypeArray> =
+  (T['schema'] extends Type.TypeOr
+    ? ExtractOr<T['schema']>
+    : LTypeExtract<T['schema']>)[]
+
+export type ExtractTuple<T extends Type.TypeTuple> = {
+  [K in keyof T['schema']]: T['schema'][K] extends TType.Schema
+    ? LTypeExtract<T['schema'][K]>
+    : Mutable<T['schema'][K]>
 }
 
-export type ExtractAny<T extends Type.TypeOr> = {
-  [K in keyof T['args']]: T['args'][K] extends TType.Schema
-    ? LTypeExtract<T['args'][K]>
-    : Mutable<T['args'][K]>
+export type ExtractOr<T extends Type.TypeOr> = {
+  [K in keyof T['schema']]: T['schema'][K] extends TType.Schema
+    ? LTypeExtract<T['schema'][K]>
+    : Mutable<T['schema'][K]>
 }[number]
 
-export type ExtractObjectType<T extends TType.ObjectLike> = {
-  [K in keyof T as T extends TType.ObjectLike
-    ? K
-    : T[K]['required'] extends true
-    ? K
-    : never]: LTypeExtract<T[K]>
-} & {
-  [K in keyof T as T extends TType.ObjectLike
-    ? K
-    : T[K]['required'] extends false
-    ? K
-    : never]?: LTypeExtract<T[K]>
-}
+export type ExtractObjectType<T extends TType.ObjectLike> = MakeOptional<{
+  [K in keyof T]: T[K] extends Type.TypeBase
+    ? T[K]['required'] extends true
+      ? LTypeExtract<T[K]>
+      : LTypeExtract<T[K]> | undefined
+    : LTypeExtract<T[K]>
+}>
 
 export type LTypeExtract<T extends TType.Schema> = T extends TType.Primitive
   ? ExtractPrimitiveType<T>
-  : T extends TType.ArrayLike
+  : T extends Type.TypeTuple
+  ? ExtractTuple<T>
+  : T extends Type.TypeArray
   ? ExtractArray<T>
   : T extends Type.TypeOr
-  ? ExtractAny<T>
+  ? ExtractOr<T>
   : T extends TType.ObjectLike
   ? ExtractObjectType<T>
   : T extends Type.TypeConstructor
