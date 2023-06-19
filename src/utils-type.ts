@@ -7,22 +7,20 @@ export type Mutable<T> = {
   -readonly [K in keyof T]: T[K]
 }
 
-type HasUndefined<T> = (T extends undefined ? true : false) extends false
+export type HasUndefined<T> = (T extends undefined ? true : false) extends false
   ? false
   : true
 
-type Prettify<T extends object> = {
+export type Prettify<T extends object> = {
   [Key in keyof T]: T[Key]
 } & {}
 
-export type MakeOptional<TObject> = Prettify<
-  {
-    [K in keyof TObject as HasUndefined<TObject[K]> extends true
-      ? never
-      : K]: TObject[K]
-  } & {
-    [K in keyof TObject as HasUndefined<TObject[K]> extends false
-      ? never
-      : K]?: TObject[K]
-  }
->
+export type MakeOptional<TObject> = {
+  [K in keyof TObject as HasUndefined<TObject[K]> extends true
+    ? never
+    : K]: TObject[K]
+} & {
+  [K in keyof TObject as HasUndefined<TObject[K]> extends false
+    ? never
+    : K]?: TObject[K]
+}
