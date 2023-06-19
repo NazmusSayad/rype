@@ -1,7 +1,15 @@
 import r from './index'
 
-const result = r.noError([0], r.instance(Blob, Array))
-console.log(result)
+try {
+  const result = r(
+    ['Hello', 'Hello', false, 129321983],
+    r.array(r.string('Hello'), r.boolean())
+  )
+
+  console.log(result)
+} catch ({ message }: any) {
+  console.log({ message })
+}
 
 /* 
 r(1, r.number())

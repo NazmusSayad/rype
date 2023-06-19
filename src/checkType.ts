@@ -8,30 +8,38 @@ export default function <S extends TType.Schema>(
   input: unknown,
   throwError: boolean
 ): LTypeExtract<S> {
-  function wrap(result: any) {
-    if (!(result instanceof RypeError)) return result
-    if (throwError) throw result
-  }
+  return Type.TypeBase.check(input, schema, {
+    path: '',
+    throw: throwError,
+  }) as any
 
-  function parse(input: unknown, schema: TType.Schema): any {
+  /* function parse(
+    input: unknown,
+    schema: TType.Schema,
+    path: string = '',
+    tempThrowError = true
+  ): any {
+    const needToThrowError = throwError && tempThrowError
+    console.log(needToThrowError, needToThrowError)
+
     if (schema instanceof Type.TypePrimitive) {
-      return wrap(schema.check(input))
+      return schema.check(input, { path, throw: needToThrowError })
     }
 
     if (schema instanceof Type.TypeConstructor) {
-      return wrap(schema.check(input))
+      return schema.check(input, { path, throw: needToThrowError })
     }
 
     if (schema instanceof Type.TypeTuple || schema instanceof Type.TypeArray) {
-      return wrap(
-        schema.check(input, {
-          arrayLikeParser(input, schema, index) {
-            return parse(input, schema)
-          },
-        })
-      )
+      return schema.check(input, {
+        path,
+        throw: needToThrowError,
+        parser(input, schema, index) {
+          return parse(input, schema, path + index)
+        },
+      })
     }
   }
 
-  return parse(input, schema)
+  return parse(input, schema) */
 }
