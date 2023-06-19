@@ -4,35 +4,6 @@ import { ValidConstructor, ValidObject } from './utils-type'
 type CheckConf = { path: string; throw: boolean; meta?: boolean }
 
 export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
-  schema: TSchemaArgs
-  required: TRequired
-  name = 'base'
-
-  getErr(message: string) {
-    return new RypeTypeError(message, this.schema as any, this.required)
-  }
-
-  getRErr(message: string) {
-    return new RypeRequiredError(message, this.schema as any, this.required)
-  }
-
-  checkType(input: unknown, conf: CheckConf) {
-    return (this.name + " isn't implemented yet!") as any
-  }
-
-  #check(input: unknown, conf: CheckConf) {
-    if (!this.required && !input) return
-    if (input == null)
-      return this.getRErr(`${conf.path || 'Input'} is required`)
-    return this.checkType(input, conf)
-  }
-
-  check(input: unknown, conf: CheckConf) {
-    const output = this.#check(input, conf)
-    if (!(output instanceof RypeError) || conf.meta) return output
-    if (conf.throw) throw output
-  }
-
   static check(input: unknown, schema: Schema, conf: CheckConf): unknown {
     if (input instanceof RypeError) return
 
@@ -75,6 +46,35 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   constructor(schema: TSchemaArgs, required: TRequired) {
     this.schema = schema
     this.required = required
+  }
+
+  schema: TSchemaArgs
+  required: TRequired
+  name = 'base'
+
+  getErr(message: string) {
+    return new RypeTypeError(message, this.schema as any, this.required)
+  }
+
+  getRErr(message: string) {
+    return new RypeRequiredError(message, this.schema as any, this.required)
+  }
+
+  checkType(input: unknown, conf: CheckConf) {
+    return (this.name + " isn't implemented yet!") as any
+  }
+
+  #check(input: unknown, conf: CheckConf) {
+    if (!this.required && !input) return
+    if (input == null)
+      return this.getRErr(`${conf.path || 'Input'} is required`)
+    return this.checkType(input, conf)
+  }
+
+  check(input: unknown, conf: CheckConf) {
+    const output = this.#check(input, conf)
+    if (!(output instanceof RypeError) || conf.meta) return output
+    if (conf.throw) throw output
   }
 }
 
@@ -137,7 +137,6 @@ export class TypeConstructor<
       return input instanceof constructor
     })
 
-    // Fixme:
     return matched
       ? input
       : this.getErr(
@@ -206,4 +205,5 @@ export class TypeOr<
   U extends boolean = any
 > extends TypeBase<T, U> {
   name = 'or' as const
+  // TODO:
 }
