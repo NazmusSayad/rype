@@ -1,22 +1,11 @@
 import r from './index'
 
-try {
-  const result = r(
-    { name: 'hello', fav: {} },
-    { name: r.string(), fav: { work: r.o.string('any') } }
-  )
-
-  console.log(result)
-} catch ({ message }: any) {
-  console.log({ message })
-}
-
 r(1, r.number())
 r(true, r.boolean())
 r(false, r.boolean())
 r('2435', r.string())
 
-r(r.or(r.boolean(), r.string('wwe')))('wwe')
+r(r.or(r.boolean(), r.string('wwe')))
 
 r([], r.tuple())
 r(r.array(r.string('World')))(['World'])

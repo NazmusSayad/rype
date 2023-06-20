@@ -1,5 +1,6 @@
 import { RypeError, RypeRequiredError, RypeTypeError } from './Error'
 import { ObjectLike, Schema } from './Type-type'
+import { getType } from './utils'
 import { ValidConstructor, ValidObject } from './utils-type'
 type CheckConf = { path: string; throw: boolean; meta?: boolean }
 
@@ -19,6 +20,10 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
     conf: CheckConf
   ) {
     function getResult() {
+      const type = `object{${Object.keys(schema)}}`
+
+      // :)
+
       const result: any = {}
 
       for (let key in schema) {
@@ -52,6 +57,13 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   required: TRequired
   name = 'base'
 
+  getType(): any {
+    return this.name
+  }
+  get type(): string {
+    return [...new Set([this.getType()].flat())].join(' | ')
+  }
+
   getErr(message: string) {
     return new RypeTypeError(message, this.schema as any, this.required)
   }
@@ -82,6 +94,10 @@ export class TypePrimitive<const T, U extends boolean = any> extends TypeBase<
   T,
   U
 > {
+  getType() {
+    return (this.schema as any[]).length ? this.schema : this.name
+  }
+
   checkType(input: unknown, conf: CheckConf) {
     if (typeof input !== this.name) {
       return this.getErr(
@@ -94,9 +110,7 @@ export class TypePrimitive<const T, U extends boolean = any> extends TypeBase<
     const schema = this.schema as any[]
     if (schema.length && !schema.includes(input as any)) {
       return this.getErr(
-        `Input '${input}' at ${conf.path} is not kasdjfksadf for type (${schema
-          .map((i) => `'${i}'`)
-          .join(' | ')})`
+        `Input '${input}' at ${conf.path} is not kasdjfksadf for type (${this.type})`
       )
     }
 
@@ -204,6 +218,27 @@ export class TypeOr<
   const T extends readonly Schema[] = readonly Schema[],
   U extends boolean = any
 > extends TypeBase<T, U> {
-  name = 'or' as const
-  // TODO:
+  name = 'or[...]' as const
+
+  getType() {
+    return this.schema.map((schema) => {
+      if (schema instanceof TypeBase) return schema.type
+      return `object{${Object.keys(schema)}}`
+    })
+  }
+
+  checkType(input: unknown, conf: CheckConf) {
+    for (let i = 0; i <= this.schema.length - 1; i++) {
+      const schema = this.schema[i]
+      const output = TypeBase.check(input, schema, {
+        ...conf,
+        meta: true,
+      })
+      if (!(output instanceof RypeError)) return output
+    }
+
+    return this.getErr(
+      `Input needs to be type of (${this.type}) at ${conf.path || 'object'}`
+    )
+  }
 }
