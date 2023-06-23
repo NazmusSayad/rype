@@ -21,7 +21,6 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   ) {
     function getResult() {
       const type = `object{${Object.keys(schema)}}`
-
       // :)
 
       const result: any = {}
@@ -36,7 +35,9 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
         })
 
         if (output instanceof RypeError) return output
-        result[key] = output
+        if (output !== undefined) {
+          result[key] = output
+        }
       }
 
       return result
@@ -64,12 +65,17 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
     return [...new Set([this.getType()].flat())].join(' | ')
   }
 
-  getErr(message: string) {
-    return new RypeTypeError(message, this.schema as any, this.required)
+  getErr(input: unknown, message: string) {
+    return new RypeTypeError(message, input, this.schema as any, this.required)
   }
 
-  getRErr(message: string) {
-    return new RypeRequiredError(message, this.schema as any, this.required)
+  getRErr(input: unknown, message: string) {
+    return new RypeRequiredError(
+      message,
+      input,
+      this.schema as any,
+      this.required
+    )
   }
 
   checkType(input: unknown, conf: CheckConf) {
@@ -79,7 +85,7 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   #check(input: unknown, conf: CheckConf) {
     if (!this.required && !input) return
     if (input == null)
-      return this.getRErr(`${conf.path || 'Input'} is required`)
+      return this.getRErr(input, `${conf.path || 'Input'} is required`)
     return this.checkType(input, conf)
   }
 
@@ -101,6 +107,7 @@ export class TypePrimitive<const T, U extends boolean = any> extends TypeBase<
   checkType(input: unknown, conf: CheckConf) {
     if (typeof input !== this.name) {
       return this.getErr(
+        input,
         `Input need to a ${this.name} not ${typeof input}(${JSON.stringify(
           input
         )}) at ${conf.path}`
@@ -110,6 +117,7 @@ export class TypePrimitive<const T, U extends boolean = any> extends TypeBase<
     const schema = this.schema as any[]
     if (schema.length && !schema.includes(input as any)) {
       return this.getErr(
+        input,
         `Input '${input}' at ${conf.path} is not kasdjfksadf for type (${this.type})`
       )
     }
@@ -154,6 +162,7 @@ export class TypeConstructor<
     return matched
       ? input
       : this.getErr(
+          input,
           `Input needs to be an instance of (${constructorNames.join(' | ')})${
             conf.path && ` at ${conf.path}`
           }`
@@ -169,6 +178,7 @@ export class TypeTuple<
   checkType(input: unknown[], conf: CheckConf) {
     if (this.schema.length !== input.length) {
       return this.getErr(
+        input,
         `Input length need to be as same as schema length: ${this.schema.length}`
       )
     }
@@ -238,6 +248,7 @@ export class TypeOr<
     }
 
     return this.getErr(
+      input,
       `Input needs to be type of (${this.type}) at ${conf.path || 'object'}`
     )
   }

@@ -57,6 +57,5 @@ const optionalMethods = createMethods(false)
 export default {
   ...requiredMethods,
   o: optionalMethods,
-  opt: optionalMethods,
   optional: optionalMethods,
 }

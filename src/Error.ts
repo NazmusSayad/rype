@@ -1,18 +1,20 @@
 import { Schema } from './Type-type'
 
 export class RypeError extends Error {
-  instance: {
+  config: {
+    input: unknown
     schema: any[]
     required: boolean
   }
 
   constructor(
     message: string,
+    input: unknown,
     schema: (Schema | string | number | boolean)[],
     required: boolean
   ) {
     super(message)
-    this.instance = { schema, required }
+    this.config = { input, schema, required }
   }
 }
 

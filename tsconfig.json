@@ -4,7 +4,7 @@
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "declaration": true,
-    "inlineSourceMap": false,
+    "inlineSourceMap": true,
     "strict": true,
     "pretty": true,
     "removeComments": true
