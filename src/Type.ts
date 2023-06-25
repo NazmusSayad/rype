@@ -1,5 +1,6 @@
 import { RypeError, RypeRequiredError, RypeTypeError } from './Error'
 import { ObjectLike, Schema } from './Type-type'
+import errorMessages from './errorMessages'
 import { getType } from './utils'
 import { ValidConstructor, ValidObject } from './utils-type'
 type CheckConf = { path: string; throw: boolean; meta?: boolean }
@@ -85,7 +86,10 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   #check(input: unknown, conf: CheckConf) {
     if (!this.required && !input) return
     if (input == null)
-      return this.getRErr(input, `${conf.path || 'Input'} is required`)
+      return this.getRErr(
+        input,
+        errorMessages.requiredError.replace(':PATH:', conf.path || 'Input')
+      )
     return this.checkType(input, conf)
   }
 
@@ -105,20 +109,18 @@ export class TypePrimitive<const T, U extends boolean = any> extends TypeBase<
   }
 
   checkType(input: unknown, conf: CheckConf) {
-    if (typeof input !== this.name) {
-      return this.getErr(
-        input,
-        `Input need to a ${this.name} not ${typeof input}(${JSON.stringify(
-          input
-        )}) at ${conf.path}`
-      )
-    }
-
     const schema = this.schema as any[]
-    if (schema.length && !schema.includes(input as any)) {
+
+    if (
+      typeof input !== this.name ||
+      (schema.length && !schema.includes(input as any))
+    ) {
       return this.getErr(
         input,
-        `Input '${input}' at ${conf.path} is not kasdjfksadf for type (${this.type})`
+        errorMessages.primitiveTypeError
+          .replace(':INPUT:', input as string)
+          .replace(':TYPE:', this.name)
+          .replace(':PATH:', conf.path)
       )
     }
 
@@ -163,9 +165,9 @@ export class TypeConstructor<
       ? input
       : this.getErr(
           input,
-          `Input needs to be an instance of (${constructorNames.join(' | ')})${
-            conf.path && ` at ${conf.path}`
-          }`
+          errorMessages.unknownInstanceError
+            .replace(':CONSTRUCTOR:', constructorNames.join(' | '))
+            .replace(':PATH:', conf.path)
         )
   }
 }
@@ -179,7 +181,10 @@ export class TypeTuple<
     if (this.schema.length !== input.length) {
       return this.getErr(
         input,
-        `Input length need to be as same as schema length: ${this.schema.length}`
+        errorMessages.tupleLengthError.replace(
+          ':LENGTH:',
+          this.schema.length.toString()
+        )
       )
     }
 
@@ -249,7 +254,9 @@ export class TypeOr<
 
     return this.getErr(
       input,
-      `Input needs to be type of (${this.type}) at ${conf.path || 'object'}`
+      errorMessages.orTypeError
+        .replace(':TYPE:', this.type)
+        .replace(':PATH:', conf.path)
     )
   }
 }

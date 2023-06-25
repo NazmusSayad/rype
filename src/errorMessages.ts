@@ -1,11 +1,18 @@
 const errorMessages = {
   requiredError: ':PATH: is required',
-  orTypeError: 'Input is not assignable to type :TYPE: at :PATH:',
   unknownInstanceError: `Input needs to be an instance of :CONSTRUCTOR: at :PATH:`,
-  primitiveTypeError:
-    'Input :INPUT: is not assignable to type :TYPE: at :PATH:',
   tupleLengthError:
     'Input length need to be as same as schema length: :LENGTH:',
+  orTypeError: 'Input is not assignable to type :TYPE: at :PATH:',
+  primitiveTypeError:
+    'Input :INPUT: is not assignable to type :TYPE: at :PATH:',
+}
+
+// TODO:
+export const messages = {
+  getRequired(path: string) {
+    return errorMessages.requiredError.replace(':PATH:', path)
+  },
 }
 
 export default errorMessages
