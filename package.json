@@ -1,6 +1,6 @@
 {
   "name": "rype",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "scripts": {
     "dev": "npm-ez dev",
     "build": "npm-ez build",
