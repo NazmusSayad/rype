@@ -21,6 +21,8 @@ export const oTuple = typeMethods.optional.tuple()
 export const oArray = typeMethods.optional.array()
 
 export default r
+export * from './Error'
+
 export * from './Type'
 export * from './Type-type'
 export * from './Extract-type'
