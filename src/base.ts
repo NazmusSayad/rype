@@ -1,7 +1,7 @@
 import * as TType from './Type-type'
 import { LTypeExtract } from './Extract-type'
 import checkType from './checkType'
-import { combine, combineForTwoArgs } from './utils'
+import { combineForTwoArgs } from './utils'
 
 function baseDual<
   TInput extends LTypeExtract<TSchema>,
@@ -51,8 +51,9 @@ function noCheckSingle<TSchema extends TType.Schema>(schema: TSchema) {
   }
 }
 
-const base = combineForTwoArgs(baseSingle, baseDual)
-const noError = combineForTwoArgs(noErrorSingle, noErrorDual)
+export const base = combineForTwoArgs(baseSingle, baseDual)
+
 const noType = combineForTwoArgs(noTypeSingle, noTypeDual)
 const noCheck = combineForTwoArgs(noCheckSingle, noCheckDual)
-export default combine(base, { noError, noType, noCheck })
+const noError = combineForTwoArgs(noErrorSingle, noErrorDual)
+export const methods = { noType, noCheck, noError }

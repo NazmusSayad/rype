@@ -34,7 +34,7 @@ export type ExtractObjectType<T extends TType.ObjectLike> = MakeOptional<{
     : LTypeExtract<T[K]>
 }>
 
-export type LTypeExtract<T extends TType.Schema> = Prettify<
+export type LTypeExtract<T extends TType.Schema> = TType.PrettifyInput<
   T extends TType.Primitive
     ? ExtractPrimitiveType<T>
     : T extends Type.TypeTuple

@@ -1,7 +1,6 @@
 import { RypeError, RypeRequiredError, RypeTypeError } from './Error'
 import { ObjectLike, Schema } from './Type-type'
 import errorMessages from './errorMessages'
-import { getType } from './utils'
 import { ValidConstructor, ValidObject } from './utils-type'
 type CheckConf = { path: string; throw: boolean; meta?: boolean }
 

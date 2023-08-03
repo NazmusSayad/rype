@@ -7,6 +7,7 @@ import {
   TypeString,
   TypeTuple,
 } from './Type'
+import { Prettify } from './utils-type'
 
 export type Primitive = TypeString | TypeNumber | TypeBoolean
 
@@ -15,3 +16,7 @@ export type ObjectLike = { [i: string]: Schema }
 export type Refference = ArrayLike | ObjectLike | TypeConstructor
 
 export type Schema = Primitive | Refference | TypeOr
+
+export type PrettifyInput<T extends Schema> = T extends Primitive
+  ? T
+  : Prettify<T>
