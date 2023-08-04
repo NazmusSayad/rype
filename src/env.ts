@@ -32,5 +32,5 @@ export default function <T extends EnvSchema>(schema: T) {
         : null
   }
 
-  return object
+  return result as typeof object
 }
