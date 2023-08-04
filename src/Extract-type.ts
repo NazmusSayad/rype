@@ -1,6 +1,6 @@
 import * as Type from './Type'
 import * as TType from './Type-type'
-import { MakeOptional, Mutable } from './utils-type'
+import { MakeOptional, Mutable, PrettifyInput } from './utils-type'
 
 export type ExtractPrimitiveType<T extends TType.Primitive> =
   T['schema'][number]
@@ -34,7 +34,7 @@ export type ExtractObjectType<T extends TType.ObjectLike> = MakeOptional<{
     : ExtractSchema<T[K]>
 }>
 
-export type ExtractSchema<T extends TType.Schema> = TType.PrettifyInput<
+export type ExtractSchema<T extends TType.Schema> = PrettifyInput<
   T extends TType.Primitive
     ? ExtractPrimitiveType<T>
     : T extends Type.TypeTuple

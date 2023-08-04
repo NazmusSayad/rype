@@ -1,3 +1,5 @@
+import { Primitive } from './Type-type'
+
 export type ValidObject = { [i: string]: any }
 export type ValidConstructor = new (...args: any[]) => any
 
@@ -14,6 +16,10 @@ export type HasUndefined<T> = (T extends undefined ? true : false) extends false
 export type Prettify<T extends object> = {
   [Key in keyof T]: T[Key]
 } & {}
+
+export type PrettifyInput<T extends object> = T extends Primitive
+  ? T
+  : Prettify<T>
 
 export type MakeOptional<TObject> = {
   [K in keyof TObject as HasUndefined<TObject[K]> extends true

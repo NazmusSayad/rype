@@ -17,7 +17,3 @@ export type Refference = ArrayLike | ObjectLike | TypeConstructor
 
 export type Schema = Primitive | Refference | TypeOr
 export type EnvSchema = { [i: string]: Primitive }
-
-export type PrettifyInput<T extends object> = T extends Primitive
-  ? T
-  : Prettify<T>

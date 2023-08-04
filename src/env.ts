@@ -3,7 +3,7 @@ import typeMethods from './typeMethods'
 import { EnvSchema } from './Type-type'
 import { TypeBoolean, TypeNumber, TypeString } from './Type'
 
-export default function <T extends EnvSchema>(schema: T) {
+export function env<T extends EnvSchema>(schema: T) {
   const stringSchema: any = {}
   const result: any = {}
 
