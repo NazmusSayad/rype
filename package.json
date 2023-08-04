@@ -28,6 +28,7 @@
     }
   },
   "devDependencies": {
+    "@types/node": "^20.4.7",
     "npm-ez": "^2.0.6",
     "typescript": "^5.1.3"
   }

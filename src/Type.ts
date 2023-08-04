@@ -1,8 +1,8 @@
 import { RypeError, RypeRequiredError, RypeTypeError } from './Error'
 import { ObjectLike, Schema } from './Type-type'
 import errorMessages from './errorMessages'
+import { CheckConf } from './types'
 import { ValidConstructor, ValidObject } from './utils-type'
-type CheckConf = { path: string; throw: boolean; meta?: boolean }
 
 export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   static check(input: unknown, schema: Schema, conf: CheckConf): unknown {
@@ -87,7 +87,10 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
     if (input == null)
       return this.getRErr(
         input,
-        errorMessages.requiredError.replace(':PATH:', conf.path || 'Input')
+        errorMessages.requiredError.replace(
+          ':PATH:',
+          conf.path || conf.name || 'Input'
+        )
       )
     return this.checkType(input, conf)
   }
