@@ -1,7 +1,7 @@
 import r from './index'
 
 try {
-  r({ a: { b: r.string() } })({ a: { b: 200 } }, 'user')
+  console.log(r(r.string('Boom', 'Fire'), null))
 } catch (err: any) {
   console.log(err.message)
 }
@@ -9,7 +9,7 @@ try {
 r(r.number(1), 1)
 r(r.boolean(), true)
 r(r.boolean(), false)
-r(r.string(), '2435')
+r(r.string('Boom', 'Fire'), 'Boom')
 
 r(r.or(r.boolean(), r.string('wwe')))
 

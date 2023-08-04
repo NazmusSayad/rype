@@ -1,6 +1,6 @@
 import { RypeError, RypeRequiredError, RypeTypeError } from './Error'
 import { ExtractSchema } from './Extract-type'
-import { ObjectLike, Schema } from './Type-type'
+import { ObjectLike, Primitive, Schema } from './Type-type'
 import messages from './errorMessages'
 import { CheckConf } from './types'
 import { ValidConstructor, ValidObject } from './utils-type'
@@ -59,8 +59,14 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
 
   schema: TSchemaArgs
   required: TRequired
+  defaultValue: any
   name = 'base'
-  // Implement (default) feature
+  default(
+    value: typeof this extends Primitive ? ExtractSchema<typeof this> : never
+  ) {
+    this.defaultValue = value
+    return this
+  }
 
   getType(): any {
     return this.name
@@ -87,9 +93,18 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   }
 
   #check(input: unknown, conf: CheckConf) {
-    if (!this.required && !input) return
-    if (input == null)
-      return this.getRErr(input, messages.getRequiredErr(conf.path, {}))
+    if (input == null) {
+      if (this.defaultValue != null) {
+        return this.defaultValue
+      }
+
+      if (this.required) {
+        return this.getRErr(input, messages.getRequiredErr(conf.path, {}))
+      }
+
+      return
+    }
+
     return this.checkType(input, conf)
   }
 
