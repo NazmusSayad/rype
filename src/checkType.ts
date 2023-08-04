@@ -1,17 +1,14 @@
 import * as Type from './Type'
 import * as TType from './Type-type'
-import { ExtractType } from './Extract-type'
-import { CheckConf } from './types'
+import { ExtractSchema } from './Extract-type'
 
 export default function <S extends TType.Schema>(
   schema: S,
   input: unknown,
-  conf: Partial<Pick<CheckConf, 'path' | 'name' | 'throw'>>
-): ExtractType<S> {
+  conf: { name?: string; throw?: boolean }
+): ExtractSchema<S> {
   return Type.TypeBase.check(input, schema, {
-    path: '',
-    name: '',
-    throw: true,
-    ...conf,
+    path: conf.name || '',
+    throw: conf.throw ?? true,
   }) as any
 }

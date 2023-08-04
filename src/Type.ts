@@ -1,6 +1,6 @@
 import { RypeError, RypeRequiredError, RypeTypeError } from './Error'
 import { ObjectLike, Schema } from './Type-type'
-import errorMessages from './errorMessages'
+import messages from './errorMessages'
 import { CheckConf } from './types'
 import { ValidConstructor, ValidObject } from './utils-type'
 
@@ -20,9 +20,6 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
     conf: CheckConf
   ) {
     function getResult() {
-      const type = `object{${Object.keys(schema)}}`
-      // :)
-
       const result: any = {}
 
       for (let key in schema) {
@@ -85,13 +82,7 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   #check(input: unknown, conf: CheckConf) {
     if (!this.required && !input) return
     if (input == null)
-      return this.getRErr(
-        input,
-        errorMessages.requiredError.replace(
-          ':PATH:',
-          conf.path || conf.name || 'Input'
-        )
-      )
+      return this.getRErr(input, messages.getRequiredErr(conf.path, {}))
     return this.checkType(input, conf)
   }
 
@@ -119,10 +110,10 @@ export class TypePrimitive<const T, U extends boolean = any> extends TypeBase<
     ) {
       return this.getErr(
         input,
-        errorMessages.primitiveTypeError
-          .replace(':INPUT:', input as string)
-          .replace(':TYPE:', this.name)
-          .replace(':PATH:', conf.path)
+        messages.getPrimitiveTypeError(conf.path, {
+          INPUT: input as string,
+          TYPE: this.name,
+        })
       )
     }
 
@@ -167,9 +158,9 @@ export class TypeConstructor<
       ? input
       : this.getErr(
           input,
-          errorMessages.unknownInstanceError
-            .replace(':CONSTRUCTOR:', constructorNames.join(' | '))
-            .replace(':PATH:', conf.path)
+          messages.getUnknownInstanceError(conf.path, {
+            CONSTRUCTOR: constructorNames.join(' | '),
+          })
         )
   }
 }
@@ -183,10 +174,9 @@ export class TypeTuple<
     if (this.schema.length !== input.length) {
       return this.getErr(
         input,
-        errorMessages.tupleLengthError.replace(
-          ':LENGTH:',
-          this.schema.length.toString()
-        )
+        messages.getTupleLengthError(conf.path, {
+          LENGTH: this.schema.length.toString(),
+        })
       )
     }
 
@@ -256,9 +246,9 @@ export class TypeOr<
 
     return this.getErr(
       input,
-      errorMessages.orTypeError
-        .replace(':TYPE:', this.type)
-        .replace(':PATH:', conf.path)
+      messages.getOrTypeErr(conf.path, {
+        TYPE: this.type,
+      })
     )
   }
 }

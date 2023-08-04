@@ -24,3 +24,10 @@ export type MakeOptional<TObject> = {
     ? never
     : K]?: TObject[K]
 }
+
+export type ExtractPlaceholderValues<T extends string> =
+  T extends `${infer Start}<$${infer Value}$>${infer Rest}`
+    ? Value | ExtractPlaceholderValues<Rest>
+    : T extends `${infer Start}<$${infer Value}`
+    ? Value
+    : never

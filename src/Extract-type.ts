@@ -12,29 +12,29 @@ export type ExtractConstructor<T extends Type.TypeConstructor> = InstanceType<
 export type ExtractArray<T extends Type.TypeArray> =
   (T['schema'] extends Type.TypeOr
     ? ExtractOr<T['schema']>
-    : ExtractType<T['schema']>)[]
+    : ExtractSchema<T['schema']>)[]
 
 export type ExtractTuple<T extends Type.TypeTuple> = {
   [K in keyof T['schema']]: T['schema'][K] extends TType.Schema
-    ? ExtractType<T['schema'][K]>
+    ? ExtractSchema<T['schema'][K]>
     : Mutable<T['schema'][K]>
 }
 
 export type ExtractOr<T extends Type.TypeOr> = {
   [K in keyof T['schema']]: T['schema'][K] extends TType.Schema
-    ? ExtractType<T['schema'][K]>
+    ? ExtractSchema<T['schema'][K]>
     : Mutable<T['schema'][K]>
 }[number]
 
 export type ExtractObjectType<T extends TType.ObjectLike> = MakeOptional<{
   [K in keyof T]: T[K] extends Type.TypeBase
     ? T[K]['required'] extends true
-      ? ExtractType<T[K]>
-      : ExtractType<T[K]> | undefined
-    : ExtractType<T[K]>
+      ? ExtractSchema<T[K]>
+      : ExtractSchema<T[K]> | undefined
+    : ExtractSchema<T[K]>
 }>
 
-export type ExtractType<T extends TType.Schema> = TType.PrettifyInput<
+export type ExtractSchema<T extends TType.Schema> = TType.PrettifyInput<
   T extends TType.Primitive
     ? ExtractPrimitiveType<T>
     : T extends Type.TypeTuple

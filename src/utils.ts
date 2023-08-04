@@ -13,14 +13,13 @@ export function combineForTwoArgs<
   T extends (...args: any[]) => any,
   U extends (...args: any[]) => any
 >(oneArg: T, twoArg: U) {
-  const dualFn = function (...args: any[]) {
+  const conbined = function (...args: any[]) {
     if (args.length === 0) throw new Error('')
     if (args.length === 1) return oneArg(args[0])
-    if (args.length === 2) return twoArg(args[0], args[1])
-    throw new Error('')
+    return twoArg(...args)
   }
 
-  return dualFn as T & U
+  return conbined as T & U
 }
 
 export function getType(any: any) {
