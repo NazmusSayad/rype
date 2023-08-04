@@ -1,7 +1,10 @@
 import r from './index'
 
 try {
-  r(r.number(123))('{}', 'password')
+  type a = {} | 'sdfsdf'
+
+
+  r(r.string())(123, 'password')
 } catch (err: any) {
   console.log(err.message)
 }

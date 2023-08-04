@@ -20,6 +20,11 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
     conf: CheckConf
   ) {
     function getResult() {
+      // TODO:
+      // if (inputObject !== object) {
+      //    do something
+      // }
+
       const result: any = {}
 
       for (let key in schema) {
