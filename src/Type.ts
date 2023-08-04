@@ -61,6 +61,8 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   required: TRequired
   defaultValue: any
   name = 'base'
+
+  // TODO: Find out why its just working with primitives
   default(
     value: typeof this extends Primitive ? ExtractSchema<typeof this> : never
   ) {
