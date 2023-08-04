@@ -15,18 +15,6 @@ function baseSingle<TSchema extends TType.Schema>(schema: TSchema) {
   }
 }
 
-function noErrorDual<
-  TInput extends LTypeExtract<TSchema>,
-  TSchema extends TType.Schema
->(input: TInput, schema: TSchema) {
-  return checkType(schema, input, false)
-}
-function noErrorSingle<TSchema extends TType.Schema>(schema: TSchema) {
-  return function <TInput extends LTypeExtract<TSchema>>(input: TInput) {
-    return noErrorDual(input, schema)
-  }
-}
-
 function noTypeDual<TSchema extends TType.Schema>(
   input: unknown,
   schema: TSchema
@@ -36,6 +24,18 @@ function noTypeDual<TSchema extends TType.Schema>(
 function noTypeSingle<TSchema extends TType.Schema>(schema: TSchema) {
   return function (input: unknown) {
     return noTypeDual(input, schema)
+  }
+}
+
+function noErrorDual<
+  TInput extends LTypeExtract<TSchema>,
+  TSchema extends TType.Schema
+>(input: TInput, schema: TSchema) {
+  return checkType(schema, input, false)
+}
+function noErrorSingle<TSchema extends TType.Schema>(schema: TSchema) {
+  return function <TInput extends LTypeExtract<TSchema>>(input: TInput) {
+    return noErrorDual(input, schema)
   }
 }
 
@@ -51,9 +51,13 @@ function noCheckSingle<TSchema extends TType.Schema>(schema: TSchema) {
   }
 }
 
-export const base = combineForTwoArgs(baseSingle, baseDual)
+function env<T extends TType.Schema>(schema: T) {
+  return base(process.env as any, schema)
+}
 
 const noType = combineForTwoArgs(noTypeSingle, noTypeDual)
-const noCheck = combineForTwoArgs(noCheckSingle, noCheckDual)
 const noError = combineForTwoArgs(noErrorSingle, noErrorDual)
-export const methods = { noType, noCheck, noError }
+const noCheck = combineForTwoArgs(noCheckSingle, noCheckDual)
+
+export const base = combineForTwoArgs(baseSingle, baseDual)
+export const methods = { noType, noError, noCheck, env }
