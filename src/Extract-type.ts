@@ -1,6 +1,6 @@
 import * as Type from './Type'
 import * as TType from './Type-type'
-import { MakeOptional, Mutable, Prettify } from './utils-type'
+import { MakeOptional, Mutable } from './utils-type'
 
 export type ExtractPrimitiveType<T extends TType.Primitive> =
   T['schema'][number]

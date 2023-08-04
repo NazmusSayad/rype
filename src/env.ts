@@ -4,19 +4,21 @@ import { EnvSchema } from './Type-type'
 import { TypeBoolean, TypeNumber, TypeString } from './Type'
 
 export default function <T extends EnvSchema>(schema: T) {
-  const stringSchema = {} as typeof schema
+  const stringSchema: any = {}
+  const result: any = {}
+
   for (let key in schema) {
-    ;(stringSchema as any)[key] = schema[key].required
+    stringSchema[key] = (schema as any)[key].required
       ? typeMethods.string()
       : typeMethods.o.string()
   }
 
-  const object = base(stringSchema)(process.env as any)
-  const result: any = {}
+  const object = base(stringSchema as typeof schema)(process.env as any)
 
   for (let key in object) {
-    const schemaType = (schema as any)[key]
     const value = object[key]
+    const schemaType = (schema as any)[key]
+
     result[key] =
       schemaType instanceof TypeString
         ? String(value)
@@ -30,5 +32,5 @@ export default function <T extends EnvSchema>(schema: T) {
         : null
   }
 
-  return result as typeof object
+  return object
 }
