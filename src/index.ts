@@ -2,6 +2,7 @@ import typeMethods from './typeMethods'
 import { base, methods } from './base'
 import { init } from './errorMessages'
 import { combine } from './utils'
+import env from './env'
 
 export const r = combine(base, { ...typeMethods, ...methods })
 
@@ -21,8 +22,8 @@ export const oBoolean = optionalBoolean
 export const oTuple = optionalTuple
 export const oArray = optionalArray
 
-export { init }
 export default r
+export { init, env }
 export * from './Type'
 export * from './Error'
 

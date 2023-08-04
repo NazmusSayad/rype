@@ -51,13 +51,9 @@ function noCheckSingle<TSchema extends TType.Schema>(schema: TSchema) {
   }
 }
 
-function env<T extends TType.Schema>(schema: T) {
-  return base(process.env as any, schema)
-}
-
 const noType = combineForTwoArgs(noTypeSingle, noTypeDual)
 const noError = combineForTwoArgs(noErrorSingle, noErrorDual)
 const noCheck = combineForTwoArgs(noCheckSingle, noCheckDual)
 
 export const base = combineForTwoArgs(baseSingle, baseDual)
-export const methods = { noType, noError, noCheck, env }
+export const methods = { noType, noError, noCheck }
