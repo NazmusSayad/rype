@@ -1,15 +1,12 @@
 import r from './index'
 
 try {
-  type a = {} | 'sdfsdf'
-
-
-  r(r.string())(123, 'password')
+  r({ a: { b: r.string() } })({ a: { b: 200 } }, 'user')
 } catch (err: any) {
   console.log(err.message)
 }
 
-r(r.number(), 1)
+r(r.number(1), 1)
 r(r.boolean(), true)
 r(r.boolean(), false)
 r(r.string(), '2435')

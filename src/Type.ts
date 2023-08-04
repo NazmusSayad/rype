@@ -1,4 +1,5 @@
 import { RypeError, RypeRequiredError, RypeTypeError } from './Error'
+import { ExtractSchema } from './Extract-type'
 import { ObjectLike, Schema } from './Type-type'
 import messages from './errorMessages'
 import { CheckConf } from './types'
@@ -59,6 +60,7 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
   schema: TSchemaArgs
   required: TRequired
   name = 'base'
+  // Implement (default) feature
 
   getType(): any {
     return this.name
