@@ -1,9 +1,9 @@
 import { base } from './base'
 import typeMethods from './typeMethods'
-import { ObjectLike } from './Type-type'
+import { EnvSchema } from './Type-type'
 import { TypeBoolean, TypeNumber, TypeString } from './Type'
 
-export default function <T extends ObjectLike>(schema: T) {
+export default function <T extends EnvSchema>(schema: T) {
   const stringSchema = {} as typeof schema
   for (let key in schema) {
     ;(stringSchema as any)[key] = schema[key].required
@@ -23,7 +23,10 @@ export default function <T extends ObjectLike>(schema: T) {
         : schemaType instanceof TypeNumber
         ? Number(value)
         : schemaType instanceof TypeBoolean
-        ? Boolean(value)
+        ? value === 'true' ||
+          value === 'True' ||
+          value === 'TRUE' ||
+          value === '1'
         : null
   }
 
