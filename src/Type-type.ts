@@ -7,7 +7,6 @@ import {
   TypeBoolean,
   TypeConstructor,
 } from './Type'
-import { Prettify } from './utils-type'
 
 export type Primitive = TypeString | TypeNumber | TypeBoolean
 

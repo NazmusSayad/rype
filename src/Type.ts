@@ -80,7 +80,7 @@ export class TypeBase<TSchemaArgs = any, TRequired extends boolean = any> {
     )
   }
 
-  checkType(input: unknown, conf: CheckConf) {
+  checkType(_: unknown, __: CheckConf) {
     return (this.name + " isn't implemented yet!") as any
   }
 

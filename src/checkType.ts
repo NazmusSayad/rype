@@ -6,9 +6,9 @@ export default function <S extends TType.Schema>(
   schema: S,
   input: unknown,
   conf: { name?: string; throw?: boolean }
-): ExtractSchema<S> {
+) {
   return Type.TypeBase.check(input, schema, {
     path: conf.name || '',
     throw: conf.throw ?? true,
-  }) as any
+  }) as ExtractSchema<S>
 }
