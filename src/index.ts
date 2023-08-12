@@ -1,14 +1,15 @@
-import typeMethods from './typeMethods'
-import { base, methods } from './base'
+import schema from './methods'
+import { caller, moreCaller } from './base'
 import { combine } from './utils'
 
-export const r = combine(base, { ...typeMethods, ...methods })
-
+export const r = combine(caller, { ...schema, ...moreCaller })
 export default r
-export * from './env'
-export * from './Type'
-export * from './Error'
 
+export * from './core/Schema'
+export * from './core/symbols'
+export * from './core/Extract.type'
+export * from './core/Schema.type'
+
+export * from './Error'
+export * from './RypeOk'
 export * from './types'
-export * from './Type-type'
-export * from './Extract-type'

@@ -4,8 +4,11 @@
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "declaration": true,
-    "inlineSourceMap": true,
-    "strict": true,
+    "inlineSourceMap": false,
+
+    // Must need this;
+    "strictNullChecks": true,
+
     "pretty": true,
     "removeComments": true
   },

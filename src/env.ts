@@ -1,7 +1,8 @@
-import { base } from './base'
-import typeMethods from './typeMethods'
-import { EnvSchema } from './Type-type'
-import { TypeBoolean, TypeNumber, TypeString } from './Type'
+import { SchemaBoolean, SchemaNumber, SchemaString } from './core/Schema'
+import { EnvSchema } from './types'
+import methods from './methods'
+import { caller } from './base'
+import { Prettify } from './utils.type'
 
 export function env<T extends EnvSchema>(schema: T) {
   const stringSchema: any = {}
@@ -9,22 +10,25 @@ export function env<T extends EnvSchema>(schema: T) {
 
   for (let key in schema) {
     stringSchema[key] = (schema as any)[key].required
-      ? typeMethods.string()
-      : typeMethods.o.string()
+      ? methods.string()
+      : methods.o.string()
   }
 
-  const object = base(stringSchema as typeof schema)(process.env as any)
+  const object = caller(
+    // @ts-ignore
+    methods.object(stringSchema as Prettify<typeof schema>)
+  )(process.env as any)
 
   for (let key in object) {
-    const value = object[key]
+    const value = object[key as keyof typeof object]
     const schemaType = (schema as any)[key]
 
     result[key] =
-      schemaType instanceof TypeString
+      schemaType instanceof SchemaString
         ? String(value)
-        : schemaType instanceof TypeNumber
+        : schemaType instanceof SchemaNumber
         ? Number(value)
-        : schemaType instanceof TypeBoolean
+        : schemaType instanceof SchemaBoolean
         ? value === 'true' ||
           value === 'True' ||
           value === 'TRUE' ||

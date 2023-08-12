@@ -1,11 +1,12 @@
-import { TypeBase, TypeOr } from './Type'
-import { ValidObject } from './utils-type'
+import { ValidObject } from './utils.type'
 
 export function combine<T extends Function, U extends ValidObject>(
   fn: T,
   obj: U
 ) {
-  for (let key in obj) (fn as any)[key] = obj[key]
+  for (let key in obj) {
+    ;(fn as unknown as typeof obj)[key] = obj[key]
+  }
   return fn as U & T
 }
 
@@ -20,15 +21,4 @@ export function combineForTwoArgs<
   }
 
   return conbined as T & U
-}
-
-export function getType(any: any) {
-  const types =
-    any instanceof TypeBase
-      ? any instanceof TypeOr
-        ? any.schema.map(getType)
-        : any.schema.map((a: TypeOr) => a.type)
-      : ['object']
-
-  return [...new Set(types.flat())].join(' | ')
 }

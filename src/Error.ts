@@ -1,16 +1,20 @@
-import { Schema } from './Type-type'
-
 export class RypeError extends Error {
+  isRype = true
+}
+
+export class RypeDevError extends RypeError {}
+
+export class RypeClientError extends RypeError {
   config: {
     input: unknown
-    schema: any[]
+    schema: unknown
     required: boolean
   }
 
   constructor(
     message: string,
     input: unknown,
-    schema: (Schema | string | number | boolean)[],
+    schema: unknown,
     required: boolean
   ) {
     super(message)
@@ -18,5 +22,5 @@ export class RypeError extends Error {
   }
 }
 
-export class RypeTypeError extends RypeError {}
-export class RypeRequiredError extends RypeError {}
+export class RypeTypeError extends RypeClientError {}
+export class RypeRequiredError extends RypeClientError {}

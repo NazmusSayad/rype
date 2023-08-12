@@ -1,71 +1,48 @@
-import checkType from './checkType'
-import * as TType from './Type-type'
-import { ExtractSchema } from './Extract-type'
+import check from './check'
+import * as Type from './core/Schema.type'
+import { ExtractSchema } from './core/Extract.type'
 import { combineForTwoArgs } from './utils'
+import { SchemaInput } from './types'
 
-// Default call (typeCheck: 0, throwError: 1)
-function defaultDual<TSchema extends TType.Schema>(
-  schema: TSchema,
-  input: unknown,
-  name?: string
-) {
-  return checkType(schema, input, { name })
-}
-function defaultSingle<TSchema extends TType.Schema>(schema: TSchema) {
-  return function (input: unknown, name?: string) {
-    return defaultDual(schema, input, name)
-  }
-}
-
-// Check All (typeCheck: 1, throwError: 1)
-function typeCheckDual<
-  TSchema extends TType.Schema,
-  TInput extends ExtractSchema<TSchema>
->(schema: TSchema, input: TInput, name?: string) {
-  return checkType(schema, input, { name })
-}
-function typeCheckSingle<TSchema extends TType.Schema>(schema: TSchema) {
-  return function <TInput extends ExtractSchema<TSchema>>(
-    input: TInput,
+function create<TThrow extends boolean, TTypeCheck extends boolean>({
+  throwError,
+  typeCheck: _,
+}: {
+  throwError: TThrow
+  typeCheck: TTypeCheck
+}) {
+  function dual<T extends Type.Types>(
+    schema: T,
+    input: TTypeCheck extends true ? SchemaInput<T> : unknown,
     name?: string
   ) {
-    return typeCheckDual(schema, input, name)
+    return check(schema, input, {
+      path: name,
+      throw: throwError,
+    }) as ExtractSchema<T>
   }
-}
 
-// Only Check Type (typeCheck: 1, throwError: 0)
-function noErrorDual<
-  TSchema extends TType.Schema,
-  TInput extends ExtractSchema<TSchema>
->(schema: TSchema, input: TInput, name?: string) {
-  return checkType(schema, input, { throw: false, name })
-}
-function noErrorSingle<TSchema extends TType.Schema>(schema: TSchema) {
-  return function <TInput extends ExtractSchema<TSchema>>(
-    input: TInput,
-    name?: string
-  ) {
-    return noErrorDual(schema, input, name)
+  function single<T extends Type.Types>(schema: T) {
+    return function (
+      input: TTypeCheck extends true ? SchemaInput<T> : unknown,
+      name?: string
+    ) {
+      return dual(schema, input, name)
+    }
   }
+
+  return { dual, single }
 }
 
-// Check noting (typeCheck: 0, throwError: 0)
-function noCheckDual<TSchema extends TType.Schema>(
-  schema: TSchema,
-  input: unknown,
-  name?: string
-) {
-  return checkType(schema, input, { throw: false, name })
-}
-function noCheckSingle<TSchema extends TType.Schema>(schema: TSchema) {
-  return function (input: unknown, name?: string) {
-    return noCheckDual(schema, input, name)
-  }
-}
+const checkAll = create({ throwError: true, typeCheck: true })
+const noCheck = create({ throwError: false, typeCheck: false })
+const justThrow = create({ throwError: true, typeCheck: false })
+const justType = create({ throwError: false, typeCheck: true })
 
-export const base = combineForTwoArgs(defaultSingle, defaultDual)
-const typeCheck = combineForTwoArgs(typeCheckSingle, typeCheckDual)
-const noError = combineForTwoArgs(noErrorSingle, noErrorDual)
-const noCheck = combineForTwoArgs(noCheckSingle, noCheckDual)
-
-export const methods = { typeCheck, noError, noCheck }
+export const caller = combineForTwoArgs(justThrow.single, checkAll.dual)
+export const moreCaller = {
+  checkAll: combineForTwoArgs(checkAll.single, checkAll.dual),
+  noCheck: combineForTwoArgs(noCheck.single, noCheck.dual),
+  justThrow: combineForTwoArgs(justThrow.single, justThrow.dual),
+  justType: combineForTwoArgs(justType.single, justType.dual),
+}
