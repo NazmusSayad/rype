@@ -5,7 +5,7 @@ r(r.boolean(), true)
 r(r.boolean(), false)
 r(r.string('Boom', 'Fire'), 'Boom')
 
-r(r.or(r.boolean(), r.string('wwe')))
+r(r.or(r.boolean()))
 
 r(r.tuple(), [])
 r(r.array(r.string('World')))(['World'])
@@ -28,6 +28,7 @@ r(
     hobbies: r.tuple(r.string('Play')),
     intro: r.object({ address: r.string('BD') }),
     jobs: r.tuple(r.object({ name: r.number(200) })),
+    asdf: r.tuple(r.string()),
   }),
 
   {
@@ -36,6 +37,7 @@ r(
     hobbies: ['Play'],
     intro: { address: 'BD' },
     jobs: [{ name: 200 }],
+    asdf: ['Boom'],
   }
 )
 

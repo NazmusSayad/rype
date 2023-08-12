@@ -39,4 +39,6 @@ export type ExtractPlaceholderValues<T extends string> =
     ? Value
     : never
 
-export type FormatTuple<T> = T extends { length: 0 } ? never[] : T
+export type FormatTupleToNeverTuple<T> = T extends { length: 0 } ? never[] : T
+
+export type ReadonlyArray<T extends any[]> = readonly [...T]

@@ -15,6 +15,7 @@ import { CheckConf } from '../types'
 import { ValidObject } from '../utils.type'
 import { ExtractSchema } from './Extract.type'
 import * as symbols from './symbols'
+import r from '../index'
 
 class SchemaCore<const T, R extends boolean> {
   name = 'core'

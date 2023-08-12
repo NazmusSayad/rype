@@ -9,7 +9,7 @@ export function env<T extends EnvSchema>(schema: T) {
   const result: any = {}
 
   for (let key in schema) {
-    stringSchema[key] = (schema as any)[key].required
+    stringSchema[key] = schema[key as keyof typeof schema].isRequired
       ? methods.string()
       : methods.o.string()
   }
@@ -17,11 +17,11 @@ export function env<T extends EnvSchema>(schema: T) {
   const object = caller(
     // @ts-ignore
     methods.object(stringSchema as Prettify<typeof schema>)
-  )(process.env as any)
+  )(process.env)
 
   for (let key in object) {
     const value = object[key as keyof typeof object]
-    const schemaType = (schema as any)[key]
+    const schemaType = schema[key as keyof typeof schema]
 
     result[key] =
       schemaType instanceof SchemaString

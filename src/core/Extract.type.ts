@@ -1,5 +1,5 @@
-import { FormatTuple, MakeOptional, Prettify } from '../utils.type'
 import * as Schema from './Schema.type'
+import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
 
 export type ExtractPrimitive<T extends Schema.TypePrimitive> = T['args'][number]
 
@@ -12,7 +12,7 @@ export type ExtractObject<T extends Schema.TypeObject> = Prettify<
 >
 
 export type ExtractTuple<T extends Schema.TypeTuple> = Prettify<
-  FormatTuple<
+  FormatTupleToNeverTuple<
     {
       [K in keyof T['args'] as K extends `${number}`
         ? K
