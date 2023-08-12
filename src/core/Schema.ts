@@ -56,7 +56,7 @@ class SchemaCore<const T, R extends boolean> {
   }
 
   checkType(input: unknown, conf: CheckConf): RypeOk | RypeError {
-    return new RypeError('Something went wrong!')
+    return new RypeError(this.name + " isn't implemented yet!")
   }
 
   checkType2?: (input: unknown, conf: CheckConf) => RypeOk | RypeError
