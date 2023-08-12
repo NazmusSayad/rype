@@ -1,8 +1,8 @@
-import { SchemaBoolean, SchemaNumber, SchemaString } from './core/Schema'
-import { EnvSchema } from './types'
 import methods from './methods'
 import { caller } from './base'
+import { EnvSchema } from './types'
 import { Prettify } from './utils.type'
+import { SchemaBoolean, SchemaNumber, SchemaString } from './core/Schema'
 
 export function env<T extends EnvSchema>(schema: T) {
   const stringSchema: any = {}

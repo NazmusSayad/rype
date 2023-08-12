@@ -13,3 +13,5 @@ export * from './core/Schema.type'
 export * from './Error'
 export * from './RypeOk'
 export * from './types'
+
+export * from './env'
