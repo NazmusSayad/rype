@@ -1,21 +1,11 @@
-import {
-  Types,
-  InputOr,
-  InputArray,
-  InputTuple,
-  InputNumber,
-  InputString,
-  InputObject,
-  InputBoolean,
-} from './Schema.type'
+import * as symbols from './symbols'
+import * as Type from './Schema.type'
 import { RypeError, RypeTypeError } from '../Error'
 import { RypeOk } from '../RypeOk'
 import messages from '../errorMessages'
 import { CheckConf } from '../types'
 import { ValidObject } from '../utils.type'
 import { ExtractSchema } from './Extract.type'
-import * as symbols from './symbols'
-import r from '../index'
 
 class SchemaCore<const T, R extends boolean> {
   name = 'core'
@@ -24,7 +14,7 @@ class SchemaCore<const T, R extends boolean> {
   defaultValue = symbols.EMPTY as unknown
 
   default(
-    value: typeof this extends Types ? ExtractSchema<typeof this> : never
+    value: typeof this extends Type.Types ? ExtractSchema<typeof this> : never
   ) {
     this.defaultValue = value
     return this
@@ -78,7 +68,7 @@ class SchemaCore<const T, R extends boolean> {
 }
 
 class SchemaPrimitiveCore<
-  T extends InputString | InputNumber | InputBoolean,
+  T extends Type.InputString | Type.InputNumber | Type.InputBoolean,
   R extends boolean
 > extends SchemaCore<T, R> {
   name = 'primitive'
@@ -110,28 +100,37 @@ class SchemaPrimitiveCore<
 }
 
 export class SchemaString<
-  T extends InputString,
+  T extends Type.InputString,
   R extends boolean
-> extends SchemaPrimitiveCore<T[number] extends never ? InputString : T, R> {
+> extends SchemaPrimitiveCore<
+  T[number] extends never ? Type.InputString : T,
+  R
+> {
   name = 'string' as const
 }
 
 export class SchemaNumber<
-  T extends InputNumber,
+  T extends Type.InputNumber,
   R extends boolean
-> extends SchemaPrimitiveCore<T[number] extends never ? InputNumber : T, R> {
+> extends SchemaPrimitiveCore<
+  T[number] extends never ? Type.InputNumber : T,
+  R
+> {
   name = 'number' as const
 }
 
 export class SchemaBoolean<
-  T extends InputBoolean,
+  T extends Type.InputBoolean,
   R extends boolean
-> extends SchemaPrimitiveCore<T[number] extends never ? InputBoolean : T, R> {
+> extends SchemaPrimitiveCore<
+  T[number] extends never ? Type.InputBoolean : T,
+  R
+> {
   name = 'boolean' as const
 }
 
 export class SchemaObject<
-  T extends InputObject,
+  T extends Type.InputObject,
   R extends boolean
 > extends SchemaCore<T, R> {
   name = 'object' as const
@@ -155,7 +154,7 @@ export class SchemaObject<
 }
 
 export class SchemaArray<
-  T extends InputArray,
+  T extends Type.InputArray,
   R extends boolean
 > extends SchemaCore<T, R> {
   name = 'array' as const
@@ -184,7 +183,7 @@ export class SchemaArray<
 }
 
 export class SchemaTuple<
-  T extends InputTuple,
+  T extends Type.InputTuple,
   R extends boolean
 > extends SchemaCore<T, R> {
   name = 'tuple' as const
@@ -216,10 +215,10 @@ export class SchemaTuple<
   }
 }
 
-export class SchemaOr<T extends InputOr, R extends boolean> extends SchemaCore<
-  T[number] extends never ? InputOr : T,
-  R
-> {
+export class SchemaOr<
+  T extends Type.InputOr,
+  R extends boolean
+> extends SchemaCore<T[number] extends never ? Type.InputOr : T, R> {
   name = 'or' as const
 
   getType() {

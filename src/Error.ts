@@ -1,6 +1,4 @@
-export class RypeError extends Error {
-  isRype = true
-}
+export class RypeError extends Error {}
 
 export class RypeDevError extends RypeError {}
 
