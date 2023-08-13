@@ -1,4 +1,2 @@
-import { MakeOptional } from './utils.type'
+import r from "./index";
 
-type Object = { name?: string }
-type result = MakeOptional<Object>[keyof Object]

@@ -1,22 +1,24 @@
+import { SchemaConfig } from './types'
+
 export class RypeError extends Error {}
 
 export class RypeDevError extends RypeError {}
 
 export class RypeClientError extends RypeError {
-  config: {
-    input: unknown
-    schema: unknown
-    required: boolean
-  }
+  input: unknown
+  schema: unknown
+  config: SchemaConfig
 
   constructor(
     message: string,
-    input: unknown,
     schema: unknown,
-    required: boolean
+    input: unknown,
+    config: SchemaConfig
   ) {
     super(message)
-    this.config = { input, schema, required }
+    this.input = input
+    this.schema = schema
+    this.config = config
   }
 }
 

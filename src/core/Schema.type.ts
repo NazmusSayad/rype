@@ -1,4 +1,3 @@
-import { InputEnv } from '../types'
 import {
   SchemaOr,
   SchemaTuple,

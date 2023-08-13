@@ -1,92 +1,128 @@
-import * as symbols from './symbols'
-import * as Type from './Schema.type'
-import { RypeError, RypeTypeError } from '../Error'
 import { RypeOk } from '../RypeOk'
+import * as Type from './Schema.type'
+import { SchemaName } from './symbols'
 import messages from '../errorMessages'
-import { CheckConf } from '../types'
 import { ValidObject } from '../utils.type'
-import { ExtractSchema } from './Extract.type'
+import { SchemaCheckConf, SchemaConfig } from '../types'
+import {
+  RypeDevError,
+  RypeError,
+  RypeRequiredError,
+  RypeTypeError,
+} from '../Error'
+import { ExtractSchemaFromAny, InferClassFromSchema } from './Extract.type'
 
-class SchemaCore<const T, R extends boolean> {
-  name = 'core'
-  args: T
-  isRequired: R
-  defaultValue = symbols.EMPTY as unknown
-
-  default(
-    value: typeof this extends Type.Types ? ExtractSchema<typeof this> : never
-  ) {
-    this.defaultValue = value
-    return this
-  }
-
-  getType(): string[] {
-    return [this.name]
+class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
+  name = SchemaName.core
+  schema: TFormat
+  config: TConfig
+  constructor(schema: TFormat, config: TConfig) {
+    this.schema = schema
+    this.config = config
   }
 
   get type(): string {
-    return [...new Set([this.getType()].flat())].join(' | ')
+    return [...new Set([this._getType()].flat())].join(' | ')
   }
 
-  getErr(input: unknown, message: string) {
-    return new RypeTypeError(message, input, this.args, this.isRequired)
-  }
-
-  #check(input: unknown, conf: CheckConf): RypeOk | RypeError {
-    if (input == null) {
-      if (this.defaultValue !== symbols.EMPTY) {
-        return new RypeOk(this.defaultValue)
-      }
-
-      if (!this.isRequired) return new RypeOk(undefined)
-      return this.getErr(input, messages.getRequiredErr(conf.path, {}))
+  default(
+    value: ExtractSchemaFromAny<typeof this>
+  ): InferClassFromSchema<
+    typeof this,
+    TFormat,
+    { isRequired: false; defaultValue: unknown }
+  > {
+    if (!(this.name in ConstructorMap)) {
+      throw new RypeDevError(this.name + " must have a 'Constructor' property")
     }
 
-    const result1 = this.checkType(input, conf)
+    return new ConstructorMap[this.name](this.schema, {
+      isRequired: false,
+      defaultValue: value,
+    })
+  }
+
+  /**
+   * This is a method in MyClass that does something useful.
+   *
+   *  ⚠️Warning: This can throw error
+   * @param {unknown} input - This is the value that will recieve from user
+   * @param {SchemaCheckConf} conf - Some configuration for crazy stuff
+   * @returns {unknown} If everything is ok this will return the result, but if error occurs this will throw the error
+   */
+  _checkAndGetResult(input: unknown, conf: SchemaCheckConf): unknown {
+    const output = this._checkAndThrowError(input, conf)
+    if (output instanceof RypeOk) return output.value
+    return undefined
+  }
+
+  _checkAndThrowError(input: unknown, conf: SchemaCheckConf) {
+    const output = this._checkCore(input, conf)
+    if (output instanceof RypeError && conf.throw) throw output
+    return output
+  }
+
+  _checkCore(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
+    if (input == null) {
+      if (this.config.defaultValue) {
+        return new RypeOk(this.config.defaultValue)
+      }
+
+      if (this.config.isRequired) {
+        return this._getRequiredErr(
+          input,
+          messages.getRequiredErr(conf.path, {})
+        )
+      }
+
+      return new RypeOk(undefined)
+    }
+
+    const result1 = this._checkType(input, conf)
     if (result1 instanceof RypeError) return result1
-    if (this.checkType2) return this.checkType2(input, conf)
+    if (this._checkType2) return this._checkType2(input, conf)
     return result1
   }
 
-  check(input: unknown, conf: CheckConf) {
-    const output = this.#check(input, conf)
-    if (conf.meta) return output
-    if (output instanceof RypeOk) return output.value
-    if (conf.throw) throw output
-  }
-
-  checkType(input: unknown, conf: CheckConf): RypeOk | RypeError {
+  _checkType(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     return new RypeError(this.name + " isn't implemented yet!")
   }
 
-  checkType2?: (input: unknown, conf: CheckConf) => RypeOk | RypeError
+  _checkType2?: (input: unknown, conf: SchemaCheckConf) => RypeOk | RypeError
 
-  constructor(args: T, isRequired: R) {
-    this.args = args
-    this.isRequired = isRequired
+  _getType(): string[] {
+    return [this.name]
+  }
+
+  _getErr(input: unknown, message: string) {
+    return new RypeTypeError(message, this.schema, input, this.config)
+  }
+
+  _getRequiredErr(input: unknown, message: string) {
+    return new RypeRequiredError(message, this.schema, input, this.config)
   }
 }
 
 class SchemaPrimitiveCore<
   T extends Type.InputString | Type.InputNumber | Type.InputBoolean,
-  R extends boolean
+  R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = 'primitive'
+  name = SchemaName.primitive
 
-  getType() {
-    return this.args.length
-      ? this.args.map((arg) => JSON.stringify(arg))
+  _getType() {
+    return this.schema.length
+      ? this.schema.map((arg) => JSON.stringify(arg))
       : [this.name]
   }
 
-  checkType(input: unknown, conf: CheckConf): RypeError | RypeOk {
-    const schema = this.args
+  _checkType(input: unknown, conf: SchemaCheckConf): RypeError | RypeOk {
+    const schema = this.schema
 
     if (
       typeof input !== this.name ||
       (schema.length && !schema.includes(input as never))
     ) {
-      return this.getErr(
+      return this._getErr(
         input,
         messages.getPrimitiveTypeError(conf.path, {
           INPUT: JSON.stringify(input),
@@ -101,53 +137,50 @@ class SchemaPrimitiveCore<
 
 export class SchemaString<
   T extends Type.InputString,
-  R extends boolean
+  R extends SchemaConfig
 > extends SchemaPrimitiveCore<
   T[number] extends never ? Type.InputString : T,
   R
 > {
-  name = 'string' as const
+  name = SchemaName.string
 }
 
 export class SchemaNumber<
   T extends Type.InputNumber,
-  R extends boolean
+  R extends SchemaConfig
 > extends SchemaPrimitiveCore<
   T[number] extends never ? Type.InputNumber : T,
   R
 > {
-  name = 'number' as const
+  name = SchemaName.number
 }
 
 export class SchemaBoolean<
   T extends Type.InputBoolean,
-  R extends boolean
+  R extends SchemaConfig
 > extends SchemaPrimitiveCore<
   T[number] extends never ? Type.InputBoolean : T,
   R
 > {
-  name = 'boolean' as const
+  name = SchemaName.boolean
 }
 
 export class SchemaObject<
   T extends Type.InputObject,
-  R extends boolean
+  R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = 'object' as const
+  name = SchemaName.object
 
-  checkType(input: ValidObject, conf: CheckConf): RypeOk | RypeError {
+  _checkType(input: ValidObject, conf: SchemaCheckConf): RypeOk | RypeError {
     const output: ValidObject = {}
 
-    for (let key in this.args) {
-      const schema = this.args[key]
+    for (let key in this.schema) {
+      const schema = this.schema[key]
       const value = input[key]
-
-      const result = schema.check(value, {
+      output[key] = schema._checkAndGetResult(value, {
         ...conf,
         path: `${conf.path || 'object'}.${key}`,
       })
-
-      output[key] = result
     }
 
     return new RypeOk(output)
@@ -156,13 +189,15 @@ export class SchemaObject<
 
 export class SchemaArray<
   T extends Type.InputArray,
-  R extends boolean
+  R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = 'array' as const
+  name = SchemaName.array
 
-  checkType(inputs: unknown[], conf: CheckConf): RypeOk | RypeError {
+  _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
+    const output: unknown[] = []
+
     if (!Array.isArray(inputs)) {
-      return this.getErr(
+      return this._getErr(
         inputs,
         messages.getOrTypeErr(conf.path, { TYPE: this.type })
       )
@@ -171,45 +206,46 @@ export class SchemaArray<
     for (let i = 0; i <= inputs.length - 1; i++) {
       const input = inputs[i]
       const path = `${conf.path}array[${i}]`
-
-      const schema = new SchemaOr(this.args, true)
-      schema.check(input, {
+      const schema = new SchemaOr(this.schema, { isRequired: true })
+      const result = schema._checkAndThrowError(input, {
         ...conf,
+        getUnthrownError: true,
         path,
       })
+
+      if (result instanceof RypeOk) output.push(result.value)
     }
 
-    return new RypeOk(inputs)
+    return new RypeOk(output)
   }
 }
 
 export class SchemaTuple<
   T extends Type.InputTuple,
-  R extends boolean
+  R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = 'tuple' as const
+  name = SchemaName.tuple
 
-  checkType(inputs: unknown[], conf: CheckConf): RypeOk | RypeError {
-    if (this.args.length !== inputs.length) {
-      return this.getErr(
+  _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
+    if (this.schema.length !== inputs.length) {
+      return this._getErr(
         inputs,
         messages.getTupleLengthError(conf.path, {
-          LENGTH: this.args.length.toString(),
+          LENGTH: this.schema.length.toString(),
         })
       )
     }
 
     const output: unknown[] = []
-    for (let i = 0; i <= this.args.length - 1; i++) {
-      const schema = this.args[i]
+    for (let i = 0; i <= this.schema.length - 1; i++) {
+      const schema = this.schema[i]
       const inputElement = inputs[i]
+      const result = schema._checkAndGetResult(inputElement, {
+        ...conf,
+        path: `${conf.path || 'Tuple'}[${i}]`,
+      })
 
-      output.push(
-        schema.check(inputElement, {
-          ...conf,
-          path: `${conf.path || 'Tuple'}[${i}]`,
-        })
-      )
+      output.push(result)
     }
 
     return new RypeOk(output)
@@ -218,58 +254,40 @@ export class SchemaTuple<
 
 export class SchemaOr<
   T extends Type.InputOr,
-  R extends boolean
+  R extends SchemaConfig
 > extends SchemaCore<T[number] extends never ? Type.InputOr : T, R> {
-  name = 'or' as const
+  name = SchemaName.or
 
-  getType() {
-    return this.args.map((schema) => schema.type)
+  _getType() {
+    return this.schema.map((schema) => schema.type)
   }
 
-  checkType(input: unknown, conf: CheckConf): RypeOk | RypeError {
-    let isOk = false
-
-    for (let i = 0; i <= this.args.length - 1; i++) {
-      const schema = this.args[i]
-      const result = schema.check(input, { ...conf, meta: true })
-
-      if (!(result instanceof RypeError)) {
-        isOk = true
-        break
+  _checkType(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
+    for (let i = 0; i <= this.schema.length - 1; i++) {
+      const schema = this.schema[i]
+      const result = schema._checkCore(input, { ...conf })
+      if (result instanceof RypeOk) {
+        return new RypeOk(result.value)
       }
     }
 
-    return isOk
-      ? new RypeOk(input)
-      : this.getErr(
-          input,
-          messages.getOrTypeErr(conf.path, {
-            TYPE: this.type,
-          })
-        )
+    return this._getErr(
+      input,
+      messages.getOrTypeErr(conf.path, {
+        TYPE: this.type,
+      })
+    )
   }
 }
 
-/* export class SchemaInstance<
-  const T = Type.InputInstance[],
-  U extends boolean = any
-> extends SchemaCore<T, U> {
-  name = 'instance' as const
-  checkType(input: unknown, conf: CheckConf) {
-    const schema = this.schema as any[]
-    const constructorNames = schema.map((a) => a.name)
-    const matched = schema.some((constructor) => {
-      return input instanceof constructor
-    })
+const ConstructorMap = {
+  [SchemaName.string]: SchemaString,
+  [SchemaName.number]: SchemaNumber,
+  [SchemaName.boolean]: SchemaBoolean,
 
-    return matched
-      ? input
-      : this.getErr(
-          input,
-          messages.getUnknownInstanceError(conf.path, {
-            CONSTRUCTOR: constructorNames.join(' | '),
-          })
-        )
-  }
+  [SchemaName.array]: SchemaArray,
+  [SchemaName.tuple]: SchemaTuple,
+  [SchemaName.object]: SchemaObject,
+
+  [SchemaName.or]: SchemaOr,
 }
- */

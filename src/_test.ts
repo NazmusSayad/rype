@@ -1,7 +1,12 @@
 import r from './index'
 
 try {
-  const result = r(r.object({ name: r.string() }))({})
+  const result = r.noCheck(r.array(r.string()))(['aksdjfk', 100])
+
+  const schema = r(r.string().default('Boom'))(null)
+  console.log(schema)
+
+  r.string().default('boom').config.defaultValue
 
   console.log()
   console.log('Result:')
@@ -13,3 +18,5 @@ try {
   console.log(err.message)
   console.log()
 }
+
+console.log(r.string().type)

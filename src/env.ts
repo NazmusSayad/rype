@@ -9,15 +9,16 @@ import { caller } from './base'
 import { InputEnv } from './types'
 import { ExtractSchema } from './core/Extract.type'
 import { ValidObject } from './utils.type'
+import r from './index'
 
 export function env<T extends InputEnv>(
   schema: T
-): ExtractSchema<SchemaObject<T, true>> {
+): ExtractSchema<SchemaObject<T, { isRequired: true }>> {
   const stringSchema: ValidObject = {}
   const result: ValidObject = {}
 
   for (let key in schema) {
-    stringSchema[key] = schema[key as keyof typeof schema].isRequired
+    stringSchema[key] = schema[key as keyof typeof schema].config.isRequired
       ? methods.string()
       : methods.o.string()
   }
@@ -43,5 +44,5 @@ export function env<T extends InputEnv>(
         : null
   }
 
-  return result as typeof object
+  return result as any
 }
