@@ -138,11 +138,9 @@ export class SchemaObject<
   checkType(input: ValidObject, conf: CheckConf): RypeOk | RypeError {
     const output: ValidObject = {}
 
-    for (let key in input) {
+    for (let key in this.args) {
       const schema = this.args[key]
       const value = input[key]
-
-      console.log(schema, value)
 
       const result = schema.check(value, {
         ...conf,
