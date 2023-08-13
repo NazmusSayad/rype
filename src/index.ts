@@ -1,6 +1,6 @@
 import schema from './methods'
-import { caller, moreCaller } from './base'
 import { combine } from './utils'
+import { caller, moreCaller } from './base'
 
 export const r = combine(caller, { ...schema, ...moreCaller })
 export default r

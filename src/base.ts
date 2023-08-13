@@ -1,7 +1,7 @@
 import check from './check'
-import { OptionalValueToUndefined } from './types'
 import * as Type from './core/Schema.type'
 import { combineForTwoArgs } from './utils'
+import { OptionalValueToUndefined } from './types'
 
 function create<TThrow extends boolean, TTypeCheck extends boolean>({
   throwError,

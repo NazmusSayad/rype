@@ -15,6 +15,7 @@
 - **TypeScript Integration**: Rype's type system integration ensures type safety throughout your codebase.
 - **Flexibility**: Adaptable to simple data structures or complex objects.
 - **Intuitive API**: Developer-friendly API for defining validation schemas.
+- **Type Safety**: Rype prioritizes type safety by minimizing the use of "any" types in the codebase, resulting in a more robust and bug-free experience.
 
 ### Why Rype?
 

@@ -1,15 +1,15 @@
+import {
+  RypeError,
+  RypeDevError,
+  RypeTypeError,
+  RypeRequiredError,
+} from '../Error'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import { SchemaName } from './symbols'
 import messages from '../errorMessages'
-import { ValidObject } from '../utils.type'
 import { SchemaCheckConf, SchemaConfig } from '../types'
-import {
-  RypeDevError,
-  RypeError,
-  RypeRequiredError,
-  RypeTypeError,
-} from '../Error'
+import { ValidConstructor, ValidObject } from '../utils.type'
 import { ExtractSchemaFromAny, InferClassFromSchema } from './Extract.type'
 
 class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
@@ -36,7 +36,11 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       throw new RypeDevError(this.name + " must have a 'Constructor' property")
     }
 
-    return new ConstructorMap[this.name](this.schema, {
+    const Constructor = ConstructorMap[
+      this.name as keyof typeof ConstructorMap
+    ] as ValidConstructor
+
+    return new Constructor(this.schema, {
       isRequired: false,
       defaultValue: value,
     })

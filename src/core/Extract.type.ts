@@ -1,19 +1,19 @@
-import * as Type from './Schema.type'
-import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
 import {
-  AdjustOptionalValue,
-  OptionalValueToUndefined,
-  SchemaConfig,
-} from '../types'
-import {
+  SchemaOr,
+  SchemaTuple,
   SchemaArray,
-  SchemaBoolean,
+  SchemaString,
   SchemaNumber,
   SchemaObject,
-  SchemaOr,
-  SchemaString,
-  SchemaTuple,
+  SchemaBoolean,
 } from './Schema'
+import {
+  SchemaConfig,
+  AdjustOptionalValue,
+  OptionalValueToUndefined,
+} from '../types'
+import * as Type from './Schema.type'
+import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
 
 export type ExtractPrimitive<T extends Type.TypePrimitive> =
   AdjustOptionalValue<T, T['schema'][number]>

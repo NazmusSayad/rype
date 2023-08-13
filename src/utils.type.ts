@@ -1,4 +1,5 @@
 export type ValidObject = { [i: string]: unknown }
+export type ValidConstructor = new (...args: any[]) => any
 
 export type Prettify<T> = {
   [Key in keyof T]: T[Key]

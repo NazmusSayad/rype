@@ -1,15 +1,14 @@
 import {
-  SchemaBoolean,
   SchemaNumber,
   SchemaObject,
   SchemaString,
+  SchemaBoolean,
 } from './core/Schema'
 import methods from './methods'
 import { caller } from './base'
 import { InputEnv } from './types'
-import { ExtractSchema } from './core/Extract.type'
 import { ValidObject } from './utils.type'
-import r from './index'
+import { ExtractSchema } from './core/Extract.type'
 
 export function env<T extends InputEnv>(
   schema: T

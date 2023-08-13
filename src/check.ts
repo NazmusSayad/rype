@@ -1,6 +1,6 @@
-import * as Type from './core/Schema.type'
-import { ExtractSchema } from './index'
 import { SchemaCheckConf } from './types'
+import * as Type from './core/Schema.type'
+import { ExtractSchema } from './core/Extract.type'
 
 export default function <T extends Type.Types>(
   schema: T,

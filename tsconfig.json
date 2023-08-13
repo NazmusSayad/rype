@@ -5,12 +5,13 @@
     "skipLibCheck": true,
     "declaration": true,
     "inlineSourceMap": false,
+    "pretty": true,
+    "removeComments": true,
+    "strict": true,
 
     // Must need this;
     "strictNullChecks": true,
 
-    "pretty": true,
-    "removeComments": true
   },
   "include": ["src"]
 }
