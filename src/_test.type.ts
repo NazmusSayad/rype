@@ -50,7 +50,7 @@ r(
         r.array(
           r.tuple(
             r.object({
-              hi: r.string("l.string('hello')"),
+              hi: r.string("Boom"),
             })
           )
         )
@@ -73,7 +73,7 @@ r(
         [
           [
             {
-              hi: "l.string('hello')",
+              hi: "Boom",
             },
           ],
         ],
