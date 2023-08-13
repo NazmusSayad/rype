@@ -32,8 +32,11 @@ function createMethods<R extends boolean>(required: R) {
 
 const requiredMethods = createMethods(true)
 const optionalMethods = createMethods(false)
-export default {
+const methods = {
   ...requiredMethods,
   o: optionalMethods,
+  opt: optionalMethods,
   optional: optionalMethods,
 }
+
+export default { methods, ...methods }

@@ -1,13 +1,12 @@
 import * as Schema from './Schema.type'
 import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
+import { OptionalValueToUndefined } from '../types'
 
 export type ExtractPrimitive<T extends Schema.TypePrimitive> = T['args'][number]
 
 export type ExtractObject<T extends Schema.TypeObject> = Prettify<
   MakeOptional<{
-    [K in keyof T['args']]: T['args'][K]['isRequired'] extends false
-      ? ExtractSchema<T['args'][K]> | undefined
-      : ExtractSchema<T['args'][K]>
+    [K in keyof T['args']]: OptionalValueToUndefined<T['args'][K]>
   }>
 >
 

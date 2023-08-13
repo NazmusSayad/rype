@@ -1,12 +1,20 @@
+import {
+  SchemaBoolean,
+  SchemaNumber,
+  SchemaObject,
+  SchemaString,
+} from './core/Schema'
 import methods from './methods'
 import { caller } from './base'
-import { EnvSchema } from './types'
-import { Prettify } from './utils.type'
-import { SchemaBoolean, SchemaNumber, SchemaString } from './core/Schema'
+import { InputEnv } from './types'
+import { ExtractSchema } from './core/Extract.type'
+import { ValidObject } from './utils.type'
 
-export function env<T extends EnvSchema>(schema: T) {
-  const stringSchema: any = {}
-  const result: any = {}
+export function env<T extends InputEnv>(
+  schema: T
+): ExtractSchema<SchemaObject<T, true>> {
+  const stringSchema: ValidObject = {}
+  const result: ValidObject = {}
 
   for (let key in schema) {
     stringSchema[key] = schema[key as keyof typeof schema].isRequired
@@ -14,10 +22,9 @@ export function env<T extends EnvSchema>(schema: T) {
       : methods.o.string()
   }
 
-  const object = caller(
-    // @ts-ignore
-    methods.object(stringSchema as Prettify<typeof schema>)
-  )(process.env)
+  const object = caller(methods.object(stringSchema as typeof schema))(
+    process.env
+  )
 
   for (let key in object) {
     const value = object[key as keyof typeof object]

@@ -2,17 +2,17 @@ import { ExtractPlaceholderValues, Prettify } from './utils.type'
 
 function createMessage<S extends string>(input: S) {
   type Data = { [i in ExtractPlaceholderValues<S>]: string }
+
   return function (path: string, data: Prettify<Omit<Data, 'PATH'>>) {
     let result = input.toString()
     const conf = { ...data, PATH: path || '' }
 
     for (let key in conf) {
       const value = conf[key as keyof typeof conf]
-
-      result = result.replaceAll(
-        `<$${key}$>`,
+      const replaceValue =
         key === 'PATH' ? (value ? `at ${value}` : '') : `${value}`
-      )
+
+      result = result.replaceAll(`<$${key}$>`, replaceValue)
     }
 
     return result.trim()

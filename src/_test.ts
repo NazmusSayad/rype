@@ -1,11 +1,8 @@
 import r from './index'
 
 try {
-  const result = r.checkAll(
-    r.object({
-      name: r.o.string(),
-    })
-  )
+  const result = r(r.object({ name: r.string() }))({})
+
   console.log()
   console.log('Result:')
   console.log(result)

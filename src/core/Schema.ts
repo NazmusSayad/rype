@@ -20,8 +20,8 @@ class SchemaCore<const T, R extends boolean> {
     return this
   }
 
-  getType(): any {
-    return this.name
+  getType(): string[] {
+    return [this.name]
   }
 
   get type(): string {
@@ -75,8 +75,8 @@ class SchemaPrimitiveCore<
 
   getType() {
     return this.args.length
-      ? this.args.map((arg) => JSON.stringify(arg)).join(' | ')
-      : this.name
+      ? this.args.map((arg) => JSON.stringify(arg))
+      : [this.name]
   }
 
   checkType(input: unknown, conf: CheckConf): RypeError | RypeOk {
@@ -141,6 +141,9 @@ export class SchemaObject<
     for (let key in input) {
       const schema = this.args[key]
       const value = input[key]
+
+      console.log(schema, value)
+
       const result = schema.check(value, {
         ...conf,
         path: `${conf.path || 'object'}.${key}`,
@@ -248,3 +251,27 @@ export class SchemaOr<
         )
   }
 }
+
+/* export class SchemaInstance<
+  const T = Type.InputInstance[],
+  U extends boolean = any
+> extends SchemaCore<T, U> {
+  name = 'instance' as const
+  checkType(input: unknown, conf: CheckConf) {
+    const schema = this.schema as any[]
+    const constructorNames = schema.map((a) => a.name)
+    const matched = schema.some((constructor) => {
+      return input instanceof constructor
+    })
+
+    return matched
+      ? input
+      : this.getErr(
+          input,
+          messages.getUnknownInstanceError(conf.path, {
+            CONSTRUCTOR: constructorNames.join(' | '),
+          })
+        )
+  }
+}
+ */

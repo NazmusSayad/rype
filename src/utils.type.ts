@@ -1,6 +1,6 @@
 export type ValidObject = { [i: string]: unknown }
 
-export type Prettify<T extends object> = {
+export type Prettify<T> = {
   [Key in keyof T]: T[Key]
 } & {}
 

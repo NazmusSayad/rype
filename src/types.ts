@@ -7,8 +7,7 @@ export type CheckConf = {
   meta?: boolean
 }
 
-export type SchemaInput<T extends Types> = T['isRequired'] extends true
-  ? ExtractSchema<T>
-  : ExtractSchema<T> | undefined
+export type OptionalValueToUndefined<T extends Types> =
+  T['isRequired'] extends true ? ExtractSchema<T> : ExtractSchema<T> | undefined
 
-export type EnvSchema = { [key: string]: TypePrimitive }
+export type InputEnv = { [key: string]: TypePrimitive }

@@ -1,3 +1,4 @@
+import { InputEnv } from '../types'
 import {
   SchemaOr,
   SchemaTuple,
@@ -13,6 +14,7 @@ export type InputNumber = number[]
 export type InputBoolean = boolean[]
 
 export type InputObject = { [key: string]: Types }
+export type InputInstance = new (...args: any[]) => any
 export type InputArray = Types[]
 export type InputTuple = Types[]
 export type InputOr = Types[]

@@ -1,8 +1,7 @@
 import check from './check'
+import { OptionalValueToUndefined } from './types'
 import * as Type from './core/Schema.type'
-import { ExtractSchema } from './core/Extract.type'
 import { combineForTwoArgs } from './utils'
-import { SchemaInput } from './types'
 
 function create<TThrow extends boolean, TTypeCheck extends boolean>({
   throwError,
@@ -13,25 +12,25 @@ function create<TThrow extends boolean, TTypeCheck extends boolean>({
 }) {
   function dual<T extends Type.Types>(
     schema: T,
-    input: TTypeCheck extends true ? SchemaInput<T> : unknown,
+    input: TTypeCheck extends true ? OptionalValueToUndefined<T> : unknown,
     name?: string
   ) {
     return check(schema, input, {
       path: name,
       throw: throwError,
-    }) as ExtractSchema<T>
+    })
   }
 
   function single<T extends Type.Types>(schema: T) {
     return function (
-      input: TTypeCheck extends true ? SchemaInput<T> : unknown,
+      input: TTypeCheck extends true ? OptionalValueToUndefined<T> : unknown,
       name?: string
     ) {
       return dual(schema, input, name)
     }
   }
 
-  return { dual, single }
+  return { dual, single, combined: combineForTwoArgs(single, dual) }
 }
 
 const checkAll = create({ throwError: true, typeCheck: true })
@@ -41,8 +40,8 @@ const justType = create({ throwError: false, typeCheck: true })
 
 export const caller = combineForTwoArgs(justThrow.single, checkAll.dual)
 export const moreCaller = {
-  checkAll: combineForTwoArgs(checkAll.single, checkAll.dual),
-  noCheck: combineForTwoArgs(noCheck.single, noCheck.dual),
-  justThrow: combineForTwoArgs(justThrow.single, justThrow.dual),
-  justType: combineForTwoArgs(justType.single, justType.dual),
+  checkAll: checkAll.combined,
+  noCheck: noCheck.combined,
+  justThrow: justThrow.combined,
+  justType: justType.combined,
 }

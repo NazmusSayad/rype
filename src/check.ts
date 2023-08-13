@@ -1,11 +1,12 @@
 import * as Type from './core/Schema.type'
+import { ExtractSchema } from './index'
 import { CheckConf } from './types'
 
-export default function (
-  schema: Type.Types,
+export default function <T extends Type.Types>(
+  schema: T,
   input: unknown,
   conf: Partial<CheckConf>
-): unknown {
+): ExtractSchema<T> {
   return schema.check(input, {
     ...conf,
     path: conf.path || '',
