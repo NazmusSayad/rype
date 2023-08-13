@@ -26,7 +26,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   }
 
   default(
-    value: ExtractSchemaFromAny<typeof this>
+    value: Exclude<ExtractSchemaFromAny<typeof this>, undefined>
   ): InferClassFromSchema<
     typeof this,
     TFormat,

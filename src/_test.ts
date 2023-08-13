@@ -3,8 +3,8 @@ import r from './index'
 try {
   const result = r.noCheck(r.array(r.string()))(['aksdjfk', 100])
 
-  const schema = r(r.string().default('Boom'))(null)
-  console.log(schema)
+  const value = r(r.o.number(100, 200))(null, 'Matha')
+  console.log(value)
 
   r.string().default('boom').config.defaultValue
 

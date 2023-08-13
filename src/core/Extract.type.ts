@@ -87,10 +87,10 @@ export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:
   T extends Type.TypeString
     ? SchemaString<TFormat extends Type.InputString ? TFormat : never, TConfig>
-    : // Tuple:
+    : // Number:
     T extends Type.TypeNumber
     ? SchemaNumber<TFormat extends Type.InputNumber ? TFormat : never, TConfig>
-    : // Tuple:
+    : // Boolean:
     T extends Type.TypeBoolean
     ? SchemaBoolean<
         TFormat extends Type.InputBoolean ? TFormat : never,
