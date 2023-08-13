@@ -1,7 +1,7 @@
 import r from './index'
 
 try {
-  const result = r.noCheck(r.array(r.string()))(['aksdjfk', 100])
+  const result = r.noCheck(r.or(r.string()))(['aksdjfk', 100])
 
   const value = r(r.o.number(100, 200))(null, 'Matha')
   console.log(value)

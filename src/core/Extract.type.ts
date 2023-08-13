@@ -15,50 +15,39 @@ import {
 import * as Type from './Schema.type'
 import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
 
-export type ExtractPrimitive<T extends Type.TypePrimitive> =
-  AdjustOptionalValue<T, T['schema'][number]>
+export type ExtractPrimitive<T extends Type.TypePrimitive> = T['schema'][number]
 
-export type ExtractObject<T extends Type.TypeObject> = AdjustOptionalValue<
-  T,
-  Prettify<
-    MakeOptional<{
-      [K in keyof T['schema']]: OptionalValueToUndefined<T['schema'][K]>
-    }>
-  >
+export type ExtractObject<T extends Type.TypeObject> = Prettify<
+  MakeOptional<{
+    [K in keyof T['schema']]: OptionalValueToUndefined<T['schema'][K]>
+  }>
 >
 
-export type ExtractTuple<T extends Type.TypeTuple> = AdjustOptionalValue<
-  T,
-  Prettify<
-    FormatTupleToNeverTuple<
-      {
-        [K in keyof T['schema'] as K extends `${number}`
-          ? K
-          : never]: ExtractSchema<T['schema'][K]>
-      } & Pick<T['schema'], 'length'>
-    >
-  >
->
-
-type ExtractArrayLike<T extends Type.TypeArray | Type.TypeOr> =
-  AdjustOptionalValue<
-    T,
+export type ExtractTuple<T extends Type.TypeTuple> = Prettify<
+  FormatTupleToNeverTuple<
     {
       [K in keyof T['schema'] as K extends `${number}`
         ? K
         : never]: ExtractSchema<T['schema'][K]>
-    }
+    } & Pick<T['schema'], 'length'>
   >
+>
+
+type ExtractArrayLike<T extends Type.TypeArray | Type.TypeOr> = {
+  [K in keyof T['schema'] as K extends `${number}` ? K : never]: ExtractSchema<
+    T['schema'][K]
+  >
+}
 
 export type ExtractOr<
   T extends Type.TypeOr,
   U = ExtractArrayLike<T>
-> = AdjustOptionalValue<T, U[keyof U]>
+> = U[keyof U]
 
 export type ExtractArray<
   T extends Type.TypeArray,
   U = ExtractArrayLike<T>
-> = AdjustOptionalValue<T, U[keyof U][]>
+> = Prettify<U[keyof U][]>
 
 export type ExtractSchemaFromAny<T> = T extends Type.Types
   ? ExtractSchema<T>
@@ -67,19 +56,19 @@ export type ExtractSchemaFromAny<T> = T extends Type.Types
 export type ExtractSchema<T extends Type.Types> =
   // Primitive:
   T extends Type.TypePrimitive
-    ? ExtractPrimitive<T>
+    ? AdjustOptionalValue<T, ExtractPrimitive<T>>
     : // Tuple:
     T extends Type.TypeTuple
-    ? ExtractTuple<T>
+    ? AdjustOptionalValue<T, ExtractTuple<T>>
     : // Array:
     T extends Type.TypeArray
-    ? ExtractArray<T>
+    ? AdjustOptionalValue<T, ExtractArray<T>>
     : // Or:
     T extends Type.TypeOr
-    ? ExtractOr<T>
+    ? AdjustOptionalValue<T, ExtractOr<T>>
     : // Object:
     T extends Type.TypeObject
-    ? ExtractObject<T>
+    ? AdjustOptionalValue<T, ExtractObject<T>>
     : // It's never gonna happen!
       never
 
