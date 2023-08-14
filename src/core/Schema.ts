@@ -1,4 +1,10 @@
 import {
+  RypeError,
+  RypeDevError,
+  RypeTypeError,
+  RypeRequiredError,
+} from '../Error'
+import {
   ExtractInput,
   ExtractOutput,
   InferClassFromSchema,
@@ -8,12 +14,6 @@ import * as Type from './Schema.type'
 import messages from '../errorMessages'
 import { ValidObject } from '../utils.type'
 import { SchemaCheckConf, SchemaConfig } from '../types'
-import {
-  RypeError,
-  RypeTypeError,
-  RypeRequiredError,
-  RypeDevError,
-} from '../Error'
 
 class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = 'core'
@@ -296,7 +296,7 @@ export class SchemaString<
   _minLength?: number
   _maxLength?: number
 
-  minLength(number: number) {
+  public minLength(number: number) {
     if (this.schema.length > 0) {
       throw new RypeDevError(
         "You can't use min/max while using specefic string"
@@ -307,7 +307,7 @@ export class SchemaString<
     return this
   }
 
-  maxLength(number: number) {
+  public maxLength(number: number) {
     if (this.schema.length > 0) {
       throw new RypeDevError(
         "You can't use min/max while using specefic string"
@@ -362,7 +362,7 @@ export class SchemaNumber<
   _minValue?: number
   _maxValue?: number
 
-  min(number: number) {
+  public min(number: number) {
     if (this.schema.length > 0) {
       throw new RypeDevError(
         "You can't use min/max while using specefic number"
@@ -373,7 +373,7 @@ export class SchemaNumber<
     return this
   }
 
-  max(number: number) {
+  public max(number: number) {
     if (this.schema.length > 0) {
       throw new RypeDevError(
         "You can't use min/max while using specefic number"
