@@ -34,13 +34,13 @@ function create<TThrow extends boolean, TTypeCheck extends boolean>({
 
 const checkAll = create({ throwError: true, typeCheck: true })
 const noCheck = create({ throwError: false, typeCheck: false })
-const justThrow = create({ throwError: true, typeCheck: false })
-const justType = create({ throwError: false, typeCheck: true })
+const onlyError = create({ throwError: true, typeCheck: false })
+const onlyType = create({ throwError: false, typeCheck: true })
 
-export const caller = combineForTwoArgs(justThrow.single, checkAll.dual)
+export const caller = combineForTwoArgs(onlyError.single, checkAll.dual)
 export const moreCaller = {
-  checkAll: checkAll.combined,
   noCheck: noCheck.combined,
-  justThrow: justThrow.combined,
-  justType: justType.combined,
+  checkAll: checkAll.combined,
+  onlyType: onlyType.combined,
+  onlyError: onlyError.combined,
 }
