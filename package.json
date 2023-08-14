@@ -19,5 +19,25 @@
       "import": "./dist-mjs/index.mjs",
       "types": "./dist-mjs/index.d.mts"
     }
-  }
+  },
+  "keywords": [
+    "validation",
+    "type",
+    "schema",
+    "typescript",
+    "utility",
+    "integration",
+    "data-structures",
+    "developer-tools",
+    "bug-free",
+    "reliable",
+    "fast",
+    "faster",
+    "better",
+    "zod",
+    "yup",
+    "valibot",
+    "alternative",
+    "similar"
+  ]
 }
