@@ -46,52 +46,56 @@ pnpm add rype
 
 ## Example
 
-```js
+Here's a simple example demonstrating how to use Rype for data validation in TypeScript.
+
+```ts
 import { r } from 'rype'
 
+// Define a schema for a string
 const schema = r.string()
 
-const result = r(schema, 'My String') // Fine
-const result = r(schema, 100_100_100) // Error & You will get also error in type level(ts)
+// Validate a string
+const result1 = schema.typedParse('My String') // Valid
+
+// Attempt to validate a number (will result in a validation error)
+const result2 = schema.typedParse(100_100_100) // Error - In both runtime and TypeScript type level
 ```
 
-### Example 0: Primitive
+### Example 1: Primitive
 
-```js
+```ts
 const schema = r.string('String')
-
-const result = r(schema, 'My String')
+const result = schema.typedParse('My String')
 // Error (TypeScript also provides type-level error)
 // 'My String' is not assignable to 'String'
 ```
 
-```js
+```ts
 const schema = r.string('String', 'Your String')
-
-const result = r(schema, 'My String')
+const result = schema.typedParse('My String')
 // 'My String' is not assignable to 'String' | 'Your String'
 ```
 
 Note:
 **_You can apply similar checks to `r.number()` and `r.boolean()` as well_**
 
-### Example 1: Object
+### Example 2: Object
 
-```js
+```ts
 const schema = r.object({
   name: r.string(),
   age: r.number(),
 })
 
-r(schema, {
+schema.typedParse({
   name: 'John Doe',
   age: 10,
 })
 ```
 
-### Example 2: Object with Array
+### Example 3: Object with Array
 
-```js
+```ts
 const schema = r.object({
   name: r.string(),
   age: r.number(),
@@ -99,7 +103,7 @@ const schema = r.object({
   someValues: r.array(r.string(), r.number()),
 })
 
-r(schema, {
+schema.typedParse({
   name: 'John Doe',
   age: 10,
   hobbies: ['Cricket', 'Football'],
@@ -107,25 +111,25 @@ r(schema, {
 })
 ```
 
-### Example 3: Object with Tuple
+### Example 4: Object with Tuple
 
-```js
+```ts
 const schema = r.object({
   name: r.string(),
   age: r.number(),
   unknown: r.tuple(r.string(), r.number()),
 })
 
-r(schema, {
+schema.typedParse({
   name: 'John Doe',
   age: 10,
   unknown: ['string', 100],
 })
 ```
 
-### Example 4: Object with Or
+### Example 5: Object with Or
 
-```js
+```ts
 const schema = r.object({
   name: r.string(),
   age: r.number(),
@@ -135,16 +139,68 @@ const schema = r.object({
   ),
 })
 
-r(schema, {
+schema.typedParse({
   name: 'John Doe',
   age: 10,
   country: { name: 'Arab', coords: 100 },
 })
 ```
 
+### Example 6: Setting Default Values
+
+You can use the `default` method to set default values for fields in your Rype schema.
+
+```ts
+const schema = r.object({
+  name: r.string(),
+  age: r.number().default(18),
+})
+
+const result = schema.typedParse({
+  name: 'John Doe',
+})
+
+/* Result:
+{
+  name: 'John Doe',
+  age: 18 // Default value applied
+}
+*/
+```
+
+Note: **_You can use default with everything :)_**
+
+### Example 7: Customizing Error Messages
+
+You can easily set custom error messages for specific cases during runtime checking using Rype.
+
+#### Set custom error when invalid type error occurs
+
+```ts
+const schema = r.object({
+  name: r.string().setTypeErrMsg('Name for user is invalid'),
+  age: r.number().default(18),
+})
+
+const result = schema.typedParse({})
+// Error: Name for user is invalid
+```
+
+#### Set custom error when input is null or undefined
+
+```ts
+const schema = r.object({
+  name: r.string().setRequiredErrMsg('User must have a name'),
+  age: r.number().default(18),
+})
+
+const result = schema.typedParse({})
+// Error: User must have a name
+```
+
 ### Available Schema Types
 
-```js
+```ts
 r.string()
 r.number()
 r.boolean()
@@ -162,153 +218,117 @@ r.optional.object()
 r.optional.or()
 
 // Shorthand for optional
-r.o.string()
-r.o.number()
-r.o.boolean()
-r.o.tuple()
-r.o.array()
-r.o.object()
-r.o.or()
+r.o //...
+r.opt //...
 
+// Example (All of them are same):
+r.o.string()
 r.opt.string()
-r.opt.number()
-r.opt.boolean()
-r.opt.tuple()
-r.opt.array()
-r.opt.object()
-r.opt.or()
+r.optional.string()
 ```
 
 ### Disabling Type-Level Checks while using Runtime Checks
 
 In some scenarios, you may want to disable type-level checks while keeping the runtime checks enabled in the Schema Core library. We've added a feature that allows you to achieve this.
 
-```js
-const schema = r.string('String', 'Your String')
-
-const result1 = r.noCheck(schema, 'My String') // No Error
-const result1 = r.noCheck(schema)('My String') // No Error
-
-const result1 = r(schema, 'My String') // Both Error
+```ts
+const result1 = schema.parse('My String') // Only runtime error
 const result2 = schema.typedParse('My String') // Both Error
-const result5 = r.checkAll(schema, 'My String') // Both Error
-const result5 = r.checkAll(schema)('My String') // Both Error
-
-const result5 = r.onlyType(schema, 'My String') // Only type error
-const result5 = r.onlyType(schema)('My String') // Only type error
-
-const result4 = r(schema)('My String') // Only runtime error
-const result3 = schema.parse('My String') // Only runtime error
-const result5 = r.onlyError(schema, 'My String') // Only runtime error
-const result6 = r.onlyError(schema)('My String') // Only runtime error
-```
-
-#### Additional Options
-
-```js
-r.noCheck
-// No type level check, no error thrown. Useful for filtering user input based on the schema.
-
-r.checkAll
-// Both runtime and type level check (default behavior).
-
-r.onlyType
-// Only type level check, no runtime error.
-
-r.onlyError
-// Only runtime error, no type level check.
+const result3 = schema.safeParse('My String') // No Error
+const result4 = schema.typedSafeParse('My String') // Only type error
 ```
 
 ### Super Advanced Example ⚠️
 
-```js
-r(r.number(1), 1)
-r(r.boolean(), true)
-r(r.boolean(), false)
-r(r.string('Boom', 'Fire'), 'Boom')
+```ts
+// Import the updated validation library
+const { r } = require('./index')
 
-r(r.or(r.boolean()), false)
+// Example 1
+r.number(1).typedParse(1)
 
-r(r.tuple(), [])
-r(r.array(r.string('World')))(['World'])
-r(r.string('string'), 'string')
-r(r.string('string', 'String'), 'String')
+// Example 2
+r.boolean().typedParse(true)
 
-r(r.number(1, 2, 3), 1)
-r(r.number(1, 2, 3), 2)
-r(r.number(1, 2, 3), 3)
+// Example 3
+r.boolean().typedParse(false)
 
-r(r.boolean(true), true)
-r(r.boolean(false), false)
-r(r.boolean(true, false), true)
-r(r.boolean(true, false), false)
+// Example 4
+r.string('Boom', 'Fire').typedParse('Boom')
 
-r(
-  r.object({
-    name: r.string('John Doe'),
-    age: r.o.number(),
-    hobbies: r.tuple(r.string('Play')),
-    intro: r.object({ address: r.string('BD') }),
-    jobs: r.tuple(r.object({ name: r.number(200) })),
-    asdf: r.tuple(r.string()),
-  }),
+// Example 5
+r.or(r.boolean()).typedParse(false)
 
-  {
-    age: 0,
-    name: 'John Doe',
-    hobbies: ['Play'],
-    intro: { address: 'BD' },
-    jobs: [{ name: 200 }],
-    asdf: ['Boom'],
-  }
-)
+// Example 6
+r.tuple().typedParse([])
 
-r(
-  r.tuple(
-    r.string('BD'),
+// Example 7
+r.array(r.string('World')).typedParse(['World'])
 
-    r.array(
+// Example 8
+r.string('string').typedParse('string')
+
+// Example 9
+r.string('string', 'String').typedParse('String')
+
+// Example 10
+r.number(1, 2, 3).typedParse(1)
+r.number(1, 2, 3).typedParse(2)
+r.number(1, 2, 3).typedParse(3)
+
+// Example 11
+r.boolean(true).typedParse(true)
+r.boolean(false).typedParse(false)
+r.boolean(true, false).typedParse(true)
+r.boolean(true, false).typedParse(false)
+
+// Example 12
+r.object({
+  name: r.string('John Doe'),
+  age: r.o.number(),
+  hobbies: r.tuple(r.string('Play')),
+  intro: r.object({ address: r.string('BD') }),
+  jobs: r.tuple(r.object({ name: r.number(200) })),
+  asdf: r.tuple(r.string()),
+}).typedParse({
+  age: 0,
+  name: 'John Doe',
+  hobbies: ['Play'],
+  intro: { address: 'BD' },
+  jobs: [{ name: 200 }],
+  asdf: ['Boom'],
+})
+
+// Example 13
+r.tuple(
+  r.string('BD'),
+  r
+    .array(
+      r.tuple(r.array(r.tuple(r.object({ hi: r.string('Boom') })))),
       r.tuple(
-        r.array(
-          r.tuple(
-            r.object({
-              hi: r.string('Boom'),
-            })
-          )
-        )
+        r.object({ name: r.string('hello'), ages: r.tuple(r.number(10)) })
       )
-    ),
-
-    r.tuple(
-      r.object({
-        name: r.string('hello'),
-        ages: r.tuple(r.number(10)),
-      })
     )
-  ),
-
-  [
-    'BD',
-
-    [
+    .typedParse([
+      'BD',
       [
         [
           [
-            {
-              hi: 'Boom',
-            },
+            [
+              {
+                hi: 'Boom',
+              },
+            ],
           ],
         ],
       ],
-    ],
-
-    [
-      {
-        name: 'hello',
-        ages: [10],
-      },
-    ],
-  ]
+      [
+        {
+          name: 'hello',
+          ages: [10],
+        },
+      ],
+    ])
 )
 ```
 

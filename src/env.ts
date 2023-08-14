@@ -4,8 +4,7 @@ import {
   SchemaString,
   SchemaBoolean,
 } from './core/Schema'
-import methods from './methods'
-import { caller } from './base'
+import r from './rype'
 import { InputEnv } from './types'
 import { ValidObject } from './utils.type'
 import { ExtractOutput } from './core/Extract.type'
@@ -13,18 +12,16 @@ import { ExtractOutput } from './core/Extract.type'
 export function env<T extends InputEnv>(
   schema: T
 ): ExtractOutput<SchemaObject<T, { isRequired: true }>> {
-  const stringSchema: ValidObject = {}
   const result: ValidObject = {}
+  const stringSchema: ValidObject = {}
 
   for (let key in schema) {
     stringSchema[key] = schema[key as keyof typeof schema].config.isRequired
-      ? methods.string()
-      : methods.o.string()
+      ? r.string()
+      : r.o.string()
   }
 
-  const object = caller(methods.object(stringSchema as typeof schema))(
-    process.env
-  )
+  const object = r.object(stringSchema as typeof schema).parse(process.env)
 
   for (let key in object) {
     const value = object[key as keyof typeof object]

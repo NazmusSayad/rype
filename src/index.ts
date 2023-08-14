@@ -1,8 +1,6 @@
-import types from './methods'
-import { combine } from './utils'
-import { caller, moreCaller } from './base'
+import rype from './rype'
 
-export const r = combine(caller, { ...types, ...moreCaller })
+export const r = rype
 export default r
 
 export * from './core/Schema'

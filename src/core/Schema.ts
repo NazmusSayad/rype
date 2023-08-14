@@ -1,20 +1,25 @@
-import { RypeOk } from '../RypeOk'
-import * as Type from './Schema.type'
-import { SchemaName } from './symbols'
-import messages from '../errorMessages'
-import { SchemaCheckConf, SchemaConfig } from '../types'
-import { ValidConstructor, ValidObject } from '../utils.type'
 import {
   ExtractInput,
   ExtractOutput,
   InferClassFromSchema,
 } from './Extract.type'
+import { RypeOk } from '../RypeOk'
+import * as Type from './Schema.type'
+import { SchemaName } from './symbols'
+import messages from '../errorMessages'
+import { ValidObject } from '../utils.type'
+import { SchemaCheckConf, SchemaConfig } from '../types'
 import { RypeError, RypeTypeError, RypeRequiredError } from '../Error'
 
 class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = SchemaName.core
   schema: TFormat
   config: TConfig
+  #errorMessage: {
+    required?: string
+    type?: string
+  } = {}
+
   constructor(schema: TFormat, config: TConfig) {
     this.schema = schema
     this.config = config
@@ -35,21 +40,24 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * Note: This method doesn't check the value for schema validity at runtime.
    * @returns A new schema with the specified default value.
    */
-  default(
-    value: Exclude<ExtractOutput<typeof this>, undefined>
-  ): InferClassFromSchema<
-    typeof this,
-    TFormat,
-    { isRequired: false; defaultValue: unknown }
-  > {
-    const Constructor = ConstructorMap[
-      this.name as keyof typeof ConstructorMap
-    ] as ValidConstructor
+  default(value: Exclude<ExtractOutput<typeof this>, undefined>) {
+    this.config.isRequired = false
+    this.config.defaultValue = value
+    return this as unknown as InferClassFromSchema<
+      typeof this,
+      TFormat,
+      { isRequired: false; defaultValue: unknown }
+    >
+  }
 
-    return new Constructor(this.schema, {
-      isRequired: false,
-      defaultValue: value,
-    })
+  setTypeErrMsg(message: string) {
+    this.#errorMessage.type = message
+    return this
+  }
+
+  setRequiredErrMsg(message: string) {
+    this.#errorMessage.required = message
+    return this
   }
 
   /**
@@ -68,10 +76,31 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   }
 
   /**
+   * Validates the input against the schema and returns the validation result or throws an error.
+   *
+   * @param {unknown} input - The value to be validated against the schema.
+   * @param {string} [name] - A descriptive name or label for the validation point (optional).
+   * @returns  The result of the validation if successful else undefined.
+   */
+  safeParse(input: unknown, name?: string) {
+    return this._checkAndGetResult(input, {
+      path: name || '',
+      throw: false,
+    }) as ExtractOutput<typeof this>
+  }
+
+  /**
    * This method is similar to the .parse method, but includes input type validation.
    */
   typedParse(input: ExtractInput<typeof this>, name?: string) {
     return this.parse(input, name)
+  }
+
+  /**
+   * This method is similar to the .safeParse method, but includes input type validation.
+   */
+  typedSafeParse(input: ExtractInput<typeof this>, name?: string) {
+    return this.safeParse(input, name)
   }
 
   /**
@@ -174,7 +203,12 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @returns A RypeTypeError object with the specified error message, schema, input, and configuration.
    */
   _getErr(input: unknown, message: string) {
-    return new RypeTypeError(message, this.schema, input, this.config)
+    const msgOrCustomMsg =
+      typeof this.#errorMessage.type === 'string'
+        ? this.#errorMessage.type
+        : message
+
+    return new RypeTypeError(msgOrCustomMsg, this.schema, input, this.config)
   }
 
   /**
@@ -185,7 +219,17 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @returns A RypeRequiredError object with the specified error message, schema, input, and configuration.
    */
   _getRequiredErr(input: unknown, message: string) {
-    return new RypeRequiredError(message, this.schema, input, this.config)
+    const msgOrCustomMsg =
+      typeof this.#errorMessage.required === 'string'
+        ? this.#errorMessage.required
+        : message
+
+    return new RypeRequiredError(
+      msgOrCustomMsg,
+      this.schema,
+      input,
+      this.config
+    )
   }
 }
 
@@ -379,20 +423,4 @@ export class SchemaOr<
       })
     )
   }
-}
-
-/**
- * A map that associates schema names with their respective schema constructor classes.
- * This map is used to retrieve the constructor class based on the schema name.
- */
-const ConstructorMap = {
-  [SchemaName.string]: SchemaString,
-  [SchemaName.number]: SchemaNumber,
-  [SchemaName.boolean]: SchemaBoolean,
-
-  [SchemaName.array]: SchemaArray,
-  [SchemaName.tuple]: SchemaTuple,
-  [SchemaName.object]: SchemaObject,
-
-  [SchemaName.or]: SchemaOr,
 }

@@ -1,9 +1,9 @@
 import r from './index'
 
 try {
-  const schema = r.or()
+  const schema = r.string().default('boom').setTypeErrMsg('Boom')
 
-  const result = schema.typedParse('Boom')
+  const result = schema.parse(0)
 
   type Input = Parameters<(typeof schema)['typedParse']>[0]
   type Result = typeof result

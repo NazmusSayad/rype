@@ -1,90 +1,89 @@
-import r from './index'
+// Import the updated validation library
+const { r } = require('./index')
 
-r(r.number(1), 1)
-r(r.boolean(), true)
-r(r.boolean(), false)
-r(r.string('Boom', 'Fire'), 'Boom')
+// Example 1
+r.number(1).typedParse(1)
 
-r(r.or(r.boolean()), false)
+// Example 2
+r.boolean().typedParse(true)
 
-r(r.tuple(), [])
-r(r.array(r.string('World')))(['World'])
-r(r.string('string'), 'string')
-r(r.string('string', 'String'), 'String')
+// Example 3
+r.boolean().typedParse(false)
 
-r(r.number(1, 2, 3), 1)
-r(r.number(1, 2, 3), 2)
-r(r.number(1, 2, 3), 3)
+// Example 4
+r.string('Boom', 'Fire').typedParse('Boom')
 
-r(r.boolean(true), true)
-r(r.boolean(false), false)
-r(r.boolean(true, false), true)
-r(r.boolean(true, false), false)
+// Example 5
+r.or(r.boolean()).typedParse(false)
 
-r(
-  r.object({
-    name: r.string('John Doe'),
-    age: r.o.number(),
-    hobbies: r.tuple(r.string('Play')),
-    intro: r.object({ address: r.string('BD') }),
-    jobs: r.tuple(r.object({ name: r.number(200) })),
-    asdf: r.tuple(r.string()),
-  }),
+// Example 6
+r.tuple().typedParse([])
 
-  {
-    age: 0,
-    name: 'John Doe',
-    hobbies: ['Play'],
-    intro: { address: 'BD' },
-    jobs: [{ name: 200 }],
-    asdf: ['Boom'],
-  }
-)
+// Example 7
+r.array(r.string('World')).typedParse(['World'])
 
-r(
-  r.tuple(
-    r.string('BD'),
+// Example 8
+r.string('string').typedParse('string')
 
-    r.array(
+// Example 9
+r.string('string', 'String').typedParse('String')
+
+// Example 10
+r.number(1, 2, 3).typedParse(1)
+r.number(1, 2, 3).typedParse(2)
+r.number(1, 2, 3).typedParse(3)
+
+// Example 11
+r.boolean(true).typedParse(true)
+r.boolean(false).typedParse(false)
+r.boolean(true, false).typedParse(true)
+r.boolean(true, false).typedParse(false)
+
+// Example 12
+r.object({
+  name: r.string('John Doe'),
+  age: r.o.number(),
+  hobbies: r.tuple(r.string('Play')),
+  intro: r.object({ address: r.string('BD') }),
+  jobs: r.tuple(r.object({ name: r.number(200) })),
+  asdf: r.tuple(r.string()),
+}).typedParse({
+  age: 0,
+  name: 'John Doe',
+  hobbies: ['Play'],
+  intro: { address: 'BD' },
+  jobs: [{ name: 200 }],
+  asdf: ['Boom'],
+})
+
+// Example 13
+r.tuple(
+  r.string('BD'),
+  r
+    .array(
+      r.tuple(r.array(r.tuple(r.object({ hi: r.string('Boom') })))),
       r.tuple(
-        r.array(
-          r.tuple(
-            r.object({
-              hi: r.string('Boom'),
-            })
-          )
-        )
+        r.object({ name: r.string('hello'), ages: r.tuple(r.number(10)) })
       )
-    ),
-
-    r.tuple(
-      r.object({
-        name: r.string('hello'),
-        ages: r.tuple(r.number(10)),
-      })
     )
-  ),
-
-  [
-    'BD',
-
-    [
+    .typedParse([
+      'BD',
       [
         [
           [
-            {
-              hi: 'Boom',
-            },
+            [
+              {
+                hi: 'Boom',
+              },
+            ],
           ],
         ],
       ],
-    ],
-
-    [
-      {
-        name: 'hello',
-        ages: [10],
-      },
-    ],
-  ]
+      [
+        {
+          name: 'hello',
+          ages: [10],
+        },
+      ],
+    ])
 )
