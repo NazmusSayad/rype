@@ -257,11 +257,9 @@ class SchemaPrimitiveCore<
   }
 
   _checkType(input: unknown, conf: SchemaCheckConf): RypeError | RypeOk {
-    const schema = new Set(this.schema as Iterable<string | number | boolean>)
-
     if (
       typeof input !== this.name ||
-      (schema.size && !schema.has(input as string | number | boolean))
+      (this.schema.length && !this.schema.includes(input as never))
     ) {
       return this._getErr(
         input,
