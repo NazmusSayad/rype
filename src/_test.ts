@@ -1,11 +1,9 @@
 import r from './index'
 
 try {
-  const schema = r.checkAll(
-    r.number().default(100)
-  )
+  const schema = r.checkAll(r.object({ name: r.string().default('Boom') }))
 
-  const result = schema(100)
+  const result = schema({})
 
   type Input = Parameters<typeof schema>[0]
   type Result = typeof result
