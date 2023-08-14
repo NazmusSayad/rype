@@ -335,6 +335,20 @@ r.tuple(
 ```
 
 <br/>
+
+## Performance Comparison with Zod
+
+![image](https://github.com/NazmusSayad/rype/assets/87106526/894cef17-77d6-4475-bbc7-8f0df90eb9d8)
+
+![image](https://github.com/NazmusSayad/rype/assets/87106526/b42f5bc4-8f16-409d-a567-1beab6112e44)
+
+![image](https://github.com/NazmusSayad/rype/assets/87106526/95e64117-1de7-49b3-9659-54ac77ecb6c3)
+
+![image](https://github.com/NazmusSayad/rype/assets/87106526/a432916c-749d-45d0-a8d3-4ba8c785af59)
+
+Note: Please note that this benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, both packages have demonstrated similar speeds. It's worth highlighting that both packages are optimized for speed.
+
+<br/>
 <br/>
 
 # 🚧 More will be added soon
