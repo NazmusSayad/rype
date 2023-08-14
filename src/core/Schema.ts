@@ -283,11 +283,13 @@ export class SchemaArray<
     if (!Array.isArray(inputs)) {
       return this._getErr(
         inputs,
-        messages.getOrTypeErr(conf.path, { TYPE: this.type })
+        messages.getTypeErr(conf.path, { TYPE: this.type })
       )
     }
 
-    if (this.schema.length === 0) return new RypeOk(inputs)
+    if (this.schema.length === 0 || inputs.length === 0) {
+      return new RypeOk(inputs)
+    }
 
     const output: unknown[] = []
     const schema =
@@ -319,6 +321,13 @@ export class SchemaTuple<
   name = SchemaName.tuple
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
+    if (!Array.isArray(inputs)) {
+      return this._getErr(
+        inputs,
+        messages.getTypeErr(conf.path, { TYPE: this.type })
+      )
+    }
+
     if (this.schema.length !== inputs.length) {
       return this._getErr(
         inputs,
@@ -355,6 +364,8 @@ export class SchemaOr<
   }
 
   _checkType(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
+    if (this.schema.length === 0) return new RypeOk(input)
+
     for (let i = 0; i <= this.schema.length - 1; i++) {
       const schema = this.schema[i]
       const result = schema._checkCore(input, { ...conf })
@@ -363,7 +374,7 @@ export class SchemaOr<
 
     return this._getErr(
       input,
-      messages.getOrTypeErr(conf.path, {
+      messages.getTypeErr(conf.path, {
         TYPE: this.type,
       })
     )

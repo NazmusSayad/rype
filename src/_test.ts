@@ -1,8 +1,11 @@
 import r from './index'
 
 try {
-  const result = r.array(r.string('Boom')).typedParse(['Boom'])
+  const schema = r.or()
 
+  const result = schema.typedParse('Boom')
+
+  type Input = Parameters<(typeof schema)['typedParse']>[0]
   type Result = typeof result
 
   console.log()

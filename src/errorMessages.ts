@@ -21,7 +21,7 @@ function createMessage<S extends string>(input: S) {
 
 const errorMessages = {
   requiredError: 'Input is required <$PATH$>',
-  orTypeError: 'Input is not assignable to type <$TYPE$> <$PATH$>',
+  typeError: 'Input is not assignable to type <$TYPE$> <$PATH$>',
   primitiveTypeError: '<$INPUT$> is not assignable to type <$TYPE$> <$PATH$>',
   unknownInstanceError:
     'Object needs to be an instance of <$CONSTRUCTOR$> <$PATH$>',
@@ -31,7 +31,7 @@ const errorMessages = {
 
 export default {
   getRequiredErr: createMessage(errorMessages.requiredError),
-  getOrTypeErr: createMessage(errorMessages.orTypeError),
+  getTypeErr: createMessage(errorMessages.typeError),
   getUnknownInstanceError: createMessage(errorMessages.unknownInstanceError),
   getTupleLengthError: createMessage(errorMessages.tupleLengthError),
   getPrimitiveTypeError: createMessage(errorMessages.primitiveTypeError),

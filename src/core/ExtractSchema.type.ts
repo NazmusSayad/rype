@@ -40,7 +40,7 @@ export type ExtractOr<
   T extends Type.TypeOr,
   TMode extends 'input' | 'output',
   U = ExtractArrayLike<T, TMode>
-> = U[keyof U]
+> = U[keyof U] extends never ? any : U[keyof U]
 
 export type ExtractArray<
   T extends Type.TypeArray,
