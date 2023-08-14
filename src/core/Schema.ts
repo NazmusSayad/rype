@@ -5,14 +5,13 @@ import {
 } from './Extract.type'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
-import { SchemaName } from './symbols'
 import messages from '../errorMessages'
 import { ValidObject } from '../utils.type'
 import { SchemaCheckConf, SchemaConfig } from '../types'
 import { RypeError, RypeTypeError, RypeRequiredError } from '../Error'
 
 class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
-  name = SchemaName.core
+  name = 'core'
   schema: TFormat
   config: TConfig
   #errorMessage: {
@@ -237,7 +236,7 @@ class SchemaPrimitiveCore<
   T extends Type.InputString | Type.InputNumber | Type.InputBoolean,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = SchemaName.primitive
+  name = 'primitive'
 
   _getType() {
     return this.schema.length
@@ -272,7 +271,7 @@ export class SchemaString<
   T[number] extends never ? Type.InputString : T,
   R
 > {
-  name = SchemaName.string
+  name = 'string' as const
 }
 
 export class SchemaNumber<
@@ -282,7 +281,7 @@ export class SchemaNumber<
   T[number] extends never ? Type.InputNumber : T,
   R
 > {
-  name = SchemaName.number
+  name = 'number' as const
 }
 
 export class SchemaBoolean<
@@ -292,14 +291,14 @@ export class SchemaBoolean<
   T[number] extends never ? Type.InputBoolean : T,
   R
 > {
-  name = SchemaName.boolean
+  name = 'boolean' as const
 }
 
 export class SchemaObject<
   T extends Type.InputObject,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = SchemaName.object
+  name = 'object' as const
 
   _checkType(input: ValidObject, conf: SchemaCheckConf): RypeOk | RypeError {
     const output: ValidObject = {}
@@ -321,7 +320,7 @@ export class SchemaArray<
   T extends Type.InputArray,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = SchemaName.array
+  name = 'array' as const
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
     if (!Array.isArray(inputs)) {
@@ -362,7 +361,7 @@ export class SchemaTuple<
   T extends Type.InputTuple,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = SchemaName.tuple
+  name = 'tuple' as const
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
     if (!Array.isArray(inputs)) {
@@ -401,7 +400,7 @@ export class SchemaOr<
   T extends Type.InputOr,
   R extends SchemaConfig
 > extends SchemaCore<T[number] extends never ? Type.InputOr : T, R> {
-  name = SchemaName.or
+  name = 'or' as const
 
   _getType() {
     return this.schema.map((schema) => schema.type)
