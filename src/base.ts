@@ -1,7 +1,6 @@
-import check from './check'
+import { ExtractSchema } from './index'
 import * as Type from './core/Schema.type'
 import { combineForTwoArgs } from './utils'
-import { OptionalValueToUndefined } from './types'
 
 function create<TThrow extends boolean, TTypeCheck extends boolean>({
   throwError,
@@ -12,10 +11,10 @@ function create<TThrow extends boolean, TTypeCheck extends boolean>({
 }) {
   function dual<T extends Type.Types>(
     schema: T,
-    input: TTypeCheck extends true ? OptionalValueToUndefined<T> : unknown,
+    input: TTypeCheck extends true ? ExtractSchema<T> : unknown,
     name?: string
   ) {
-    return check(schema, input, {
+    return schema.check(input, {
       path: name,
       throw: throwError,
     })
@@ -23,7 +22,7 @@ function create<TThrow extends boolean, TTypeCheck extends boolean>({
 
   function single<T extends Type.Types>(schema: T) {
     return function (
-      input: TTypeCheck extends true ? OptionalValueToUndefined<T> : unknown,
+      input: TTypeCheck extends true ? ExtractSchema<T> : unknown,
       name?: string
     ) {
       return dual(schema, input, name)

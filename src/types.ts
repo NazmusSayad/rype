@@ -1,5 +1,4 @@
-import { ExtractSchema } from './core/Extract.type'
-import { TypePrimitive, Types } from './core/Schema.type'
+import { TypePrimitive } from './core/Schema.type'
 
 export type SchemaConfig = {
   isRequired: boolean
@@ -11,21 +10,5 @@ export type SchemaCheckConf = {
   throw: boolean
   getUnthrownError?: boolean
 }
-
-export type AdjustOptionalValue<
-  T extends Types,
-  R
-> = T['config']['isRequired'] extends true
-  ? R
-  : 'defaultValue' extends keyof T['config']
-  ? R
-  : R | undefined
-
-export type OptionalValueToUndefined<T extends Types> =
-  T['config']['isRequired'] extends true
-    ? ExtractSchema<T>
-    : 'defaultValue' extends keyof T['config']
-    ? ExtractSchema<T>
-    : ExtractSchema<T> | undefined
 
 export type InputEnv = { [key: string]: TypePrimitive }

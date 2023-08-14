@@ -21,10 +21,21 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     this.config = config
   }
 
+  /**
+   * Gets the combined type of the schema.
+   * @returns A string representing the type of the schema.
+   */
   get type(): string {
     return [...new Set([this._getType()].flat())].join(' | ')
   }
 
+  /**
+   * Create a new schema with a default value that matches the schema.
+   *
+   * @param value - Default value that should be matched to the schema.
+   * Note: This method doesn't check the value for schema validity at runtime.
+   * @returns A new schema with the specified default value.
+   */
   default(
     value: Exclude<ExtractSchemaFromAny<typeof this>, undefined>
   ): InferClassFromSchema<
@@ -46,13 +57,20 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     })
   }
 
+  check(input: unknown, conf: Partial<SchemaCheckConf> = {}) {
+    return this._checkAndGetResult(input, {
+      ...conf,
+      path: conf.path || '',
+      throw: conf.throw ?? true,
+    }) as ExtractSchemaFromAny<typeof this>
+  }
+
   /**
-   * This is a method in MyClass that does something useful.
+   * Check input against the schema and return the result or throw an error (if configured).
    *
-   *  ⚠️Warning: This can throw error
-   * @param {unknown} input - This is the value that will recieve from user
-   * @param {SchemaCheckConf} conf - Some configuration for crazy stuff
-   * @returns {unknown} If everything is ok this will return the result, but if error occurs this will throw the error
+   * @param input - The value to be checked against the schema.
+   * @param conf - Configuration for schema checking.
+   * @returns If successful, returns the result of the check; If an error is thrown and 'conf.throw' is false, this returns undefined.
    */
   _checkAndGetResult(input: unknown, conf: SchemaCheckConf): unknown {
     const output = this._checkAndThrowError(input, conf)
@@ -60,12 +78,32 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     return undefined
   }
 
-  _checkAndThrowError(input: unknown, conf: SchemaCheckConf) {
+  /**
+   * Check input against the schema and return the result or throw an error (if configured).
+   *
+   *
+   *
+   * @param input - The value to be checked against the schema.
+   * @param conf - Configuration for schema checking.
+   * @returns If successful, returns the result as a RypeOk object. If an error occurs and 'conf.throw' is true, an error is thrown; otherwise, a RypeError is returned.
+   */
+  _checkAndThrowError(
+    input: unknown,
+    conf: SchemaCheckConf
+  ): RypeOk | RypeError {
     const output = this._checkCore(input, conf)
     if (output instanceof RypeError && conf.throw) throw output
     return output
   }
 
+  /**
+   * Check input against the schema and return the result or throw an error (if configured).
+   * This method handles some basic required or default value related checks.
+   *
+   * @param input - The value to be checked against the schema.
+   * @param conf - Configuration for checking the schema.
+   * @returns If successful, returns the result as a RypeOk object; otherwise, returns a RypeError.
+   */
   _checkCore(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     if (input == null) {
       if (this.config.defaultValue) {
@@ -82,26 +120,61 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       return new RypeOk(undefined)
     }
 
-    const result1 = this._checkType(input, conf)
-    if (result1 instanceof RypeError) return result1
+    const result = this._checkType(input, conf)
+    if (result instanceof RypeError) return result
     if (this._checkType2) return this._checkType2(input, conf)
-    return result1
+    return result
   }
 
+  /**
+   * Check the input against the schema and return the result or throw an error (if configured).
+   * This method checks the schema's types and should be overridden by child classes to provide specific type checks.
+   *
+   * @param input - The value to be checked against the schema.
+   * @param conf - Configuration for schema checking.
+   * @returns If successful, returns the result as a RypeOk object; otherwise, returns a RypeError.
+   */
   _checkType(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     return new RypeError(this.name + " isn't implemented yet!")
   }
 
+  /**
+   * An optional secondary method for checking the type of the input against the schema.
+   * This method is used when the primary _checkType method is not sufficient.
+   *
+   * @param input - The value to be checked against the schema.
+   * @param conf - Configuration for checking the schema.
+   * @returns If successful, returns a RypeOk object; otherwise, returns a RypeError.
+   */
   _checkType2?: (input: unknown, conf: SchemaCheckConf) => RypeOk | RypeError
 
+  /**
+   * Get the type of the schema as an array of strings.
+   *
+   * @returns An array containing the name and other custom values of the schema.
+   */
   _getType(): string[] {
     return [this.name]
   }
 
+  /**
+   * Generates a type error message for the input value.
+   *
+   * @param input - The input value that cwas provided to check against schema
+   * @param message - The error message to be displayed.
+   * @returns A RypeTypeError object with the specified error message, schema, input, and configuration.
+   */
   _getErr(input: unknown, message: string) {
     return new RypeTypeError(message, this.schema, input, this.config)
   }
 
+  /**
+   * Generates a required error message for the input value.
+   *
+   * @param input - The input value that cwas provided to check against schema
+   * @param message - The error message to be displayed.
+   * @returns A RypeRequiredError object with the specified error message, schema, input, and configuration.
+   */
   _getRequiredErr(input: unknown, message: string) {
     return new RypeRequiredError(message, this.schema, input, this.config)
   }
@@ -284,6 +357,10 @@ export class SchemaOr<
   }
 }
 
+/**
+ * A map that associates schema names with their respective schema constructor classes.
+ * This map is used to retrieve the constructor class based on the schema name.
+ */
 const ConstructorMap = {
   [SchemaName.string]: SchemaString,
   [SchemaName.number]: SchemaNumber,

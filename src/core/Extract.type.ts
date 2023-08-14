@@ -7,19 +7,15 @@ import {
   SchemaObject,
   SchemaBoolean,
 } from './Schema'
-import {
-  SchemaConfig,
-  AdjustOptionalValue,
-  OptionalValueToUndefined,
-} from '../types'
 import * as Type from './Schema.type'
+import { SchemaConfig } from '../types'
 import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
 
 export type ExtractPrimitive<T extends Type.TypePrimitive> = T['schema'][number]
 
 export type ExtractObject<T extends Type.TypeObject> = Prettify<
   MakeOptional<{
-    [K in keyof T['schema']]: OptionalValueToUndefined<T['schema'][K]>
+    [K in keyof T['schema']]: ExtractSchema<T['schema'][K]>
   }>
 >
 
@@ -49,6 +45,19 @@ export type ExtractArray<
   U = ExtractArrayLike<T>
 > = Prettify<U[keyof U][]>
 
+// ---------------------
+// Boss Level functions:
+// ---------------------
+
+export type AdjustOptionalSchema<
+  T extends Type.Types,
+  R
+> = T['config']['isRequired'] extends true
+  ? R
+  : 'defaultValue' extends keyof T['config']
+  ? R
+  : R | undefined
+
 export type ExtractSchemaFromAny<T> = T extends Type.Types
   ? ExtractSchema<T>
   : never
@@ -56,19 +65,19 @@ export type ExtractSchemaFromAny<T> = T extends Type.Types
 export type ExtractSchema<T extends Type.Types> =
   // Primitive:
   T extends Type.TypePrimitive
-    ? AdjustOptionalValue<T, ExtractPrimitive<T>>
+    ? AdjustOptionalSchema<T, ExtractPrimitive<T>>
     : // Tuple:
     T extends Type.TypeTuple
-    ? AdjustOptionalValue<T, ExtractTuple<T>>
+    ? AdjustOptionalSchema<T, ExtractTuple<T>>
     : // Array:
     T extends Type.TypeArray
-    ? AdjustOptionalValue<T, ExtractArray<T>>
+    ? AdjustOptionalSchema<T, ExtractArray<T>>
     : // Or:
     T extends Type.TypeOr
-    ? AdjustOptionalValue<T, ExtractOr<T>>
+    ? AdjustOptionalSchema<T, ExtractOr<T>>
     : // Object:
     T extends Type.TypeObject
-    ? AdjustOptionalValue<T, ExtractObject<T>>
+    ? AdjustOptionalSchema<T, ExtractObject<T>>
     : // It's never gonna happen!
       never
 
