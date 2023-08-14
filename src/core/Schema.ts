@@ -10,7 +10,7 @@ import { SchemaName } from './symbols'
 import messages from '../errorMessages'
 import { SchemaCheckConf, SchemaConfig } from '../types'
 import { ValidConstructor, ValidObject } from '../utils.type'
-import { ExtractSchemaFromAny, InferClassFromSchema } from './Extract.type'
+import { ExtractOutput, InferClassFromSchema } from './Extract.type'
 
 class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = SchemaName.core
@@ -37,7 +37,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @returns A new schema with the specified default value.
    */
   default(
-    value: Exclude<ExtractSchemaFromAny<typeof this>, undefined>
+    value: Exclude<ExtractOutput<typeof this>, undefined>
   ): InferClassFromSchema<
     typeof this,
     TFormat,
@@ -55,14 +55,6 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       isRequired: false,
       defaultValue: value,
     })
-  }
-
-  check(input: unknown, conf: Partial<SchemaCheckConf> = {}) {
-    return this._checkAndGetResult(input, {
-      ...conf,
-      path: conf.path || '',
-      throw: conf.throw ?? true,
-    }) as ExtractSchemaFromAny<typeof this>
   }
 
   /**

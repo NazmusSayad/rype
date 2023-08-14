@@ -1,6 +1,6 @@
-import { ExtractSchema } from './index'
-import * as Type from './core/Schema.type'
 import { combineForTwoArgs } from './utils'
+import * as Type from './core/Schema.type'
+import { ExtractInput, ExtractOutput } from './core/Extract.type'
 
 function create<TThrow extends boolean, TTypeCheck extends boolean>({
   throwError,
@@ -11,18 +11,18 @@ function create<TThrow extends boolean, TTypeCheck extends boolean>({
 }) {
   function dual<T extends Type.Types>(
     schema: T,
-    input: TTypeCheck extends true ? ExtractSchema<T> : unknown,
+    input: TTypeCheck extends true ? ExtractInput<T> : unknown,
     name?: string
   ) {
-    return schema.check(input, {
-      path: name,
+    return schema._checkAndGetResult(input, {
+      path: name || '',
       throw: throwError,
-    })
+    }) as ExtractOutput<T>
   }
 
   function single<T extends Type.Types>(schema: T) {
     return function (
-      input: TTypeCheck extends true ? ExtractSchema<T> : unknown,
+      input: TTypeCheck extends true ? ExtractInput<T> : unknown,
       name?: string
     ) {
       return dual(schema, input, name)

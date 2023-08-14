@@ -7,49 +7,22 @@ import {
   SchemaObject,
   SchemaBoolean,
 } from './Schema'
+import {
+  ExtractOr,
+  ExtractArray,
+  ExtractTuple,
+  ExtractObject,
+  ExtractPrimitive,
+} from './ExtractSchema.type'
 import * as Type from './Schema.type'
 import { SchemaConfig } from '../types'
-import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
 
-export type ExtractPrimitive<T extends Type.TypePrimitive> = T['schema'][number]
+type AdjustSchemaInput<
+  T extends Type.Types,
+  R
+> = T['config']['isRequired'] extends true ? R : R | undefined
 
-export type ExtractObject<T extends Type.TypeObject> = Prettify<
-  MakeOptional<{
-    [K in keyof T['schema']]: ExtractSchema<T['schema'][K]>
-  }>
->
-
-export type ExtractTuple<T extends Type.TypeTuple> = Prettify<
-  FormatTupleToNeverTuple<
-    {
-      [K in keyof T['schema'] as K extends `${number}`
-        ? K
-        : never]: ExtractSchema<T['schema'][K]>
-    } & Pick<T['schema'], 'length'>
-  >
->
-
-type ExtractArrayLike<T extends Type.TypeArray | Type.TypeOr> = {
-  [K in keyof T['schema'] as K extends `${number}` ? K : never]: ExtractSchema<
-    T['schema'][K]
-  >
-}
-
-export type ExtractOr<
-  T extends Type.TypeOr,
-  U = ExtractArrayLike<T>
-> = U[keyof U]
-
-export type ExtractArray<
-  T extends Type.TypeArray,
-  U = ExtractArrayLike<T>
-> = Prettify<U[keyof U][]>
-
-// ---------------------
-// Boss Level functions:
-// ---------------------
-
-export type AdjustOptionalSchema<
+type AdjustSchemaOutput<
   T extends Type.Types,
   R
 > = T['config']['isRequired'] extends true
@@ -58,28 +31,37 @@ export type AdjustOptionalSchema<
   ? R
   : R | undefined
 
-export type ExtractSchemaFromAny<T> = T extends Type.Types
-  ? ExtractSchema<T>
-  : never
-
-export type ExtractSchema<T extends Type.Types> =
+type ExtractSchemaCore<T extends Type.Types, TMode extends 'input' | 'output'> =
   // Primitive:
   T extends Type.TypePrimitive
-    ? AdjustOptionalSchema<T, ExtractPrimitive<T>>
+    ? ExtractPrimitive<T>
     : // Tuple:
     T extends Type.TypeTuple
-    ? AdjustOptionalSchema<T, ExtractTuple<T>>
+    ? ExtractTuple<T, TMode>
     : // Array:
     T extends Type.TypeArray
-    ? AdjustOptionalSchema<T, ExtractArray<T>>
+    ? ExtractArray<T, TMode>
     : // Or:
     T extends Type.TypeOr
-    ? AdjustOptionalSchema<T, ExtractOr<T>>
+    ? ExtractOr<T, TMode>
     : // Object:
     T extends Type.TypeObject
-    ? AdjustOptionalSchema<T, ExtractObject<T>>
+    ? ExtractObject<T, TMode>
     : // It's never gonna happen!
       never
+
+export type ExtractInput<T> = T extends Type.Types
+  ? AdjustSchemaInput<T, ExtractSchemaCore<T, 'input'>>
+  : never
+
+export type ExtractOutput<T> = T extends Type.Types
+  ? AdjustSchemaOutput<T, ExtractSchemaCore<T, 'output'>>
+  : never
+
+export type ExtractSchema<
+  T,
+  TMode extends 'input' | 'output'
+> = TMode extends 'input' ? ExtractInput<T> : ExtractOutput<T>
 
 export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:
