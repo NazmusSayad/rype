@@ -58,12 +58,35 @@ const result = r(schema, 100_100_100) // Error & You will get also error in type
 r.string()
 r.number()
 r.boolean()
-
 r.tuple()
 r.array()
 r.object()
-
 r.or()
+
+r.optional.string()
+r.optional.number()
+r.optional.boolean()
+r.optional.tuple()
+r.optional.array()
+r.optional.object()
+r.optional.or()
+
+// Shorthand for optional
+r.o.string()
+r.o.number()
+r.o.boolean()
+r.o.tuple()
+r.o.array()
+r.o.object()
+r.o.or()
+
+r.opt.string()
+r.opt.number()
+r.opt.boolean()
+r.opt.tuple()
+r.opt.array()
+r.opt.object()
+r.opt.or()
 ```
 
 ### Let's try some advanced types
@@ -86,9 +109,201 @@ const result = r(schema, 'My String')
 Note:
 **_You can apply similar checks to `r.number()` and `r.boolean()` as well_**
 
+### Disabling Type-Level Checks while using Runtime Checks
+
+In some scenarios, you may want to disable type-level checks while keeping the runtime checks enabled in the Schema Core library. We've added a feature that allows you to achieve this.
+
+```js
+const schema = r.string('String', 'Your String')
+
+const result1 = r(schema)('My String') // Runtime and type level check
+const result2 = r.onlyError(schema, 'My String') // Only runtime error
+const result3 = r.onlyError(schema)('My String') // Only runtime error
+```
+
+#### Additional Options
+
+```js
+r.noCheck
+// No type level check, no error thrown. Useful for filtering user input based on the schema.
+
+r.checkAll
+// Both runtime and type level check (default behavior).
+
+r.onlyType
+// Only type level check, no runtime error.
+
+r.onlyError
+// Only runtime error, no type level check.
+```
+
 <br/>
 <br/>
 
-# 🚧 This is currently under active development.
+### Super Advanced Example ⚠️
+
+```js
+r(r.number(1), 1)
+r(r.boolean(), true)
+r(r.boolean(), false)
+r(r.string('Boom', 'Fire'), 'Boom')
+
+r(r.or(r.boolean()))
+
+r(r.tuple(), [])
+r(r.array(r.string('World')))(['World'])
+r(r.string('string'), 'string')
+r(r.string('string', 'String'), 'String')
+
+r(r.number(1, 2, 3), 1)
+r(r.number(1, 2, 3), 2)
+r(r.number(1, 2, 3), 3)
+
+r(r.boolean(true), true)
+r(r.boolean(false), false)
+r(r.boolean(true, false), true)
+r(r.boolean(true, false), false)
+
+r(
+  r.object({
+    name: r.string('John Doe'),
+    age: r.o.number(),
+    hobbies: r.tuple(r.string('Play')),
+    intro: r.object({ address: r.string('BD') }),
+    jobs: r.tuple(r.object({ name: r.number(200) })),
+    asdf: r.tuple(r.string()),
+  }),
+
+  {
+    age: 0,
+    name: 'John Doe',
+    hobbies: ['Play'],
+    intro: { address: 'BD' },
+    jobs: [{ name: 200 }],
+    asdf: ['Boom'],
+  }
+)
+
+r(
+  r.tuple(
+    r.string('BD'),
+
+    r.array(
+      r.tuple(
+        r.array(
+          r.tuple(
+            r.object({
+              hi: r.string('Boom'),
+            })
+          )
+        )
+      )
+    ),
+
+    r.tuple(
+      r.object({
+        name: r.string('hello'),
+        ages: r.tuple(r.number(10)),
+      })
+    )
+  ),
+
+  [
+    'BD',
+
+    [
+      [
+        [
+          [
+            {
+              hi: 'Boom',
+            },
+          ],
+        ],
+      ],
+    ],
+
+    [
+      {
+        name: 'hello',
+        ages: [10],
+      },
+    ],
+  ]
+)
+```
+
+### Experiment 1: Object
+
+```js
+const schema = r.object({
+  name: r.string(),
+  age: r.number(),
+})
+
+r(schema, {
+  name: 'John Doe',
+  age: 10,
+})
+```
+
+### Experiment 2: Object with Array
+
+```js
+const schema = r.object({
+  name: r.string(),
+  age: r.number(),
+  hobbies: r.array(r.string()),
+})
+
+r(schema, {
+  name: 'John Doe',
+  age: 10,
+  hobbies: ['Cricket', 'Football'],
+})
+```
+
+### Experiment 3: Object with Array and Tuple
+
+```js
+const schema = r.object({
+  name: r.string(),
+  age: r.number(),
+  hobbies: r.array(r.string()),
+  unknown: r.tuple(r.string(), r.number()),
+})
+
+r(schema, {
+  name: 'John Doe',
+  age: 10,
+  hobbies: ['Cricket', 'Football'],
+  unknown: ['string', 100],
+})
+```
+
+### Experiment 4: Object with Array, Tuple, and Or
+
+```js
+const schema = r.object({
+  name: r.string(),
+  age: r.number(),
+  hobbies: r.array(r.string()),
+  unknown: r.tuple(r.string(), r.number()),
+  country: r.or(
+    r.string('Bangladesh'),
+    r.object({ name: r.string(), coords: r.number() })
+  ),
+})
+
+r(schema, {
+  name: 'John Doe',
+  age: 10,
+  hobbies: ['Cricket', 'Football'],
+  unknown: ['string', 100],
+  country: { name: 'Arab', coords: 100 },
+})
+```
+
+# 🚧 More will be added soon
 
 Stay tuned for updates as we enhance and improve the Schema Core library. We appreciate your support in making this tool more powerful and user-friendly.
