@@ -20,7 +20,6 @@
 
 ![image](https://github.com/NazmusSayad/rype/assets/87106526/f38f4462-0d7a-4759-b8a4-58a654d4d14d)
 
-
 ## Why Rype?
 
 In today's fast-paced development landscape, every millisecond counts, and type safety is paramount. Rype offers rapid validation with a small footprint, making it ideal for high-performance TypeScript applications, microservices, and projects where efficiency and type correctness are crucial. Elevate your project's performance while keeping your codebase lean and mean with Rype. Try it today and experience the future of type-optimized validation in TypeScript!
