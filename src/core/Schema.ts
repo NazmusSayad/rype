@@ -14,7 +14,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = 'core'
   schema: TFormat
   config: TConfig
-  _errorMessage: {
+  private errorMessage: {
     required?: string
     type?: string
   } = {}
@@ -39,7 +39,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * Note: This method doesn't check the value for schema validity at runtime.
    * @returns The updated schema with the specified default value.
    */
-  default(value: Exclude<ExtractOutput<typeof this>, undefined>) {
+  public default(value: Exclude<ExtractOutput<typeof this>, undefined>) {
     this.config.isRequired = false
     this.config.defaultValue = value
     return this as unknown as InferClassFromSchema<
@@ -55,8 +55,8 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param message The error message as a string.
    * @returns The updated schema with the specified error message.
    */
-  setTypeErrMsg(message: string) {
-    this._errorMessage.type = message
+  public setTypeErrMsg(message: string) {
+    this.errorMessage.type = message
     return this
   }
 
@@ -66,8 +66,8 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param message The error message as a string.
    * @returns The updated schema with the specified error message.
    */
-  setRequiredErrMsg(message: string) {
-    this._errorMessage.required = message
+  public setRequiredErrMsg(message: string) {
+    this.errorMessage.required = message
     return this
   }
 
@@ -79,7 +79,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @throws {RypeError} If validation fails, an error is thrown.
    * @returns  The result of the validation if successful.
    */
-  parse(input: unknown, name?: string) {
+  public parse(input: unknown, name?: string) {
     return this._checkAndGetResult(input, {
       path: name || '',
       throw: true,
@@ -93,7 +93,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param {string} [name] - A descriptive name or label for the validation point (optional).
    * @returns  The result of the validation if successful else undefined.
    */
-  safeParse(input: unknown, name?: string) {
+  public safeParse(input: unknown, name?: string) {
     return this._checkAndGetResult(input, {
       path: name || '',
       throw: false,
@@ -103,14 +103,14 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * This method is similar to the .parse method, but includes input type validation.
    */
-  typedParse(input: ExtractInput<typeof this>, name?: string) {
+  public typedParse(input: ExtractInput<typeof this>, name?: string) {
     return this.parse(input, name)
   }
 
   /**
    * This method is similar to the .safeParse method, but includes input type validation.
    */
-  typedSafeParse(input: ExtractInput<typeof this>, name?: string) {
+  public typedSafeParse(input: ExtractInput<typeof this>, name?: string) {
     return this.safeParse(input, name)
   }
 
@@ -215,8 +215,8 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    */
   _getErr(input: unknown, message: string) {
     const msgOrCustomMsg =
-      typeof this._errorMessage.type === 'string'
-        ? this._errorMessage.type
+      typeof this.errorMessage.type === 'string'
+        ? this.errorMessage.type
         : message
 
     return new RypeTypeError(msgOrCustomMsg, this.schema, input, this.config)
@@ -231,8 +231,8 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    */
   _getRequiredErr(input: unknown, message: string) {
     const msgOrCustomMsg =
-      typeof this._errorMessage.required === 'string'
-        ? this._errorMessage.required
+      typeof this.errorMessage.required === 'string'
+        ? this.errorMessage.required
         : message
 
     return new RypeRequiredError(
