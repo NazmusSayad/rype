@@ -8,7 +8,6 @@ export type SchemaConfig = {
 export type SchemaCheckConf = {
   path: string
   throw: boolean
-  getUnthrownError?: boolean
 }
 
 export type InputEnv = { [key: string]: TypePrimitive }

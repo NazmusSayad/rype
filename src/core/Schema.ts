@@ -1,9 +1,3 @@
-import {
-  RypeError,
-  RypeDevError,
-  RypeTypeError,
-  RypeRequiredError,
-} from '../Error'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import { SchemaName } from './symbols'
@@ -11,6 +5,7 @@ import messages from '../errorMessages'
 import { SchemaCheckConf, SchemaConfig } from '../types'
 import { ValidConstructor, ValidObject } from '../utils.type'
 import { ExtractOutput, InferClassFromSchema } from './Extract.type'
+import { RypeError, RypeTypeError, RypeRequiredError } from '../Error'
 
 class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = SchemaName.core
@@ -43,10 +38,6 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     TFormat,
     { isRequired: false; defaultValue: unknown }
   > {
-    if (!(this.name in ConstructorMap)) {
-      throw new RypeDevError(this.name + " must have a 'Constructor' property")
-    }
-
     const Constructor = ConstructorMap[
       this.name as keyof typeof ConstructorMap
     ] as ValidConstructor
@@ -58,11 +49,26 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   }
 
   /**
+   * Validates the input against the schema and returns the validation result or throws an error.
+   *
+   * @param {unknown} input - The value to be validated against the schema.
+   * @param {string} [name] - A descriptive name or label for the validation point (optional).
+   * @throws {RypeError} If validation fails, an error is thrown.
+   * @returns  The result of the validation if successful.
+   */
+  parse(input: unknown, name?: string) {
+    return this._checkAndGetResult(input, {
+      path: name || '',
+      throw: true,
+    }) as ExtractOutput<typeof this>
+  }
+
+  /**
    * Check input against the schema and return the result or throw an error (if configured).
    *
    * @param input - The value to be checked against the schema.
    * @param conf - Configuration for schema checking.
-   * @returns If successful, returns the result of the check; If an error is thrown and 'conf.throw' is false, this returns undefined.
+   * @returns If successful, returns the result of the check; If 'conf.throw' is false an error is thrown, this returns undefined.
    */
   _checkAndGetResult(input: unknown, conf: SchemaCheckConf): unknown {
     const output = this._checkAndThrowError(input, conf)
@@ -185,11 +191,11 @@ class SchemaPrimitiveCore<
   }
 
   _checkType(input: unknown, conf: SchemaCheckConf): RypeError | RypeOk {
-    const schema = this.schema
+    const schema = new Set(this.schema as Iterable<string | number | boolean>)
 
     if (
       typeof input !== this.name ||
-      (schema.length && !schema.includes(input as never))
+      (schema.size && !schema.has(input as string | number | boolean))
     ) {
       return this._getErr(
         input,
@@ -264,6 +270,7 @@ export class SchemaArray<
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
     const output: unknown[] = []
+    const schema = new SchemaOr(this.schema, { isRequired: true })
 
     if (!Array.isArray(inputs)) {
       return this._getErr(
@@ -275,14 +282,14 @@ export class SchemaArray<
     for (let i = 0; i <= inputs.length - 1; i++) {
       const input = inputs[i]
       const path = `${conf.path}array[${i}]`
-      const schema = new SchemaOr(this.schema, { isRequired: true })
       const result = schema._checkAndThrowError(input, {
         ...conf,
-        getUnthrownError: true,
         path,
       })
 
-      if (result instanceof RypeOk) output.push(result.value)
+      if (result instanceof RypeOk) {
+        output.push(result.value)
+      }
     }
 
     return new RypeOk(output)
@@ -335,9 +342,7 @@ export class SchemaOr<
     for (let i = 0; i <= this.schema.length - 1; i++) {
       const schema = this.schema[i]
       const result = schema._checkCore(input, { ...conf })
-      if (result instanceof RypeOk) {
-        return new RypeOk(result.value)
-      }
+      if (result instanceof RypeOk) return result
     }
 
     return this._getErr(
