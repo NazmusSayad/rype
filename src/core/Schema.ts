@@ -292,6 +292,63 @@ export class SchemaString<
   R
 > {
   name = 'string' as const
+
+  _minLength?: number
+  _maxLength?: number
+
+  minLength(number: number) {
+    if (this.schema.length > 0) {
+      throw new RypeDevError(
+        "You can't use min/max while using specefic string"
+      )
+    }
+
+    this._minLength = number
+    return this
+  }
+
+  maxLength(number: number) {
+    if (this.schema.length > 0) {
+      throw new RypeDevError(
+        "You can't use min/max while using specefic string"
+      )
+    }
+
+    this._maxLength = number
+    return this
+  }
+
+  _checkType2(
+    result: RypeOk | RypeError,
+    input: unknown,
+    conf: SchemaCheckConf
+  ) {
+    if (
+      typeof this._minLength === 'number' &&
+      (input as string).length < this._minLength
+    ) {
+      return this._getErr(
+        input,
+        messages.getStringMinLengthErr(conf.path, {
+          MIN: String(this._minLength),
+        })
+      )
+    }
+
+    if (
+      typeof this._maxLength === 'number' &&
+      (input as string).length > this._maxLength
+    ) {
+      return this._getErr(
+        input,
+        messages.getStringMaxLengthErr(conf.path, {
+          MAX: String(this._maxLength),
+        })
+      )
+    }
+
+    return result
+  }
 }
 
 export class SchemaNumber<

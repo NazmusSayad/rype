@@ -1,9 +1,9 @@
 import r from './index'
 
 try {
-  const schema = r.number().min(100).max(200)
+  const schema = r.string().minLength(3).maxLength(6)
 
-  const result = schema.safeParse(200)
+  const result = schema.typedParse('mi')
 
   type Input = Parameters<(typeof schema)['typedParse']>[0]
   type Result = typeof result

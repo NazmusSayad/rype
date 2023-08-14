@@ -25,8 +25,14 @@ export default {
     'Number must be greater than <$MIN$> <$PATH$>'
   ),
 
-  getNumberMaxErr: createMessage(
-    'Number must be less than <$MAX$> <$PATH$>'
+  getNumberMaxErr: createMessage('Number must be less than <$MAX$> <$PATH$>'),
+
+  getStringMinLengthErr: createMessage(
+    'String length must be greater than <$MIN$> <$PATH$>'
+  ),
+
+  getStringMaxLengthErr: createMessage(
+    'String length must be less than <$MAX$> <$PATH$>'
   ),
 
   getTypeErr: createMessage(
