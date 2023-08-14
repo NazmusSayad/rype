@@ -84,7 +84,7 @@ const result = r(schema, 'My String')
 ```
 
 Note:
-**_You can apply similar checks to r.number() and r.boolean() as well_**
+**_You can apply similar checks to `r.number()` and `r.boolean()` as well_**
 
 <br/>
 <br/>
