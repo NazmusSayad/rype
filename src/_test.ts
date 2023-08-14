@@ -1,7 +1,14 @@
 import r from './index'
 
 try {
-  const result = r.noCheck(r.or(r.string()))(['aksdjfk', 100])
+  const schema = r.checkAll(
+    r.number().default(100)
+  )
+
+  const result = schema(100)
+
+  type Input = Parameters<typeof schema>[0]
+  type Result = typeof result
 
   console.log()
   console.log('Result:')

@@ -8,11 +8,11 @@ import methods from './methods'
 import { caller } from './base'
 import { InputEnv } from './types'
 import { ValidObject } from './utils.type'
-import { ExtractSchema } from './core/Extract.type'
+import { ExtractOutput } from './core/Extract.type'
 
 export function env<T extends InputEnv>(
   schema: T
-): ExtractSchema<SchemaObject<T, { isRequired: true }>> {
+): ExtractOutput<SchemaObject<T, { isRequired: true }>> {
   const stringSchema: ValidObject = {}
   const result: ValidObject = {}
 
