@@ -1,11 +1,8 @@
 import r from './index'
 
 try {
-  const schema = r.checkAll(r.object({ name: r.string().default('Boom') }))
+  const result = r.array(r.string('Boom')).typedParse(['Boom'])
 
-  const result = schema({})
-
-  type Input = Parameters<typeof schema>[0]
   type Result = typeof result
 
   console.log()

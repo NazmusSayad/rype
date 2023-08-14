@@ -46,4 +46,4 @@ export type ExtractArray<
   T extends Type.TypeArray,
   TMode extends 'input' | 'output',
   U = ExtractArrayLike<T, TMode>
-> = Prettify<U[keyof U][]>
+> = U[keyof U] extends never ? any[] : Prettify<U[keyof U][]>

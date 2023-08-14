@@ -4,7 +4,11 @@ import { SchemaName } from './symbols'
 import messages from '../errorMessages'
 import { SchemaCheckConf, SchemaConfig } from '../types'
 import { ValidConstructor, ValidObject } from '../utils.type'
-import { ExtractOutput, InferClassFromSchema } from './Extract.type'
+import {
+  ExtractInput,
+  ExtractOutput,
+  InferClassFromSchema,
+} from './Extract.type'
 import { RypeError, RypeTypeError, RypeRequiredError } from '../Error'
 
 class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
@@ -61,6 +65,13 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       path: name || '',
       throw: true,
     }) as ExtractOutput<typeof this>
+  }
+
+  /**
+   * This method is similar to the .parse method, but includes input type validation.
+   */
+  typedParse(input: ExtractInput<typeof this>, name?: string) {
+    return this.parse(input, name)
   }
 
   /**
@@ -269,15 +280,20 @@ export class SchemaArray<
   name = SchemaName.array
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
-    const output: unknown[] = []
-    const schema = new SchemaOr(this.schema, { isRequired: true })
-
     if (!Array.isArray(inputs)) {
       return this._getErr(
         inputs,
         messages.getOrTypeErr(conf.path, { TYPE: this.type })
       )
     }
+
+    if (this.schema.length === 0) return new RypeOk(inputs)
+
+    const output: unknown[] = []
+    const schema =
+      this.schema.length === 1
+        ? new SchemaOr(this.schema, { isRequired: true })
+        : this.schema[0]
 
     for (let i = 0; i <= inputs.length - 1; i++) {
       const input = inputs[i]
