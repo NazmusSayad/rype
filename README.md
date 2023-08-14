@@ -55,7 +55,7 @@ const result = r(schema, 'My String') // Fine
 const result = r(schema, 100_100_100) // Error & You will get also error in type level(ts)
 ```
 
-### Let's try some advanced types
+### Experiment 0: Primitive
 
 ```js
 const schema = r.string('String')
@@ -96,41 +96,39 @@ const schema = r.object({
   name: r.string(),
   age: r.number(),
   hobbies: r.array(r.string()),
+  someValues: r.array(r.string(), r.number()),
 })
 
 r(schema, {
   name: 'John Doe',
   age: 10,
   hobbies: ['Cricket', 'Football'],
+  someValues: ['Cricket', 100],
 })
 ```
 
-### Experiment 3: Object with Array and Tuple
+### Experiment 3: Object with Tuple
 
 ```js
 const schema = r.object({
   name: r.string(),
   age: r.number(),
-  hobbies: r.array(r.string()),
   unknown: r.tuple(r.string(), r.number()),
 })
 
 r(schema, {
   name: 'John Doe',
   age: 10,
-  hobbies: ['Cricket', 'Football'],
   unknown: ['string', 100],
 })
 ```
 
-### Experiment 4: Object with Array, Tuple, and Or
+### Experiment 4: Object with Or
 
 ```js
 const schema = r.object({
   name: r.string(),
   age: r.number(),
-  hobbies: r.array(r.string()),
-  unknown: r.tuple(r.string(), r.number()),
   country: r.or(
     r.string('Bangladesh'),
     r.object({ name: r.string(), coords: r.number() })
@@ -140,8 +138,6 @@ const schema = r.object({
 r(schema, {
   name: 'John Doe',
   age: 10,
-  hobbies: ['Cricket', 'Football'],
-  unknown: ['string', 100],
   country: { name: 'Arab', coords: 100 },
 })
 ```
@@ -190,9 +186,21 @@ In some scenarios, you may want to disable type-level checks while keeping the r
 ```js
 const schema = r.string('String', 'Your String')
 
-const result1 = r(schema)('My String') // Only runtime error
-const result2 = r.onlyError(schema, 'My String') // Only runtime error
-const result3 = r.onlyError(schema)('My String') // Only runtime error
+const result1 = r.noCheck(schema, 'My String') // No Error
+const result1 = r.noCheck(schema)('My String') // No Error
+
+const result1 = r(schema, 'My String') // Both Error
+const result2 = schema.typedParse('My String') // Both Error
+const result5 = r.checkAll(schema, 'My String') // Both Error
+const result5 = r.checkAll(schema)('My String') // Both Error
+
+const result5 = r.onlyType(schema, 'My String') // Only type error
+const result5 = r.onlyType(schema)('My String') // Only type error
+
+const result4 = r(schema)('My String') // Only runtime error
+const result3 = schema.parse('My String') // Only runtime error
+const result5 = r.onlyError(schema, 'My String') // Only runtime error
+const result6 = r.onlyError(schema)('My String') // Only runtime error
 ```
 
 #### Additional Options
