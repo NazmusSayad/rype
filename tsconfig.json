@@ -7,7 +7,6 @@
     "inlineSourceMap": false,
     "pretty": true,
     "strict": true,
-    // Must need this;
     "strictNullChecks": true
   },
   "include": ["src"]
