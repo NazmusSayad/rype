@@ -8,7 +8,12 @@ import * as Type from './Schema.type'
 import messages from '../errorMessages'
 import { ValidObject } from '../utils.type'
 import { SchemaCheckConf, SchemaConfig } from '../types'
-import { RypeError, RypeTypeError, RypeRequiredError } from '../Error'
+import {
+  RypeError,
+  RypeTypeError,
+  RypeRequiredError,
+  RypeDevError,
+} from '../Error'
 
 class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = 'core'
@@ -171,8 +176,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
 
     const result = this._checkType(input, conf)
     if (result instanceof RypeError) return result
-    if (this._checkType2) return this._checkType2(input, conf)
-    return result
+    return this._checkType2(result, input, conf)
   }
 
   /**
@@ -195,7 +199,13 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param conf - Configuration for checking the schema.
    * @returns If successful, returns a RypeOk object; otherwise, returns a RypeError.
    */
-  _checkType2?: (input: unknown, conf: SchemaCheckConf) => RypeOk | RypeError
+  _checkType2(
+    prevResult: RypeOk | RypeError,
+    input: unknown,
+    conf: SchemaCheckConf
+  ) {
+    return prevResult
+  }
 
   /**
    * Get the type of the schema as an array of strings.
@@ -292,6 +302,62 @@ export class SchemaNumber<
   R
 > {
   name = 'number' as const
+  _minValue?: number
+  _maxValue?: number
+
+  min(number: number) {
+    if (this.schema.length > 0) {
+      throw new RypeDevError(
+        "You can't use min/max while using specefic number"
+      )
+    }
+
+    this._minValue = number
+    return this
+  }
+
+  max(number: number) {
+    if (this.schema.length > 0) {
+      throw new RypeDevError(
+        "You can't use min/max while using specefic number"
+      )
+    }
+
+    this._maxValue = number
+    return this
+  }
+
+  _checkType2(
+    result: RypeOk | RypeError,
+    input: unknown,
+    conf: SchemaCheckConf
+  ) {
+    if (
+      typeof this._minValue === 'number' &&
+      (input as number) < this._minValue
+    ) {
+      return this._getErr(
+        input,
+        messages.getNumberMinErr(conf.path, {
+          MIN: String(this._minValue),
+        })
+      )
+    }
+
+    if (
+      typeof this._maxValue === 'number' &&
+      (input as number) > this._maxValue
+    ) {
+      return this._getErr(
+        input,
+        messages.getNumberMaxErr(conf.path, {
+          MAX: String(this._maxValue),
+        })
+      )
+    }
+
+    return result
+  }
 }
 
 export class SchemaBoolean<
