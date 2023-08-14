@@ -116,7 +116,7 @@ In some scenarios, you may want to disable type-level checks while keeping the r
 ```js
 const schema = r.string('String', 'Your String')
 
-const result1 = r(schema)('My String') // Runtime and type level check
+const result1 = r(schema)('My String') // Only runtime error
 const result2 = r.onlyError(schema, 'My String') // Only runtime error
 const result3 = r.onlyError(schema)('My String') // Only runtime error
 ```
