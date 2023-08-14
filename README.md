@@ -7,7 +7,7 @@
 - **TypeScript v5+**: Rype is optimized for TypeScript version 5 and above, ensuring compatibility with the latest TypeScript features and improvements.
 - **"strictNullChecks": true**: To ensure robust type checking, please set `"strictNullChecks": true` inside your `tsconfig.json` configuration.
 
-### Key Features
+## Key Features
 
 - **Blazing Speed**: Rype is optimized for speed, delivering rapid validation results.
 - **Minimalistic**: With a compact footprint, it's easy to integrate into your project.
@@ -21,11 +21,11 @@
 ![image](https://github.com/NazmusSayad/rype/assets/87106526/f38f4462-0d7a-4759-b8a4-58a654d4d14d)
 
 
-### Why Rype?
+## Why Rype?
 
 In today's fast-paced development landscape, every millisecond counts, and type safety is paramount. Rype offers rapid validation with a small footprint, making it ideal for high-performance TypeScript applications, microservices, and projects where efficiency and type correctness are crucial. Elevate your project's performance while keeping your codebase lean and mean with Rype. Try it today and experience the future of type-optimized validation in TypeScript!
 
-### Installation
+## Installation
 
 - with npm
 
@@ -45,7 +45,7 @@ yarn add rype
 pnpm add rype
 ```
 
-### Example
+## Example
 
 ```js
 import { r } from 'rype'
@@ -304,6 +304,13 @@ r(
   ]
 )
 ```
+
+<br/>
+
+## Comparing with 'Zod'
+
+![image](https://github.com/NazmusSayad/rype/assets/87106526/aa53bc63-0fd7-4f4f-937e-b38ad251ada8)
+![image](https://github.com/NazmusSayad/rype/assets/87106526/2d031f4d-9ec8-4f72-b1a8-ba79e6d73147)
 
 <br/>
 <br/>
