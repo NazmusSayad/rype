@@ -216,7 +216,7 @@ r(r.boolean(), true)
 r(r.boolean(), false)
 r(r.string('Boom', 'Fire'), 'Boom')
 
-r(r.or(r.boolean()))
+r(r.or(r.boolean()), false)
 
 r(r.tuple(), [])
 r(r.array(r.string('World')))(['World'])
