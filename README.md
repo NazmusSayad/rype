@@ -55,7 +55,7 @@ const result = r(schema, 'My String') // Fine
 const result = r(schema, 100_100_100) // Error & You will get also error in type level(ts)
 ```
 
-### Experiment 0: Primitive
+### Example 0: Primitive
 
 ```js
 const schema = r.string('String')
@@ -75,7 +75,7 @@ const result = r(schema, 'My String')
 Note:
 **_You can apply similar checks to `r.number()` and `r.boolean()` as well_**
 
-### Experiment 1: Object
+### Example 1: Object
 
 ```js
 const schema = r.object({
@@ -89,7 +89,7 @@ r(schema, {
 })
 ```
 
-### Experiment 2: Object with Array
+### Example 2: Object with Array
 
 ```js
 const schema = r.object({
@@ -107,7 +107,7 @@ r(schema, {
 })
 ```
 
-### Experiment 3: Object with Tuple
+### Example 3: Object with Tuple
 
 ```js
 const schema = r.object({
@@ -123,7 +123,7 @@ r(schema, {
 })
 ```
 
-### Experiment 4: Object with Or
+### Example 4: Object with Or
 
 ```js
 const schema = r.object({
