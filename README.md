@@ -140,6 +140,77 @@ r.onlyError
 <br/>
 <br/>
 
+### Experiment 1: Object
+
+```js
+const schema = r.object({
+  name: r.string(),
+  age: r.number(),
+})
+
+r(schema, {
+  name: 'John Doe',
+  age: 10,
+})
+```
+
+### Experiment 2: Object with Array
+
+```js
+const schema = r.object({
+  name: r.string(),
+  age: r.number(),
+  hobbies: r.array(r.string()),
+})
+
+r(schema, {
+  name: 'John Doe',
+  age: 10,
+  hobbies: ['Cricket', 'Football'],
+})
+```
+
+### Experiment 3: Object with Array and Tuple
+
+```js
+const schema = r.object({
+  name: r.string(),
+  age: r.number(),
+  hobbies: r.array(r.string()),
+  unknown: r.tuple(r.string(), r.number()),
+})
+
+r(schema, {
+  name: 'John Doe',
+  age: 10,
+  hobbies: ['Cricket', 'Football'],
+  unknown: ['string', 100],
+})
+```
+
+### Experiment 4: Object with Array, Tuple, and Or
+
+```js
+const schema = r.object({
+  name: r.string(),
+  age: r.number(),
+  hobbies: r.array(r.string()),
+  unknown: r.tuple(r.string(), r.number()),
+  country: r.or(
+    r.string('Bangladesh'),
+    r.object({ name: r.string(), coords: r.number() })
+  ),
+})
+
+r(schema, {
+  name: 'John Doe',
+  age: 10,
+  hobbies: ['Cricket', 'Football'],
+  unknown: ['string', 100],
+  country: { name: 'Arab', coords: 100 },
+})
+```
+
 ### Super Advanced Example ⚠️
 
 ```js
@@ -231,77 +302,6 @@ r(
     ],
   ]
 )
-```
-
-### Experiment 1: Object
-
-```js
-const schema = r.object({
-  name: r.string(),
-  age: r.number(),
-})
-
-r(schema, {
-  name: 'John Doe',
-  age: 10,
-})
-```
-
-### Experiment 2: Object with Array
-
-```js
-const schema = r.object({
-  name: r.string(),
-  age: r.number(),
-  hobbies: r.array(r.string()),
-})
-
-r(schema, {
-  name: 'John Doe',
-  age: 10,
-  hobbies: ['Cricket', 'Football'],
-})
-```
-
-### Experiment 3: Object with Array and Tuple
-
-```js
-const schema = r.object({
-  name: r.string(),
-  age: r.number(),
-  hobbies: r.array(r.string()),
-  unknown: r.tuple(r.string(), r.number()),
-})
-
-r(schema, {
-  name: 'John Doe',
-  age: 10,
-  hobbies: ['Cricket', 'Football'],
-  unknown: ['string', 100],
-})
-```
-
-### Experiment 4: Object with Array, Tuple, and Or
-
-```js
-const schema = r.object({
-  name: r.string(),
-  age: r.number(),
-  hobbies: r.array(r.string()),
-  unknown: r.tuple(r.string(), r.number()),
-  country: r.or(
-    r.string('Bangladesh'),
-    r.object({ name: r.string(), coords: r.number() })
-  ),
-})
-
-r(schema, {
-  name: 'John Doe',
-  age: 10,
-  hobbies: ['Cricket', 'Football'],
-  unknown: ['string', 100],
-  country: { name: 'Arab', coords: 100 },
-})
 ```
 
 # 🚧 More will be added soon
