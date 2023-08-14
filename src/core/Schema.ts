@@ -14,7 +14,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = 'core'
   schema: TFormat
   config: TConfig
-  #errorMessage: {
+  _errorMessage: {
     required?: string
     type?: string
   } = {}
@@ -37,7 +37,7 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    *
    * @param value - Default value that should be matched to the schema.
    * Note: This method doesn't check the value for schema validity at runtime.
-   * @returns A new schema with the specified default value.
+   * @returns The updated schema with the specified default value.
    */
   default(value: Exclude<ExtractOutput<typeof this>, undefined>) {
     this.config.isRequired = false
@@ -49,13 +49,25 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     >
   }
 
+  /**
+   * Sets a custom error message for type mismatch errors.
+   *
+   * @param message The error message as a string.
+   * @returns The updated schema with the specified error message.
+   */
   setTypeErrMsg(message: string) {
-    this.#errorMessage.type = message
+    this._errorMessage.type = message
     return this
   }
 
+  /**
+   * Sets a custom error message for required errors, which occur when the schema is required but the value is undefined or null.
+   *
+   * @param message The error message as a string.
+   * @returns The updated schema with the specified error message.
+   */
   setRequiredErrMsg(message: string) {
-    this.#errorMessage.required = message
+    this._errorMessage.required = message
     return this
   }
 
@@ -203,8 +215,8 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    */
   _getErr(input: unknown, message: string) {
     const msgOrCustomMsg =
-      typeof this.#errorMessage.type === 'string'
-        ? this.#errorMessage.type
+      typeof this._errorMessage.type === 'string'
+        ? this._errorMessage.type
         : message
 
     return new RypeTypeError(msgOrCustomMsg, this.schema, input, this.config)
@@ -219,8 +231,8 @@ class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    */
   _getRequiredErr(input: unknown, message: string) {
     const msgOrCustomMsg =
-      typeof this.#errorMessage.required === 'string'
-        ? this.#errorMessage.required
+      typeof this._errorMessage.required === 'string'
+        ? this._errorMessage.required
         : message
 
     return new RypeRequiredError(

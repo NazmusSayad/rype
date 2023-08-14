@@ -1,10 +1,11 @@
 {
   "name": "rype",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "scripts": {
     "dev": "npm-ez dev",
     "build": "npm-ez build",
-    "test": "node --watch ./dist-cjs/_test.js"
+    "test": "node --watch ./dist-cjs/_test.js",
+    "benchmark": "node --watch ./dist-cjs/_benchmark.js"
   },
   "devDependencies": {
     "@types/node": "^20.4.10",

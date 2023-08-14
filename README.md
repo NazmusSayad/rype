@@ -238,7 +238,9 @@ const result3 = schema.safeParse('My String') // No Error
 const result4 = schema.typedSafeParse('My String') // Only type error
 ```
 
-### Super Advanced Example ⚠️
+### Super Advanced Example
+
+⚠️: Wear glasses before watching this
 
 ```ts
 // Import the updated validation library
@@ -331,13 +333,6 @@ r.tuple(
     ])
 )
 ```
-
-<br/>
-
-## Comparing with 'Zod'
-
-![image](https://github.com/NazmusSayad/rype/assets/87106526/aa53bc63-0fd7-4f4f-937e-b38ad251ada8)
-![image](https://github.com/NazmusSayad/rype/assets/87106526/2d031f4d-9ec8-4f72-b1a8-ba79e6d73147)
 
 <br/>
 <br/>

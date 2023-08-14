@@ -1,7 +1,7 @@
 import r from './index'
 
 try {
-  const schema = r.string().default('boom').setTypeErrMsg('Boom')
+  const schema = r.string().default('boom')
 
   const result = schema.parse(0)
 
