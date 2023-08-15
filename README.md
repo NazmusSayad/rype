@@ -310,7 +310,7 @@ These parsing methods empower you to choose the appropriate approach for your va
 
 ```ts
 // Import the updated validation library
-const { r } = require('./index')
+import { r } from 'rype'
 
 // Example 1
 r.number(1).parseTyped(1)
@@ -366,38 +366,6 @@ r.object({
   jobs: [{ name: 200 }],
   asdf: ['Boom'],
 })
-
-// Example 13
-r.tuple(
-  r.string('BD'),
-  r
-    .array(
-      r.tuple(r.array(r.tuple(r.object({ hi: r.string('Boom') })))),
-      r.tuple(
-        r.object({ name: r.string('hello'), ages: r.tuple(r.number(10)) })
-      )
-    )
-    .parseTyped([
-      'BD',
-      [
-        [
-          [
-            [
-              {
-                hi: 'Boom',
-              },
-            ],
-          ],
-        ],
-      ],
-      [
-        {
-          name: 'hello',
-          ages: [10],
-        },
-      ],
-    ])
-)
 ```
 
 <br/>

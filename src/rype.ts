@@ -50,7 +50,4 @@ export default {
   o: optionalMethods,
   opt: optionalMethods,
   optional: optionalMethods,
-
-  types: requiredMethods,
-  optionalTypes: optionalMethods,
 }

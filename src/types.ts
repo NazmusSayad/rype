@@ -1,5 +1,4 @@
 import { RypeError } from './Error'
-import { RypeOk } from './RypeOk'
 import { TypePrimitive } from './core/Schema.type'
 
 export type CustomValidator<T> = (result: T) => string | void

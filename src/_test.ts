@@ -1,30 +1,11 @@
-import r from './index'
+import r, { env } from './index'
 
-try {
-  const schema = r
-    .object({
-      name: r.string(),
-      password: r.string(),
-      confirmPassword: r.string(),
-    })
-    .validate((data) => {
-      if (data.password !== data.confirmPassword) {
-        return "Password doesn't matched"
-      }
-    })
+process.env.VARIABLE_ONE = '123'
+// process.env.VARIABLE_TWO = undefined
 
-  const result = schema.filter({})
+const result = env({
+  VARIABLE_ONE: r.number(),
+  VARIABLE_TWO: r.boolean().default(true),
+})
 
-  type Input = Parameters<(typeof schema)['parseTyped']>[0]
-  type Result = typeof result
-
-  console.log()
-  console.log('Result:')
-  console.log(result)
-  console.log()
-} catch (err: any) {
-  console.log()
-  console.log('Error:')
-  console.log(err.message)
-  console.log()
-}
+console.log(result)
