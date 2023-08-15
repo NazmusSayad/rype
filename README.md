@@ -304,53 +304,13 @@ const result4 = schema.safeParseListTyped('My String') // Generates only a type 
 
 These parsing methods empower you to choose the appropriate approach for your validation needs, enhancing the precision and control over your data validation process.
 
-### Super Advanced Example
+### Complex Example
 
 ⚠️: Wear glasses before watching this
 
 ```ts
-// Import the updated validation library
 import { r } from 'rype'
 
-// Example 1
-r.number(1).parseTyped(1)
-
-// Example 2
-r.boolean().parseTyped(true)
-
-// Example 3
-r.boolean().parseTyped(false)
-
-// Example 4
-r.string('Boom', 'Fire').parseTyped('Boom')
-
-// Example 5
-r.or(r.boolean()).parseTyped(false)
-
-// Example 6
-r.tuple().parseTyped([])
-
-// Example 7
-r.array(r.string('World')).parseTyped(['World'])
-
-// Example 8
-r.string('string').parseTyped('string')
-
-// Example 9
-r.string('string', 'String').parseTyped('String')
-
-// Example 10
-r.number(1, 2, 3).parseTyped(1)
-r.number(1, 2, 3).parseTyped(2)
-r.number(1, 2, 3).parseTyped(3)
-
-// Example 11
-r.boolean(true).parseTyped(true)
-r.boolean(false).parseTyped(false)
-r.boolean(true, false).parseTyped(true)
-r.boolean(true, false).parseTyped(false)
-
-// Example 12
 r.object({
   name: r.string('John Doe'),
   age: r.o.number(),
