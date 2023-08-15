@@ -7,9 +7,9 @@ export type ExtractPrimitive<T extends Type.TypePrimitive> = T['schema'][number]
 export type ExtractObject<
   T extends Type.TypeObject,
   TMode extends 'input' | 'output'
-> = Prettify<
-  AdjustReadonlyObject<
-    T,
+> = AdjustReadonlyObject<
+  T,
+  Prettify<
     MakeOptional<{
       [K in keyof T['schema']]: InferSchema<T['schema'][K], TMode>
     }>
@@ -19,9 +19,9 @@ export type ExtractObject<
 export type ExtractTuple<
   T extends Type.TypeTuple,
   TMode extends 'input' | 'output'
-> = Prettify<
-  AdjustReadonlyObject<
-    T,
+> = AdjustReadonlyObject<
+  T,
+  Prettify<
     FormatTupleToNeverTuple<
       {
         [K in keyof T['schema'] as K extends `${number}`
@@ -54,4 +54,4 @@ export type ExtractArray<
   U = ExtractArrayLike<T, TMode>
 > = U[keyof U] extends never
   ? any[]
-  : Prettify<AdjustReadonlyObject<T, U[keyof U][]>>
+  : AdjustReadonlyObject<T, Prettify<U[keyof U][]>>

@@ -1,6 +1,7 @@
 import { RypeError } from './Error'
 import { TypePrimitive } from './core/Schema.type'
 
+export type InputEnv = { [key: string]: TypePrimitive }
 export type CustomValidator<T> = (result: T) => string | void
 
 export type SchemaConfig = {
@@ -15,5 +16,3 @@ export type SchemaCheckConf = {
   safeParseRef?: { current: boolean }
   safeParseErrors?: RypeError[]
 }
-
-export type InputEnv = { [key: string]: TypePrimitive }

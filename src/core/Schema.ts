@@ -1,16 +1,19 @@
 import {
+  SchemaCore,
+  SchemaFreezableCore,
+  SchemaPrimitiveCore,
+} from './SchemaCore'
+import {
   ValidObject,
   UpperCaseStrArray,
   LowerCaseStrArray,
   CapitalizeStrArray,
-  CutFirstCharsOfStrArray,
 } from '../utils.type'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import messages from '../errorMessages'
 import { RypeError, RypeDevError } from '../Error'
 import { SchemaCheckConf, SchemaConfig } from '../types'
-import { SchemaCore, SchemaFreezableCore, SchemaPrimitiveCore } from './SchemaCore'
 
 export class SchemaString<
   T extends Type.InputString,

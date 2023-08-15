@@ -7,9 +7,9 @@ import {
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import messages from '../errorMessages'
+import { Prettify } from '../utils.type'
 import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../types'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
-import { Prettify } from '../utils.type'
 
 export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = 'core'
