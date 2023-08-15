@@ -22,13 +22,3 @@ jobs:
 
       - name: Run tests
         run: yarn test:jest
-
-      - name: Build project
-        if: success()
-        run: yarn build
-
-      - name: Publish to npm
-        if: success()
-        run: npm publish || true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
