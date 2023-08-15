@@ -199,8 +199,6 @@ const result = schema.parseTyped({
 // Error: Password doesn't matched
 ```
 
-Note: **_You can use default with everything :)_**
-
 ### Example 8: Customizing Error Messages
 
 You can easily set custom error messages for specific cases during runtime checking using Rype.
