@@ -9,7 +9,7 @@ describe('Validation Library', () => {
     expect(result2).toBe('Boom')
 
     const result3 = r.string('string').parseTyped('string')
-    expect(result3).toBe('string')
+    expect(result3).toBe('string1')
 
     const result4 = r.string('string', 'String').parseTyped('String')
     expect(result4).toBe('String')
