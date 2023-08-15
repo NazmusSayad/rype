@@ -55,24 +55,24 @@ import { r } from 'rype'
 const schema = r.string()
 
 // Validate a string
-const result1 = schema.typedParse('My String') // Valid
+const result1 = schema.parseTyped('My String') // Valid
 
 // Attempt to validate a number (will result in a validation error)
-const result2 = schema.typedParse(100_100_100) // Error - In both runtime and TypeScript type level
+const result2 = schema.parseTyped(100_100_100) // Error - In both runtime and TypeScript type level
 ```
 
 ### Example 1: Primitive
 
 ```ts
 const schema = r.string('String')
-const result = schema.typedParse('My String')
+const result = schema.parseTyped('My String')
 // Error (TypeScript also provides type-level error)
 // 'My String' is not assignable to 'String'
 ```
 
 ```ts
 const schema = r.string('String', 'Your String')
-const result = schema.typedParse('My String')
+const result = schema.parseTyped('My String')
 // 'My String' is not assignable to 'String' | 'Your String'
 ```
 
@@ -87,7 +87,7 @@ const schema = r.object({
   age: r.number(),
 })
 
-schema.typedParse({
+schema.parseTyped({
   name: 'John Doe',
   age: 10,
 })
@@ -103,7 +103,7 @@ const schema = r.object({
   someValues: r.array(r.string(), r.number()),
 })
 
-schema.typedParse({
+schema.parseTyped({
   name: 'John Doe',
   age: 10,
   hobbies: ['Cricket', 'Football'],
@@ -120,7 +120,7 @@ const schema = r.object({
   unknown: r.tuple(r.string(), r.number()),
 })
 
-schema.typedParse({
+schema.parseTyped({
   name: 'John Doe',
   age: 10,
   unknown: ['string', 100],
@@ -139,7 +139,7 @@ const schema = r.object({
   ),
 })
 
-schema.typedParse({
+schema.parseTyped({
   name: 'John Doe',
   age: 10,
   country: { name: 'Arab', coords: 100 },
@@ -156,7 +156,7 @@ const schema = r.object({
   age: r.number().default(18),
 })
 
-const result = schema.typedParse({
+const result = schema.parseTyped({
   name: 'John Doe',
 })
 
@@ -182,7 +182,7 @@ const schema = r.object({
   age: r.number().default(18),
 })
 
-const result = schema.typedParse({ name: 0 })
+const result = schema.parseTyped({ name: 0 })
 // Error: Name for user is invalid
 ```
 
@@ -194,7 +194,7 @@ const schema = r.object({
   age: r.number().default(18),
 })
 
-const result = schema.typedParse({})
+const result = schema.parseTyped({})
 // Error: User must have a name
 ```
 
@@ -227,16 +227,53 @@ r.opt.string()
 r.optional.string()
 ```
 
-### Disabling Type-Level Checks while using Runtime Checks
+### Different Parsing Methods
 
-In some scenarios, you may want to disable type-level checks while keeping the runtime checks enabled in the Schema Core library. We've added a feature that allows you to achieve this.
+Rype offers a range of parsing methods that allow you to tailor your data validation process to various scenarios. These methods provide flexibility in handling validation errors and extracting validated data.
+
+#### `.parse`: Runtime Error on Type Mismatch or Missing Schema Type
 
 ```ts
-const result1 = schema.parse('My String') // Only runtime error
-const result2 = schema.typedParse('My String') // Both Error
-const result3 = schema.safeParse('My String') // No Error
-const result4 = schema.typedSafeParse('My String') // Only type error
+const result1 = schema.parse('My String') // Generates a runtime error if types don't match
+const result2 = schema.parseTyped('My String') // Generates both runtime and type errors
 ```
+
+- The `.parse` method triggers a runtime error if there is a type mismatch between the validated value and the schema, or if a type is specified in the schema but the input doesn't match it.
+- The `.parseTyped` method additionally provides TypeScript type checking, ensuring type correctness in your codebase.
+
+#### `.filter`: Returns Matched Value or Undefined on Validation Failure
+
+```ts
+const result3 = schema.filter('My String') // Returns the validated value or undefined on failure
+const result4 = schema.filterTyped('My String') // Generates only a type error
+```
+
+- The `.filter` method returns the value if it matches the schema, and returns `undefined` if validation fails for a specific field.
+- The `.filterTyped` method performs type checking, providing a TypeScript type error if the validation fails.
+
+#### `.safeParse`: Returns Array with Data and Error
+
+```ts
+const result3 = schema.safeParse('My String') // Returns [data, undefined] on success
+const result4 = schema.safeParseTyped('My String') // Generates only a type error
+```
+
+- The `.safeParse` method returns an array where the first element is the validated data and the second element is `undefined` on successful validation.
+- If validation fails, the second element becomes the error output, and the first element is `undefined`.
+- The `.safeParseTyped` method provides TypeScript type checking for error handling.
+
+#### `.safeParseList`: Returns Array with Data and Errors
+
+```ts
+const result3 = schema.safeParseList('My String') // Returns [data, undefined] on success
+const result4 = schema.safeParseListTyped('My String') // Generates only a type error
+```
+
+- The `.safeParseList` method returns an array where the first element is the validated data and the second element is `undefined` on successful validation.
+- If validation fails, the second element becomes the error output as an array of `RypeError`, and the first element is `undefined`.
+- The `.safeParseListTyped` method provides TypeScript type checking for error handling.
+
+These parsing methods empower you to choose the appropriate approach for your validation needs, enhancing the precision and control over your data validation process.
 
 ### Super Advanced Example
 
@@ -247,42 +284,42 @@ const result4 = schema.typedSafeParse('My String') // Only type error
 const { r } = require('./index')
 
 // Example 1
-r.number(1).typedParse(1)
+r.number(1).parseTyped(1)
 
 // Example 2
-r.boolean().typedParse(true)
+r.boolean().parseTyped(true)
 
 // Example 3
-r.boolean().typedParse(false)
+r.boolean().parseTyped(false)
 
 // Example 4
-r.string('Boom', 'Fire').typedParse('Boom')
+r.string('Boom', 'Fire').parseTyped('Boom')
 
 // Example 5
-r.or(r.boolean()).typedParse(false)
+r.or(r.boolean()).parseTyped(false)
 
 // Example 6
-r.tuple().typedParse([])
+r.tuple().parseTyped([])
 
 // Example 7
-r.array(r.string('World')).typedParse(['World'])
+r.array(r.string('World')).parseTyped(['World'])
 
 // Example 8
-r.string('string').typedParse('string')
+r.string('string').parseTyped('string')
 
 // Example 9
-r.string('string', 'String').typedParse('String')
+r.string('string', 'String').parseTyped('String')
 
 // Example 10
-r.number(1, 2, 3).typedParse(1)
-r.number(1, 2, 3).typedParse(2)
-r.number(1, 2, 3).typedParse(3)
+r.number(1, 2, 3).parseTyped(1)
+r.number(1, 2, 3).parseTyped(2)
+r.number(1, 2, 3).parseTyped(3)
 
 // Example 11
-r.boolean(true).typedParse(true)
-r.boolean(false).typedParse(false)
-r.boolean(true, false).typedParse(true)
-r.boolean(true, false).typedParse(false)
+r.boolean(true).parseTyped(true)
+r.boolean(false).parseTyped(false)
+r.boolean(true, false).parseTyped(true)
+r.boolean(true, false).parseTyped(false)
 
 // Example 12
 r.object({
@@ -292,7 +329,7 @@ r.object({
   intro: r.object({ address: r.string('BD') }),
   jobs: r.tuple(r.object({ name: r.number(200) })),
   asdf: r.tuple(r.string()),
-}).typedParse({
+}).parseTyped({
   age: 0,
   name: 'John Doe',
   hobbies: ['Play'],
@@ -311,7 +348,7 @@ r.tuple(
         r.object({ name: r.string('hello'), ages: r.tuple(r.number(10)) })
       )
     )
-    .typedParse([
+    .parseTyped([
       'BD',
       [
         [

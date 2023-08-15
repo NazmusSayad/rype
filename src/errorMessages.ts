@@ -19,7 +19,7 @@ function createMessage<const S extends string>(input: S) {
 }
 
 export default {
-  getRequiredErr: createMessage('Input is required <$PATH$>'),
+  getRequiredErr: createMessage('Value is required <$PATH$>'),
 
   getNumberMinErr: createMessage(
     'Number must be greater than <$MIN$> <$PATH$>'
@@ -28,22 +28,26 @@ export default {
   getNumberMaxErr: createMessage('Number must be less than <$MAX$> <$PATH$>'),
 
   getStringMinLengthErr: createMessage(
-    'String length must be greater than <$MIN$> <$PATH$>'
+    'String length must be at least <$MIN$> characters <$PATH$>'
   ),
 
   getStringMaxLengthErr: createMessage(
-    'String length must be less than <$MAX$> <$PATH$>'
+    'String length must be at most <$MAX$> characters <$PATH$>'
+  ),
+
+  getStringRegexErr: createMessage(
+    '<$INPUT$> does not match the required pattern: <$REGEX$> <$PATH$>'
   ),
 
   getTypeErr: createMessage(
-    'Input is not assignable to type <$TYPE$> <$PATH$>'
+    'Input does not match the expected type: <$TYPE$> <$PATH$>'
   ),
 
   getTupleLengthError: createMessage(
-    'Tuple length need to be as same as schema length: <$LENGTH$> <$PATH$>'
+    'Tuple length should match the expected length: <$LENGTH$> <$PATH$>'
   ),
 
   getPrimitiveTypeError: createMessage(
-    '<$INPUT$> is not assignable to type <$TYPE$> <$PATH$>'
+    'Value <$INPUT$> is not compatible with type <$TYPE$> <$PATH$>'
   ),
 }

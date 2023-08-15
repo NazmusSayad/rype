@@ -1,11 +1,15 @@
 import r from './index'
 
 try {
-  const schema = r.string().minLength(3).maxLength(6)
+  const schema = r.object({
+    name: r.string(),
+    password: r.string(),
+    confirmPassword: r.string(),
+  })
 
-  const result = schema.typedParse('mi')
+  const result = schema.filter({})
 
-  type Input = Parameters<(typeof schema)['typedParse']>[0]
+  type Input = Parameters<(typeof schema)['parseTyped']>[0]
   type Result = typeof result
 
   console.log()
