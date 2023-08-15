@@ -44,17 +44,51 @@ export type FormatTupleToNeverTuple<T> = T extends { length: 0 } ? never[] : T
 
 export type ReadonlyArray<T extends any[]> = readonly [...T]
 
-export type LowerCaseArray<T extends string[]> = {
+type SplitStrToArray<S extends string> = S extends ''
+  ? []
+  : S extends `${infer C}${infer R}`
+  ? [C, ...SplitStrToArray<R>]
+  : never
+
+type TakeFirstNElements<
+  T extends any[],
+  N extends number,
+  Result extends any[] = []
+> = Result['length'] extends N
+  ? Result
+  : T extends [infer First, ...infer Rest]
+  ? TakeFirstNElements<Rest, N, [...Result, First]>
+  : Result
+
+type JoinArrayOfStr<T extends string[]> = T extends []
+  ? ''
+  : T extends [infer Head, ...infer Tail]
+  ? Head extends string
+    ? `${Head}${JoinArrayOfStr<Tail extends string[] ? Tail : []>}`
+    : never
+  : never
+
+type CutFirstCharsOfStr<
+  S extends string,
+  N extends number,
+  SArray = TakeFirstNElements<SplitStrToArray<S>, N>
+> = JoinArrayOfStr<SArray extends string[] ? SArray : never>
+
+export type CutFirstCharsOfStrArray<T extends string[], N extends number> = {
+  [K in keyof T]: T[K] extends string ? CutFirstCharsOfStr<T[K], N> : never
+}
+
+export type LowerCaseStrArray<T extends string[]> = {
   [K in keyof T]: T[K] extends string ? Lowercase<T[K]> : never
 }
 
-export type UpperCaseArray<T extends string[]> = {
+export type UpperCaseStrArray<T extends string[]> = {
   [K in keyof T]: T[K] extends string ? Uppercase<T[K]> : never
 }
 
 export type CapitalizeString<S extends string> =
   S extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : S
 
-export type CapitalizeArray<T extends string[]> = {
+export type CapitalizeStrArray<T extends string[]> = {
   [K in keyof T]: T[K] extends string ? CapitalizeString<T[K]> : never
 }

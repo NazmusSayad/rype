@@ -1,8 +1,9 @@
 import {
   ValidObject,
-  UpperCaseArray,
-  LowerCaseArray,
-  CapitalizeArray,
+  UpperCaseStrArray,
+  LowerCaseStrArray,
+  CapitalizeStrArray,
+  CutFirstCharsOfStrArray,
 } from '../utils.type'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
@@ -22,6 +23,7 @@ export class SchemaString<
 
   private minCharLength?: number
   private maxCharLength?: number
+  private cutAtMaxLength?: boolean
   private regexPattern?: RegExp
   private isCaseSensitiveInput?: boolean
   private transformerMode?: 'capital' | 'lower' | 'upper'
@@ -37,19 +39,19 @@ export class SchemaString<
   public toLowerCase() {
     this.transformerMode = 'lower'
     this.schema = this.schema.map((str) => this.transform(str)) as T
-    return this as unknown as SchemaString<LowerCaseArray<T>, TConf>
+    return this as unknown as SchemaString<LowerCaseStrArray<T>, TConf>
   }
 
   public toUpperCase() {
     this.transformerMode = 'upper'
     this.schema = this.schema.map((str) => this.transform(str)) as T
-    return this as unknown as SchemaString<UpperCaseArray<T>, TConf>
+    return this as unknown as SchemaString<UpperCaseStrArray<T>, TConf>
   }
 
   public toCapitalize() {
     this.transformerMode = 'capital'
     this.schema = this.schema.map((str) => this.transform(str)) as T
-    return this as unknown as SchemaString<CapitalizeArray<T>, TConf>
+    return this as unknown as SchemaString<CapitalizeStrArray<T>, TConf>
   }
 
   public caseSensitiveInput() {
@@ -63,9 +65,10 @@ export class SchemaString<
     return this
   }
 
-  public maxLength(number: number) {
+  public maxLength(number: number, autoSlice: boolean = true) {
     this.confirmNotUsingCustomValues()
     this.maxCharLength = number
+    this.cutAtMaxLength = autoSlice
     return this
   }
 
@@ -92,6 +95,10 @@ export class SchemaString<
   }
 
   _preCheckInputFormatter(input: unknown) {
+    if (this.maxCharLength && this.cutAtMaxLength) {
+      input = (input as string).slice(0, this.maxCharLength)
+    }
+
     if (this.transformerMode && !this.isCaseSensitiveInput) {
       return this.transform(input as string)
     }

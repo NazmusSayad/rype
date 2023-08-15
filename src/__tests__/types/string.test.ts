@@ -339,7 +339,7 @@ describe('String Validation should Throw - ChatGPT', () => {
     }).toThrow()
 
     expect(() => {
-      r.string().maxLength(2).parse('bar')
+      r.string().maxLength(2, false).parse('bar')
     }).toThrow()
   })
 
@@ -654,35 +654,44 @@ describe('String Validation - Additional Tests', () => {
     }).toThrow()
   })
 })
-/* 
+
 describe('String Validation - Combined Tests', () => {
-  it('should handle minLength, toLowerCase, and caseInsensitiveInput', () => {
+  it('should handle minLength, toLowerCase, and caseSensitiveInput', () => {
     const result = r
       .string()
       .minLength(5)
       .toLowerCase()
       .caseSensitiveInput()
-      .parse('HeLLo')
+      .parse('hello')
     expect(result).toBe('hello')
   })
 
-  it('should handle maxLength, toUpperCase, and caseInsensitiveInput', () => {
+  it('should handle maxLength, toUpperCase, and caseSensitiveInput', () => {
     const result = r
       .string()
+      .maxLength(7)
       .toUpperCase()
       .caseSensitiveInput()
-      .parse('Hello World')
+      .parse('Hello world!')
     expect(result).toBe('HELLO W')
+
+    const result2 = r
+      .string()
+      .maxLength(7, false)
+      .toUpperCase()
+      .caseSensitiveInput()
+      .parse('Hello w')
+    expect(result2).toBe('HELLO W')
   })
 
-  it('should handle regex, toCapitalize, and caseInsensitiveInput', () => {
+  it('should handle regex, toCapitalize, and caseSensitiveInput', () => {
     const result = r
       .string()
       .regex(/^[A-Za-z]+$/)
       .toCapitalize()
       .caseSensitiveInput()
-      .parse('sOmE')
-    expect(result).toBe('Some')
+      .parse('SOmE')
+    expect(result).toBe('SOmE')
   })
 
   it('should handle minLength, maxLength, and toLowerCase', () => {
@@ -698,7 +707,7 @@ describe('String Validation - Combined Tests', () => {
   it('should handle minLength, maxLength, and toUpperCase', () => {
     const result = r
       .string()
-      .minLength(3)
+      .minLength(2)
       .maxLength(6)
       .toUpperCase()
       .parse('Hi')
@@ -712,7 +721,7 @@ describe('String Validation - Combined Tests', () => {
       .maxLength(8)
       .toCapitalize()
       .parse('fRIENDS')
-    expect(result).toBe('Friends')
+    expect(result).toBe('FRIENDS')
   })
 
   it('should handle minLength, regex, and toLowerCase', () => {
@@ -738,10 +747,10 @@ describe('String Validation - Combined Tests', () => {
   it('should handle minLength, regex, and toCapitalize', () => {
     const result = r
       .string()
-      .minLength(6)
+      .minLength(3)
       .regex(/^[A-Za-z]+$/)
       .toCapitalize()
-      .parse('bOLD')
+      .parse('bold')
     expect(result).toBe('Bold')
   })
 
@@ -772,7 +781,7 @@ describe('String Validation - Combined Tests', () => {
       .regex(/^[A-Za-z]+$/)
       .toCapitalize()
       .parse('nICE')
-    expect(result).toBe('Nice')
+    expect(result).toBe('NICE')
   })
 
   it('should handle minLength, maxLength, regex, and toLowerCase', () => {
@@ -804,9 +813,7 @@ describe('String Validation - Combined Tests', () => {
       .maxLength(7)
       .regex(/^[A-Za-z]+$/)
       .toCapitalize()
-      .caseSensitiveInput()
       .parse('weIRD')
     expect(result).toBe('WeIRD')
   })
 })
- */
