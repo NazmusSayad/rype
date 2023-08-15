@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "npm-ez dev",
     "build": "npm-ez build",
-    "jest": "jest --passWithNoTests --watch",
+    "jest": "jest --watch",
+    "test:jest": "jest",
     "test": "node --watch ./dist-cjs/_test.js",
     "benchmark": "node --watch ./dist-cjs/_benchmark.js"
   },
