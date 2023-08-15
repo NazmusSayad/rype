@@ -654,3 +654,159 @@ describe('String Validation - Additional Tests', () => {
     }).toThrow()
   })
 })
+/* 
+describe('String Validation - Combined Tests', () => {
+  it('should handle minLength, toLowerCase, and caseInsensitiveInput', () => {
+    const result = r
+      .string()
+      .minLength(5)
+      .toLowerCase()
+      .caseSensitiveInput()
+      .parse('HeLLo')
+    expect(result).toBe('hello')
+  })
+
+  it('should handle maxLength, toUpperCase, and caseInsensitiveInput', () => {
+    const result = r
+      .string()
+      .toUpperCase()
+      .caseSensitiveInput()
+      .parse('Hello World')
+    expect(result).toBe('HELLO W')
+  })
+
+  it('should handle regex, toCapitalize, and caseInsensitiveInput', () => {
+    const result = r
+      .string()
+      .regex(/^[A-Za-z]+$/)
+      .toCapitalize()
+      .caseSensitiveInput()
+      .parse('sOmE')
+    expect(result).toBe('Some')
+  })
+
+  it('should handle minLength, maxLength, and toLowerCase', () => {
+    const result = r
+      .string()
+      .minLength(3)
+      .maxLength(6)
+      .toLowerCase()
+      .parse('HeLLo')
+    expect(result).toBe('hello')
+  })
+
+  it('should handle minLength, maxLength, and toUpperCase', () => {
+    const result = r
+      .string()
+      .minLength(3)
+      .maxLength(6)
+      .toUpperCase()
+      .parse('Hi')
+    expect(result).toBe('HI')
+  })
+
+  it('should handle minLength, maxLength, and toCapitalize', () => {
+    const result = r
+      .string()
+      .minLength(4)
+      .maxLength(8)
+      .toCapitalize()
+      .parse('fRIENDS')
+    expect(result).toBe('Friends')
+  })
+
+  it('should handle minLength, regex, and toLowerCase', () => {
+    const result = r
+      .string()
+      .minLength(4)
+      .regex(/^[a-z]+$/)
+      .toLowerCase()
+      .parse('cODE')
+    expect(result).toBe('code')
+  })
+
+  it('should handle minLength, regex, and toUpperCase', () => {
+    const result = r
+      .string()
+      .minLength(5)
+      .regex(/^[A-Z]+$/)
+      .toUpperCase()
+      .parse('Style')
+    expect(result).toBe('STYLE')
+  })
+
+  it('should handle minLength, regex, and toCapitalize', () => {
+    const result = r
+      .string()
+      .minLength(6)
+      .regex(/^[A-Za-z]+$/)
+      .toCapitalize()
+      .parse('bOLD')
+    expect(result).toBe('Bold')
+  })
+
+  it('should handle maxLength, regex, and toLowerCase', () => {
+    const result = r
+      .string()
+      .maxLength(5)
+      .regex(/^[a-z]+$/)
+      .toLowerCase()
+      .parse('COOL')
+    expect(result).toBe('cool')
+  })
+
+  it('should handle maxLength, regex, and toUpperCase', () => {
+    const result = r
+      .string()
+      .maxLength(6)
+      .regex(/^[A-Z]+$/)
+      .toUpperCase()
+      .parse('Great')
+    expect(result).toBe('GREAT')
+  })
+
+  it('should handle maxLength, regex, and toCapitalize', () => {
+    const result = r
+      .string()
+      .maxLength(5)
+      .regex(/^[A-Za-z]+$/)
+      .toCapitalize()
+      .parse('nICE')
+    expect(result).toBe('Nice')
+  })
+
+  it('should handle minLength, maxLength, regex, and toLowerCase', () => {
+    const result = r
+      .string()
+      .minLength(3)
+      .maxLength(6)
+      .regex(/^[a-z]+$/)
+      .toLowerCase()
+      .parse('FUNny')
+    expect(result).toBe('funny')
+  })
+
+  it('should handle minLength, maxLength, regex, and toUpperCase', () => {
+    const result = r
+      .string()
+      .minLength(5)
+      .maxLength(8)
+      .regex(/^[A-Z]+$/)
+      .toUpperCase()
+      .parse('excited')
+    expect(result).toBe('EXCITED')
+  })
+
+  it('should handle minLength, maxLength, regex, and toCapitalize', () => {
+    const result = r
+      .string()
+      .minLength(4)
+      .maxLength(7)
+      .regex(/^[A-Za-z]+$/)
+      .toCapitalize()
+      .caseSensitiveInput()
+      .parse('weIRD')
+    expect(result).toBe('WeIRD')
+  })
+})
+ */

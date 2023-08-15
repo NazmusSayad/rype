@@ -23,7 +23,7 @@ export class SchemaString<
   private minCharLength?: number
   private maxCharLength?: number
   private regexPattern?: RegExp
-  private isCaseInsensitiveInput?: boolean
+  private isCaseSensitiveInput?: boolean
   private transformerMode?: 'capital' | 'lower' | 'upper'
 
   private confirmNotUsingCustomValues() {
@@ -52,8 +52,8 @@ export class SchemaString<
     return this as unknown as SchemaString<CapitalizeArray<T>, TConf>
   }
 
-  public caseInsensitiveInput() {
-    this.isCaseInsensitiveInput = true
+  public caseSensitiveInput() {
+    this.isCaseSensitiveInput = true
     return this
   }
 
@@ -92,7 +92,7 @@ export class SchemaString<
   }
 
   _preCheckInputFormatter(input: unknown) {
-    if (this.isCaseInsensitiveInput && this.transformerMode) {
+    if (this.transformerMode && !this.isCaseSensitiveInput) {
       return this.transform(input as string)
     }
 
