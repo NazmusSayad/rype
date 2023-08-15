@@ -182,7 +182,7 @@ const schema = r.object({
   age: r.number().default(18),
 })
 
-const result = schema.typedParse({})
+const result = schema.typedParse({ name: 0 })
 // Error: Name for user is invalid
 ```
 
