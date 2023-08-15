@@ -1,29 +1,60 @@
+import {
+  ValidObject,
+  UpperCaseArray,
+  LowerCaseArray,
+  CapitalizeArray,
+} from '../utils.type'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import messages from '../errorMessages'
-import { ValidObject } from '../utils.type'
 import { RypeError, RypeDevError } from '../Error'
 import { SchemaCheckConf, SchemaConfig } from '../types'
 import { SchemaCore, SchemaPrimitiveCore } from './SchemaCore'
 
 export class SchemaString<
   T extends Type.InputString,
-  R extends SchemaConfig
+  TConf extends SchemaConfig
 > extends SchemaPrimitiveCore<
   T[number] extends never ? Type.InputString : T,
-  R
+  TConf
 > {
   name = 'string' as const
 
   private minCharLength?: number
   private maxCharLength?: number
   private regexPattern?: RegExp
+  private isCaseInsensitiveInput?: boolean
+  private transformerMode?: 'capital' | 'lower' | 'upper'
+
   private confirmNotUsingCustomValues() {
     if (this.schema.length > 0) {
       throw new RypeDevError(
         "You can't use min/max while using specefic string"
       )
     }
+  }
+
+  public toLowerCase() {
+    this.transformerMode = 'lower'
+    this.schema = this.schema.map((str) => this.transform(str)) as T
+    return this as unknown as SchemaString<LowerCaseArray<T>, TConf>
+  }
+
+  public toUpperCase() {
+    this.transformerMode = 'upper'
+    this.schema = this.schema.map((str) => this.transform(str)) as T
+    return this as unknown as SchemaString<UpperCaseArray<T>, TConf>
+  }
+
+  public toCapitalize() {
+    this.transformerMode = 'capital'
+    this.schema = this.schema.map((str) => this.transform(str)) as T
+    return this as unknown as SchemaString<CapitalizeArray<T>, TConf>
+  }
+
+  public caseInsensitiveInput() {
+    this.isCaseInsensitiveInput = true
+    return this
   }
 
   public minLength(number: number) {
@@ -42,6 +73,38 @@ export class SchemaString<
     this.confirmNotUsingCustomValues()
     this.regexPattern = regex
     return this
+  }
+
+  private transform(str: string): string {
+    switch (this.transformerMode) {
+      case 'lower':
+        return str.toLowerCase()
+
+      case 'upper':
+        return str.toUpperCase()
+
+      case 'capital':
+        return str.charAt(0).toUpperCase() + str.slice(1)
+
+      default:
+        return str
+    }
+  }
+
+  _preCheckInputFormatter(input: unknown) {
+    if (this.isCaseInsensitiveInput && this.transformerMode) {
+      return this.transform(input as string)
+    }
+
+    return input
+  }
+
+  _postCheckFormatter(result: RypeOk) {
+    if (this.transformerMode) {
+      result.value = this.transform(result.value as string)
+    }
+
+    return result
   }
 
   _checkType2(

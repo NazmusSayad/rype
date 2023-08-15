@@ -43,3 +43,18 @@ export type ExtractPlaceholderValues<T extends string> =
 export type FormatTupleToNeverTuple<T> = T extends { length: 0 } ? never[] : T
 
 export type ReadonlyArray<T extends any[]> = readonly [...T]
+
+export type LowerCaseArray<T extends string[]> = {
+  [K in keyof T]: T[K] extends string ? Lowercase<T[K]> : never
+}
+
+export type UpperCaseArray<T extends string[]> = {
+  [K in keyof T]: T[K] extends string ? Uppercase<T[K]> : never
+}
+
+export type CapitalizeString<S extends string> =
+  S extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : S
+
+export type CapitalizeArray<T extends string[]> = {
+  [K in keyof T]: T[K] extends string ? CapitalizeString<T[K]> : never
+}

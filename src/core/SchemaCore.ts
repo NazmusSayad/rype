@@ -234,18 +234,21 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       return new RypeOk(undefined)
     }
 
-    const result = this._checkType(input, conf)
+    const formattedInput = this._preCheckInputFormatter(input)
+
+    const result = this._checkType(formattedInput, conf)
     if (result instanceof RypeError) return result
 
-    const result2 = this._checkType2(result, input, conf)
+    const result2 = this._checkType2(result, formattedInput, conf)
     if (result2 instanceof RypeError) return result2
 
     if (this.customValidator) {
-      const message = this.customValidator(input)
-      if (typeof message === 'string') return this._getClientErr(input, message)
+      const message = this.customValidator(formattedInput)
+      if (typeof message === 'string')
+        return this._getClientErr(formattedInput, message)
     }
 
-    return result2
+    return this._postCheckFormatter(result2)
   }
 
   /**
@@ -274,6 +277,26 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     conf: SchemaCheckConf
   ) {
     return prevResult
+  }
+
+  /**
+   * Formats the input value before performing any checks.
+   *
+   * @param {unknown} input - The value from user input.
+   * @returns {unknown} The formatted input value.
+   */
+  _preCheckInputFormatter(input: unknown) {
+    return input
+  }
+
+  /**
+   * Formats the result after all checks have been completed.
+   *
+   * @param {RypeOk} result - The result of the checks.
+   * @returns {RypeOk} The formatted result.
+   */
+  _postCheckFormatter(result: RypeOk) {
+    return result
   }
 
   /**
