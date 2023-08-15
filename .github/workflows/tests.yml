@@ -1,10 +1,10 @@
-name: CI
+name: Test if code is working :)
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - "*"
+      - '*'
   pull_request:
     branches:
       - '*'
