@@ -1,13 +1,12 @@
 {
   "name": "rype",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "scripts": {
     "dev": "npm-ez dev",
     "build": "npm-ez build",
-    "jest": "jest --watch",
-    "test:jest": "jest",
-    "test": "node --watch ./dist-cjs/_test.js",
-    "benchmark": "node --watch ./dist-cjs/_benchmark.js"
+    "lab": "node --watch ./dist-cjs/_test.js",
+    "test": "jest --watch",
+    "jest": "jest"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",

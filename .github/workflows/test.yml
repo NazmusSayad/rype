@@ -21,4 +21,4 @@ jobs:
         run: yarn
 
       - name: Run tests
-        run: yarn test:jest
+        run: yarn jest
