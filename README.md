@@ -16,9 +16,12 @@
 - **Flexibility**: Adaptable to simple data structures or complex objects.
 - **Intuitive API**: Developer-friendly API for defining validation schemas.
 - **Type Safety**: Rype prioritizes type safety by minimizing the use of "any" types in the codebase, resulting in a more robust and bug-free experience.
-- **Bundlephobia results**:
 
-![image](https://github.com/NazmusSayad/rype/assets/87106526/f38f4462-0d7a-4759-b8a4-58a654d4d14d)
+### Bundlephobia results:
+
+![image](https://github.com/NazmusSayad/rype/assets/87106526/7e607aef-5e39-4ba9-8a69-dc959fd72589)
+
+Note: This information may be outdated; please refer to the latest version of [Bundlephobia(rype)](https://bundlephobia.com/package/rype@latest) for the most current data.
 
 ## Why Rype?
 
