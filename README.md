@@ -173,7 +173,35 @@ const result = schema.parseTyped({
 
 Note: **_You can use default with everything :)_**
 
-### Example 7: Customizing Error Messages
+### Example 7: Adding Custom Validation Logic
+
+You can employ the `validate` method to incorporate custom validation logic.
+
+```ts
+const schema = r
+  .object({
+    name: r.string(),
+    password: r.string(),
+    confirmPassword: r.string(),
+  })
+  .validate((data) => {
+    if (data.password !== data.confirmPassword) {
+      return "Password doesn't matched"
+    }
+  })
+
+const result = schema.parseTyped({
+  name: 'John Doe',
+  password: 'password',
+  confirmPassword: 'another',
+})
+
+// Error: Password doesn't matched
+```
+
+Note: **_You can use default with everything :)_**
+
+### Example 8: Customizing Error Messages
 
 You can easily set custom error messages for specific cases during runtime checking using Rype.
 

@@ -1,11 +1,17 @@
 import r from './index'
 
 try {
-  const schema = r.object({
-    name: r.string(),
-    password: r.string(),
-    confirmPassword: r.string(),
-  })
+  const schema = r
+    .object({
+      name: r.string(),
+      password: r.string(),
+      confirmPassword: r.string(),
+    })
+    .validate((data) => {
+      if (data.password !== data.confirmPassword) {
+        return "Password doesn't matched"
+      }
+    })
 
   const result = schema.filter({})
 
