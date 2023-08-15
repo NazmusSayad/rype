@@ -1,11 +1,8 @@
-import r, { env } from './index'
+import r from './index'
 
-process.env.VARIABLE_ONE = '123'
-// process.env.VARIABLE_TWO = undefined
+const result1 = r.number().min(5).parse(10)
 
-const result = env({
-  VARIABLE_ONE: r.number(),
-  VARIABLE_TWO: r.boolean().default(true),
-})
+// const result2 = r.number().min(5).parse(2) // Should throw an error
 
-console.log(result)
+
+console.log(result1)

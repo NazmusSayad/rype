@@ -220,7 +220,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    */
   _checkCore(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     if (input == null) {
-      if (this.config.defaultValue) {
+      if ('defaultValue' in this.config) {
         return new RypeOk(this.config.defaultValue)
       }
 
