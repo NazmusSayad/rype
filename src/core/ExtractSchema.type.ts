@@ -1,57 +1,45 @@
 import * as Type from './Schema.type'
+import { AdjustReadonlyObject, InferInput } from './Extract.type'
 import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
-import { AdjustReadonlyObject, InferSchema } from './Extract.type'
 
 export type ExtractPrimitive<T extends Type.TypePrimitive> = T['schema'][number]
 
-export type ExtractObject<
-  T extends Type.TypeObject,
-  TMode extends 'input' | 'output'
-> = AdjustReadonlyObject<
+export type ExtractObject<T extends Type.TypeObject> = AdjustReadonlyObject<
   T,
   Prettify<
     MakeOptional<{
-      [K in keyof T['schema']]: InferSchema<T['schema'][K], TMode>
+      [K in keyof T['schema']]: InferInput<T['schema'][K]>
     }>
   >
 >
 
-export type ExtractTuple<
-  T extends Type.TypeTuple,
-  TMode extends 'input' | 'output'
-> = AdjustReadonlyObject<
+export type ExtractTuple<T extends Type.TypeTuple> = AdjustReadonlyObject<
   T,
   Prettify<
     FormatTupleToNeverTuple<
       {
         [K in keyof T['schema'] as K extends `${number}`
           ? K
-          : never]: InferSchema<T['schema'][K], TMode>
+          : never]: InferInput<T['schema'][K]>
       } & Pick<T['schema'], 'length'>
     >
   >
 >
 
-type ExtractArrayLike<
-  T extends Type.TypeArray | Type.TypeOr,
-  TMode extends 'input' | 'output'
-> = {
-  [K in keyof T['schema'] as K extends `${number}` ? K : never]: InferSchema<
-    T['schema'][K],
-    TMode
+type ExtractArrayLike<T extends Type.TypeArray | Type.TypeOr> = {
+  [K in keyof T['schema'] as K extends `${number}` ? K : never]: InferInput<
+    T['schema'][K]
   >
 }
 
 export type ExtractOr<
   T extends Type.TypeOr,
-  TMode extends 'input' | 'output',
-  U = ExtractArrayLike<T, TMode>
+  U = ExtractArrayLike<T>
 > = U[keyof U] extends never ? any : U[keyof U]
 
 export type ExtractArray<
   T extends Type.TypeArray,
-  TMode extends 'input' | 'output',
-  U = ExtractArrayLike<T, TMode>
+  U = ExtractArrayLike<T>
 > = U[keyof U] extends never
   ? any[]
   : AdjustReadonlyObject<T, Prettify<U[keyof U][]>>

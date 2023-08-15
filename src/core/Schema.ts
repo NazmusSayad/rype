@@ -1,14 +1,15 @@
 import {
-  SchemaCore,
-  SchemaFreezableCore,
-  SchemaPrimitiveCore,
-} from './SchemaCore'
-import {
   ValidObject,
   UpperCaseStrArray,
   LowerCaseStrArray,
   CapitalizeStrArray,
 } from '../utils.type'
+import {
+  SchemaCore,
+  SchemaPrimitiveCore,
+  SchemaFreezableCore,
+} from './SchemaCore'
+import names from './names'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import messages from '../errorMessages'
@@ -22,7 +23,7 @@ export class SchemaString<
   T[number] extends never ? Type.InputString : T,
   TConf
 > {
-  name = 'string' as const
+  name = names.String
 
   private minCharLength?: number
   private maxCharLength?: number
@@ -169,7 +170,7 @@ export class SchemaNumber<
   T[number] extends never ? Type.InputNumber : T,
   R
 > {
-  name = 'number' as const
+  name = names.Number
   private minValue?: number
   private maxValue?: number
   private confirmNotUsingCustomValues() {
@@ -232,14 +233,14 @@ export class SchemaBoolean<
   T[number] extends never ? Type.InputBoolean : T,
   R
 > {
-  name = 'boolean' as const
+  name = names.Boolean
 }
 
 export class SchemaObject<
   T extends Type.InputObject,
   R extends SchemaConfig
 > extends SchemaFreezableCore<T, R> {
-  name = 'object' as const
+  name = names.Object
 
   _checkType(input: ValidObject, conf: SchemaCheckConf): RypeOk | RypeError {
     const output: ValidObject = {}
@@ -261,7 +262,7 @@ export class SchemaArray<
   T extends Type.InputArray,
   R extends SchemaConfig
 > extends SchemaFreezableCore<T, R> {
-  name = 'array' as const
+  name = names.Array
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
     if (!Array.isArray(inputs)) {
@@ -302,7 +303,7 @@ export class SchemaTuple<
   T extends Type.InputTuple,
   R extends SchemaConfig
 > extends SchemaFreezableCore<T, R> {
-  name = 'tuple' as const
+  name = names.Tuple
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
     if (!Array.isArray(inputs)) {
@@ -312,7 +313,10 @@ export class SchemaTuple<
       )
     }
 
-    if (this.schema.length !== inputs.length) {
+    if (
+      this.schema.length !== inputs.length &&
+      !this.schema.every((schema) => 'defaultValue' in schema.config)
+    ) {
       return this._getErr(
         inputs,
         messages.getTupleLengthError(conf.path, {
@@ -341,7 +345,7 @@ export class SchemaOr<
   T extends Type.InputOr,
   R extends SchemaConfig
 > extends SchemaCore<T[number] extends never ? Type.InputOr : T, R> {
-  name = 'or' as const
+  name = names.Or
 
   _getType() {
     return this.schema.map((schema) => schema.type)

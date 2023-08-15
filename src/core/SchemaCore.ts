@@ -4,15 +4,16 @@ import {
   RypeClientError,
   RypeRequiredError,
 } from '../Error'
+import names from './names'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import messages from '../errorMessages'
-import { Prettify } from '../utils.type'
+import { DeepOptional, Prettify } from '../utils.type'
 import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../types'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
 
 export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
-  name = 'core'
+  name = names.Core
   schema: TFormat
   config: TConfig
   private customValidator?: CustomValidator<any>
@@ -38,16 +39,20 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * Modify the schema by assigning the provided default value.
    *
    * @param value - Default value that should be matched to the schema.
+   * @remarks This method makes the schema optional.
    * @remarks This method does not perform schema validity checks at runtime for the given default value.
    * @returns The updated schema with the specified default value.
    */
-  public default(value: Exclude<InferOutput<typeof this>, undefined>) {
+  public default<T extends Exclude<InferInput<typeof this>, undefined>>(
+    value: T
+  ) {
     this.config.isRequired = false
     this.config.defaultValue = value
+
     return this as unknown as InferClassFromSchema<
       typeof this,
       TFormat,
-      { isRequired: false; defaultValue: unknown }
+      { isRequired: false; defaultValue: T }
     >
   }
 
@@ -116,7 +121,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     return this._checkAndGetResult(input, {
       path: name,
       throw: false,
-    }) as InferOutput<typeof this>
+    }) as DeepOptional<InferOutput<typeof this>>
   }
   public filterTyped(input: InferInput<typeof this>, name: string = '') {
     return this.filter(input, name)
@@ -369,7 +374,7 @@ export class SchemaPrimitiveCore<
   T extends Type.InputString | Type.InputNumber | Type.InputBoolean,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = 'primitive'
+  name = names.Primitive
 
   _getType() {
     return this.schema.length
@@ -399,7 +404,7 @@ export class SchemaFreezableCore<
   T extends Type.InputObject | Type.InputArray | Type.InputTuple,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = 'freezable'
+  name = names.FreezableObject
   private isReadonly?: boolean
 
   toReadonly() {
