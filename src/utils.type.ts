@@ -40,6 +40,12 @@ export type ExtractPlaceholderValues<T extends string> =
     ? Value
     : never
 
+export type DeepReadonly<T> = {
+  readonly [K in keyof T]: T[K] extends Record<string, any>
+    ? DeepReadonly<T[K]>
+    : T[K]
+}
+
 export type FormatTupleToNeverTuple<T> = T extends { length: 0 } ? never[] : T
 
 export type ReadonlyArray<T extends any[]> = readonly [...T]

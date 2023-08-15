@@ -16,6 +16,12 @@ import {
 } from './ExtractSchema.type'
 import * as Type from './Schema.type'
 import { SchemaConfig } from '../types'
+import { DeepReadonly } from '../utils.type'
+
+export type AdjustReadonlyObject<
+  T extends Type.Types,
+  R
+> = T['config']['convertToReadonly'] extends true ? DeepReadonly<R> : R
 
 type AdjustSchemaInput<
   T extends Type.Types,

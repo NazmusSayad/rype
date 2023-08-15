@@ -10,7 +10,7 @@ import * as Type from './Schema.type'
 import messages from '../errorMessages'
 import { RypeError, RypeDevError } from '../Error'
 import { SchemaCheckConf, SchemaConfig } from '../types'
-import { SchemaCore, SchemaPrimitiveCore } from './SchemaCore'
+import { SchemaCore, SchemaFreezableCore, SchemaPrimitiveCore } from './SchemaCore'
 
 export class SchemaString<
   T extends Type.InputString,
@@ -235,7 +235,7 @@ export class SchemaBoolean<
 export class SchemaObject<
   T extends Type.InputObject,
   R extends SchemaConfig
-> extends SchemaCore<T, R> {
+> extends SchemaFreezableCore<T, R> {
   name = 'object' as const
 
   _checkType(input: ValidObject, conf: SchemaCheckConf): RypeOk | RypeError {
@@ -257,7 +257,7 @@ export class SchemaObject<
 export class SchemaArray<
   T extends Type.InputArray,
   R extends SchemaConfig
-> extends SchemaCore<T, R> {
+> extends SchemaFreezableCore<T, R> {
   name = 'array' as const
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
@@ -298,7 +298,7 @@ export class SchemaArray<
 export class SchemaTuple<
   T extends Type.InputTuple,
   R extends SchemaConfig
-> extends SchemaCore<T, R> {
+> extends SchemaFreezableCore<T, R> {
   name = 'tuple' as const
 
   _checkType(inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {

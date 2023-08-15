@@ -6,6 +6,7 @@ export type CustomValidator<T> = (result: T) => string | void
 export type SchemaConfig = {
   isRequired: boolean
   defaultValue?: unknown
+  convertToReadonly?: boolean
 }
 
 export type SchemaCheckConf = {

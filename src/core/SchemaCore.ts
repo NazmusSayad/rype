@@ -9,6 +9,7 @@ import * as Type from './Schema.type'
 import messages from '../errorMessages'
 import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../types'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
+import { Prettify } from '../utils.type'
 
 export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = 'core'
@@ -391,5 +392,30 @@ export class SchemaPrimitiveCore<
     }
 
     return new RypeOk(input)
+  }
+}
+
+export class SchemaFreezableCore<
+  T extends Type.InputObject | Type.InputArray | Type.InputTuple,
+  R extends SchemaConfig
+> extends SchemaCore<T, R> {
+  name = 'freezable'
+  private isReadonly?: boolean
+
+  toReadonly() {
+    this.isReadonly = true
+    return this as unknown as InferClassFromSchema<
+      typeof this,
+      T,
+      Prettify<R & { convertToReadonly: true }>
+    >
+  }
+
+  _postCheckFormatter(result: RypeOk): RypeOk {
+    if (this.isReadonly && result.value !== undefined) {
+      return new RypeOk(Object.freeze(result.value))
+    }
+
+    return result
   }
 }
