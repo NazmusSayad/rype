@@ -312,7 +312,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param message - The error message to be displayed.
    * @returns A RypeTypeError object with the specified error message, schema, input, and configuration.
    */
-  _getClientErr(input: unknown, message: string) {
+  private _getClientErr(input: unknown, message: string) {
     return new RypeClientError(message, {
       input,
       schema: this.schema,
@@ -327,7 +327,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param message - The error message to be displayed.
    * @returns A RypeRequiredError object with the specified error message, schema, input, and configuration.
    */
-  _getRequiredErr(input: unknown, message: string) {
+  private _getRequiredErr(input: unknown, message: string) {
     const msgOrCustomMsg =
       typeof this.errorMessage.required === 'string'
         ? this.errorMessage.required

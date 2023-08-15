@@ -15,34 +15,32 @@ export class SchemaString<
 > {
   name = 'string' as const
 
-  _minLength?: number
-  _maxLength?: number
-  _regex?: RegExp
-
-  public minLength(number: number) {
+  private minCharLength?: number
+  private maxCharLength?: number
+  private regexPattern?: RegExp
+  private confirmNotUsingCustomValues() {
     if (this.schema.length > 0) {
       throw new RypeDevError(
         "You can't use min/max while using specefic string"
       )
     }
+  }
 
-    this._minLength = number
+  public minLength(number: number) {
+    this.confirmNotUsingCustomValues()
+    this.minCharLength = number
     return this
   }
 
   public maxLength(number: number) {
-    if (this.schema.length > 0) {
-      throw new RypeDevError(
-        "You can't use min/max while using specefic string"
-      )
-    }
-
-    this._maxLength = number
+    this.confirmNotUsingCustomValues()
+    this.maxCharLength = number
     return this
   }
 
   public regex(regex: RegExp) {
-    this._regex = regex
+    this.confirmNotUsingCustomValues()
+    this.regexPattern = regex
     return this
   }
 
@@ -52,36 +50,36 @@ export class SchemaString<
     conf: SchemaCheckConf
   ) {
     if (
-      typeof this._minLength === 'number' &&
-      (input as string).length < this._minLength
+      typeof this.minCharLength === 'number' &&
+      (input as string).length < this.minCharLength
     ) {
       return this._getErr(
         input,
         messages.getStringMinLengthErr(conf.path, {
-          MIN: String(this._minLength),
+          MIN: String(this.minCharLength),
         })
       )
     }
 
     if (
-      typeof this._maxLength === 'number' &&
-      (input as string).length > this._maxLength
+      typeof this.maxCharLength === 'number' &&
+      (input as string).length > this.maxCharLength
     ) {
       return this._getErr(
         input,
         messages.getStringMaxLengthErr(conf.path, {
-          MAX: String(this._maxLength),
+          MAX: String(this.maxCharLength),
         })
       )
     }
 
-    if (this._regex) {
-      if (!this._regex.test(input as string)) {
+    if (this.regexPattern) {
+      if (!this.regexPattern.test(input as string)) {
         return this._getErr(
           input,
           messages.getStringRegexErr(conf.path, {
             INPUT: JSON.stringify(input),
-            REGEX: String(this._regex),
+            REGEX: String(this.regexPattern),
           })
         )
       }
@@ -99,28 +97,25 @@ export class SchemaNumber<
   R
 > {
   name = 'number' as const
-  _minValue?: number
-  _maxValue?: number
-
-  public min(number: number) {
+  private minValue?: number
+  private maxValue?: number
+  private confirmNotUsingCustomValues() {
     if (this.schema.length > 0) {
       throw new RypeDevError(
-        "You can't use min/max while using specefic number"
+        "You can't use min/max while using specific number"
       )
     }
+  }
 
-    this._minValue = number
+  public min(number: number) {
+    this.confirmNotUsingCustomValues()
+    this.minValue = number
     return this
   }
 
   public max(number: number) {
-    if (this.schema.length > 0) {
-      throw new RypeDevError(
-        "You can't use min/max while using specefic number"
-      )
-    }
-
-    this._maxValue = number
+    this.confirmNotUsingCustomValues()
+    this.maxValue = number
     return this
   }
 
@@ -130,25 +125,25 @@ export class SchemaNumber<
     conf: SchemaCheckConf
   ) {
     if (
-      typeof this._minValue === 'number' &&
-      (input as number) < this._minValue
+      typeof this.minValue === 'number' &&
+      (input as number) < this.minValue
     ) {
       return this._getErr(
         input,
         messages.getNumberMinErr(conf.path, {
-          MIN: String(this._minValue),
+          MIN: String(this.minValue),
         })
       )
     }
 
     if (
-      typeof this._maxValue === 'number' &&
-      (input as number) > this._maxValue
+      typeof this.maxValue === 'number' &&
+      (input as number) > this.maxValue
     ) {
       return this._getErr(
         input,
         messages.getNumberMaxErr(conf.path, {
-          MAX: String(this._maxValue),
+          MAX: String(this.maxValue),
         })
       )
     }
