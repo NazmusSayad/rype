@@ -1,4 +1,4 @@
-import r from '../../index'
+import r from '../..'
 
 describe('r.object() Tests', () => {
   it('should throw validation error for missing required fields', () => {

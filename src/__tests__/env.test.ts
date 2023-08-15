@@ -1,5 +1,5 @@
-import r from '../rype'
-import { env } from '../env'
+import r from '..'
+import { env } from '..'
 
 describe('Env function should handle number, boolean and string', () => {
   it('should validate and parse environment variables', () => {

@@ -1,4 +1,4 @@
-import r from '../../index'
+import r from '../..'
 
 describe('String Validation', () => {
   it('should validate string values', () => {

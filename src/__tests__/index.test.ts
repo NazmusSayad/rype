@@ -1,4 +1,4 @@
-import rype from '../rype'
+import rype from '..'
 import * as Schema from '../core/Schema'
 
 describe('Rype Methods as exists', () => {
