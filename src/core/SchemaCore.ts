@@ -4,15 +4,11 @@ import {
   RypeClientError,
   RypeRequiredError,
 } from '../Error'
-import {
-  InferInput,
-  InferOutput,
-  InferClassFromSchema,
-} from './Extract.type'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import messages from '../errorMessages'
 import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../types'
+import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
 
 export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   name = 'core'
@@ -112,7 +108,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param {unknown} input - The value to be validated against the schema.
    * @param {string} [name] - A descriptive name or label for the validation point (optional).
    * @returns  The result of the validation if successful else undefined.
-   * 
+   *
    * ⚠️: The type of the result may not be perfect.
    */
   public filter(input: unknown, name: string = '') {
@@ -169,10 +165,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
         : [output, undefined]
     ) as [InferOutput<typeof this>?, RypeError[]?]
   }
-  public safeParseListTyped(
-    input: InferInput<typeof this>,
-    name: string = ''
-  ) {
+  public safeParseListTyped(input: InferInput<typeof this>, name: string = '') {
     return this.safeParseList(input, name)
   }
 
@@ -320,12 +313,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @returns A RypeTypeError object with the specified error message, schema, input, and configuration.
    */
   _getClientErr(input: unknown, message: string) {
-    const msgOrCustomMsg =
-      typeof this.errorMessage.type === 'string'
-        ? this.errorMessage.type
-        : message
-
-    return new RypeClientError(msgOrCustomMsg, {
+    return new RypeClientError(message, {
       input,
       schema: this.schema,
       config: this.config,
