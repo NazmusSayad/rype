@@ -1,6 +1,6 @@
 import * as Type from './Schema.type'
 import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
-import { ExtractSchema } from './Extract.type'
+import { InferSchema } from './Extract.type'
 
 export type ExtractPrimitive<T extends Type.TypePrimitive> = T['schema'][number]
 
@@ -9,7 +9,7 @@ export type ExtractObject<
   TMode extends 'input' | 'output'
 > = Prettify<
   MakeOptional<{
-    [K in keyof T['schema']]: ExtractSchema<T['schema'][K], TMode>
+    [K in keyof T['schema']]: InferSchema<T['schema'][K], TMode>
   }>
 >
 
@@ -21,7 +21,7 @@ export type ExtractTuple<
     {
       [K in keyof T['schema'] as K extends `${number}`
         ? K
-        : never]: ExtractSchema<T['schema'][K], TMode>
+        : never]: InferSchema<T['schema'][K], TMode>
     } & Pick<T['schema'], 'length'>
   >
 >
@@ -30,7 +30,7 @@ type ExtractArrayLike<
   T extends Type.TypeArray | Type.TypeOr,
   TMode extends 'input' | 'output'
 > = {
-  [K in keyof T['schema'] as K extends `${number}` ? K : never]: ExtractSchema<
+  [K in keyof T['schema'] as K extends `${number}` ? K : never]: InferSchema<
     T['schema'][K],
     TMode
   >

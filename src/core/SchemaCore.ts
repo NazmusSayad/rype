@@ -5,8 +5,8 @@ import {
   RypeRequiredError,
 } from '../Error'
 import {
-  ExtractInput,
-  ExtractOutput,
+  InferInput,
+  InferOutput,
   InferClassFromSchema,
 } from './Extract.type'
 import { RypeOk } from '../RypeOk'
@@ -44,7 +44,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @remarks This method does not perform schema validity checks at runtime for the given default value.
    * @returns The updated schema with the specified default value.
    */
-  public default(value: Exclude<ExtractOutput<typeof this>, undefined>) {
+  public default(value: Exclude<InferOutput<typeof this>, undefined>) {
     this.config.isRequired = false
     this.config.defaultValue = value
     return this as unknown as InferClassFromSchema<
@@ -61,7 +61,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * If the custom validation function returns a string, the validation will fail, and the string will be used as the error message.
    * @returns {this} - The schema with the customized validation behavior.
    */
-  public validate(fn: CustomValidator<ExtractOutput<typeof this>>) {
+  public validate(fn: CustomValidator<InferOutput<typeof this>>) {
     this.customValidator = fn
     return this
   }
@@ -100,9 +100,9 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     return this._checkAndGetResult(input, {
       path: name,
       throw: true,
-    }) as ExtractOutput<typeof this>
+    }) as InferOutput<typeof this>
   }
-  public parseTyped(input: ExtractInput<typeof this>, name: string = '') {
+  public parseTyped(input: InferInput<typeof this>, name: string = '') {
     return this.parse(input, name)
   }
 
@@ -119,9 +119,9 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     return this._checkAndGetResult(input, {
       path: name,
       throw: false,
-    }) as ExtractOutput<typeof this>
+    }) as InferOutput<typeof this>
   }
-  public filterTyped(input: ExtractInput<typeof this>, name: string = '') {
+  public filterTyped(input: InferInput<typeof this>, name: string = '') {
     return this.filter(input, name)
   }
 
@@ -138,13 +138,13 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       path: name,
       throw: false,
       safeParseRef: metaParseRef,
-    }) as ExtractOutput<typeof this>
+    }) as InferOutput<typeof this>
 
     return (
       metaParseRef.current ? [undefined, output] : [output, undefined]
-    ) as [ExtractOutput<typeof this>?, unknown?]
+    ) as [InferOutput<typeof this>?, unknown?]
   }
-  public safeParseTyped(input: ExtractInput<typeof this>, name: string = '') {
+  public safeParseTyped(input: InferInput<typeof this>, name: string = '') {
     return this.safeParse(input, name)
   }
 
@@ -167,10 +167,10 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       safeParseErrors.length
         ? [undefined, safeParseErrors]
         : [output, undefined]
-    ) as [ExtractOutput<typeof this>?, RypeError[]?]
+    ) as [InferOutput<typeof this>?, RypeError[]?]
   }
   public safeParseListTyped(
-    input: ExtractInput<typeof this>,
+    input: InferInput<typeof this>,
     name: string = ''
   ) {
     return this.safeParseList(input, name)

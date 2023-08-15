@@ -7,11 +7,11 @@ import {
 import r from './rype'
 import { InputEnv } from './types'
 import { ValidObject } from './utils.type'
-import { ExtractOutput } from './core/Extract.type'
+import { InferOutput } from './core/Extract.type'
 
 export function env<T extends InputEnv>(
   schema: T
-): ExtractOutput<SchemaObject<T, { isRequired: true }>> {
+): InferOutput<SchemaObject<T, { isRequired: true }>> {
   const result: ValidObject = {}
   const stringSchema: ValidObject = {}
 

@@ -50,18 +50,18 @@ type ExtractSchemaCore<T extends Type.Types, TMode extends 'input' | 'output'> =
     : // It's never gonna happen!
       never
 
-export type ExtractInput<T> = T extends Type.Types
+export type InferInput<T> = T extends Type.Types
   ? AdjustSchemaInput<T, ExtractSchemaCore<T, 'input'>>
   : never
 
-export type ExtractOutput<T> = T extends Type.Types
+export type InferOutput<T> = T extends Type.Types
   ? AdjustSchemaOutput<T, ExtractSchemaCore<T, 'output'>>
   : never
 
-export type ExtractSchema<
+export type InferSchema<
   T,
   TMode extends 'input' | 'output'
-> = TMode extends 'input' ? ExtractInput<T> : ExtractOutput<T>
+> = TMode extends 'input' ? InferInput<T> : InferOutput<T>
 
 export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:
