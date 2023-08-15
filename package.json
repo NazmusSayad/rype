@@ -1,6 +1,6 @@
 {
   "name": "rype",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "scripts": {
     "dev": "npm-ez dev",
     "build": "npm-ez build",
@@ -20,6 +20,10 @@
       "import": "./dist-mjs/index.mjs",
       "types": "./dist-mjs/index.d.mts"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NazmusSayad/rype.git"
   },
   "keywords": [
     "validation",
