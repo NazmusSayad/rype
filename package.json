@@ -20,9 +20,9 @@
   "module": "./dist-mjs/index.mjs",
   "exports": {
     ".": {
-      "types": "./dist-mjs/index.d.mts",
       "require": "./dist-cjs/index.cjs",
-      "import": "./dist-mjs/index.mjs"
+      "import": "./dist-mjs/index.mjs",
+      "types": "./dist-mjs/index.d.mts"
     }
   },
   "repository": {
