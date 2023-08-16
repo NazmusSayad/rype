@@ -344,7 +344,7 @@ r.object({
 
 ![image](https://github.com/NazmusSayad/rype/assets/87106526/a432916c-749d-45d0-a8d3-4ba8c785af59)
 
-- Please note that this benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, both packages have demonstrated similar speeds. It's worth highlighting that both packages are optimized for speed.
+- **Please note**: This benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, both packages have demonstrated similar speeds. It's worth highlighting that both packages are optimized for speed.
 
 <br/>
 <br/>
