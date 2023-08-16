@@ -17,15 +17,23 @@
 - **Intuitive API**: Developer-friendly API for defining validation schemas.
 - **Type Safety**: Rype prioritizes type safety by minimizing the use of "any" types in the codebase, resulting in a more robust and bug-free experience.
 
+## Why Rype?
+
+In today's fast-paced development landscape, every millisecond counts, and type safety is paramount. Rype offers rapid validation with a small footprint, making it ideal for high-performance TypeScript applications, microservices, and projects where efficiency and type correctness are crucial. Elevate your project's performance while keeping your codebase lean and mean with Rype. Try it today and experience the future of type-optimized validation in TypeScript!
+
 ### Bundlephobia results:
 
 ![image](https://github.com/NazmusSayad/rype/assets/87106526/7e607aef-5e39-4ba9-8a69-dc959fd72589)
 
 Note: This information may be outdated; please refer to the latest version of [Bundlephobia(rype)](https://bundlephobia.com/package/rype@latest) for the most current data.
 
-## Why Rype?
+### Performance Comparison with Others
 
-In today's fast-paced development landscape, every millisecond counts, and type safety is paramount. Rype offers rapid validation with a small footprint, making it ideal for high-performance TypeScript applications, microservices, and projects where efficiency and type correctness are crucial. Elevate your project's performance while keeping your codebase lean and mean with Rype. Try it today and experience the future of type-optimized validation in TypeScript!
+![image](https://github.com/NazmusSayad/rype/assets/87106526/54ec1daf-70ff-4bcd-9a8e-b8598b0baf4f)
+
+- **Please note**: This benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, all packages have demonstrated similar speeds. It's worth highlighting that all packages are optimized for speed.
+
+If you'd like to explore and verify these results yourself, you can find the test codes available in the following repository: [rype-benchmark](https://github.com/NazmusSayad/rype-benchmark). This way, you can run the tests and draw your own conclusions.
 
 ## Installation
 
@@ -331,16 +339,6 @@ r.object({
   asdf: ['Boom'],
 })
 ```
-
-<br/>
-
-## Performance Comparison with Others
-
-![image](https://github.com/NazmusSayad/rype/assets/87106526/54ec1daf-70ff-4bcd-9a8e-b8598b0baf4f)
-
-- **Please note**: This benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, all packages have demonstrated similar speeds. It's worth highlighting that all packages are optimized for speed.
-
-If you'd like to explore and verify these results yourself, you can find the test codes available in the following repository: [rype-benchmark](https://github.com/NazmusSayad/rype-benchmark). This way, you can run the tests and draw your own conclusions.
 
 <br/>
 <br/>
