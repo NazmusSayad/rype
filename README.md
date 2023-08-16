@@ -31,7 +31,7 @@ Note: This information may be outdated; please refer to the latest version of [B
 
 ### Performance Comparison with Others
 
-![image](https://github.com/NazmusSayad/rype/assets/87106526/54ec1daf-70ff-4bcd-9a8e-b8598b0baf4f)
+![image](https://github.com/NazmusSayad/rype/assets/87106526/39090562-b376-46c6-aff3-4e09b0348a74)
 
 - **Please note**: This benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, all packages have demonstrated similar speeds. It's worth highlighting that all packages are optimized for speed.
 
