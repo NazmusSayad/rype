@@ -140,7 +140,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       path: name,
       throw: false,
       safeParseRef: metaParseRef,
-    }) as InferOutput<typeof this>
+    })
 
     return (
       metaParseRef.current ? [undefined, output] : [output, undefined]
