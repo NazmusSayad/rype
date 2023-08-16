@@ -27,7 +27,7 @@ jobs:
         run: npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}
 
       - name: Publish package to NPM
-        run: npm publish
+        run: npm publish || true
 
       - name: Unset Npm Toknen
         run: npm config delete //registry.npmjs.org/:_authToken
