@@ -340,6 +340,8 @@ r.object({
 
 - **Please note**: This benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, all packages have demonstrated similar speeds. It's worth highlighting that all packages are optimized for speed.
 
+If you'd like to explore and verify these results yourself, you can find the test codes available in the following repository: [rype-benchmark](https://github.com/NazmusSayad/rype-benchmark). This way, you can run the tests and draw your own conclusions.
+
 <br/>
 <br/>
 
