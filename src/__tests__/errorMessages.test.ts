@@ -13,7 +13,7 @@ describe('messages', () => {
     })
 
     expect(getNumberMinErr).toEqual(
-      'Number must be greater than 5 at /order/quantity'
+      'Number must be greater than: 5 at /order/quantity'
     )
   })
 

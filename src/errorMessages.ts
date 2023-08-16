@@ -1,53 +1,55 @@
-import { ExtractPlaceholderValues, Prettify } from './utils.type'
-function createMessage<const S extends string>(input: S) {
-  type Data = { [i in ExtractPlaceholderValues<S>]: string }
+import {
+  Prettify,
+  SplitStringBySpace,
+  ArrayOfStrToObjectAsKey,
+} from './utils.type'
+export default {
+  getRequiredErr: $((data) => `Value is required ${data.PATH}`),
 
-  return function (path: string, data: Prettify<Omit<Data, 'PATH'>>) {
-    let result = input.toString()
-    const conf = { ...data, PATH: path || '' }
+  getNumberMinErr: $<'MIN'>(
+    (data) => `Number must be greater than: ${data.MIN} ${data.PATH}`
+  ),
 
-    for (let key in conf) {
-      const value = conf[key as keyof typeof conf]
-      const replaceValue =
-        key === 'PATH' ? (value ? `at ${value}` : '') : `${value}`
+  getNumberMaxErr: $<'MAX'>(
+    (data) => `Number must be less than: ${data.MAX} ${data.PATH}`
+  ),
 
-      result = result.replaceAll(`<$${key}$>`, replaceValue)
-    }
+  getStringMinLengthErr: $<'MIN'>(
+    (data) =>
+      `Input should consist of at least: ${data.MIN} characters ${data.PATH}`
+  ),
 
-    return result.trim()
-  }
+  getStringMaxLengthErr: $<'MAX'>(
+    (data) =>
+      `Input must not exceed a length of: ${data.MAX} characters ${data.PATH}`
+  ),
+
+  getStringRegexErr: $<'INPUT REGEX'>(
+    (data) =>
+      `${data.INPUT} does not match the required pattern: ${data.REGEX} ${data.PATH}`
+  ),
+
+  getTypeErr: $<'TYPE'>(
+    (data) =>
+      `Input does not match the expected type: ${data.TYPE} ${data.PATH}'`
+  ),
+
+  getTupleLengthError: $<'LENGTH'>(
+    (data) =>
+      `Tuple length should match the expected length: ${data.LENGTH} ${data.PATH}`
+  ),
+
+  getPrimitiveTypeError: $<'INPUT TYPE'>(
+    (data) =>
+      `Value ${data.INPUT} is not compatible with type: ${data.TYPE} ${data.PATH}`
+  ),
 }
 
-export default {
-  getRequiredErr: createMessage('Value is required <$PATH$>'),
-
-  getNumberMinErr: createMessage(
-    'Number must be greater than <$MIN$> <$PATH$>'
-  ),
-
-  getNumberMaxErr: createMessage('Number must be less than <$MAX$> <$PATH$>'),
-
-  getStringMinLengthErr: createMessage(
-    'String length must be at least <$MIN$> characters <$PATH$>'
-  ),
-
-  getStringMaxLengthErr: createMessage(
-    'String length must be at most <$MAX$> characters <$PATH$>'
-  ),
-
-  getStringRegexErr: createMessage(
-    '<$INPUT$> does not match the required pattern: <$REGEX$> <$PATH$>'
-  ),
-
-  getTypeErr: createMessage(
-    'Input does not match the expected type: <$TYPE$> <$PATH$>'
-  ),
-
-  getTupleLengthError: createMessage(
-    'Tuple length should match the expected length: <$LENGTH$> <$PATH$>'
-  ),
-
-  getPrimitiveTypeError: createMessage(
-    'Value <$INPUT$> is not compatible with type <$TYPE$> <$PATH$>'
-  ),
+function $<
+  const S extends string = '',
+  Data = Omit<ArrayOfStrToObjectAsKey<SplitStringBySpace<S>>, 'PATH'>
+>(fn: (data: Prettify<Data & { PATH: string }>) => string) {
+  return function (path: string, data: Prettify<Data>) {
+    return fn({ ...data, PATH: path ? 'at ' + path : '' }).trim()
+  }
 }

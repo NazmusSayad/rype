@@ -15,8 +15,6 @@ export type Mutable<T> = {
   -readonly [K in keyof T]: T[K]
 }
 
-export type ConvertObjectToUnion<T> = T[keyof T]
-
 export type HasUndefined<T> = (T extends undefined ? true : false) extends false
   ? false
   : true
@@ -39,12 +37,15 @@ export type TupleHasDuplicates<T extends readonly any[]> = T extends []
     : TupleHasDuplicates<Rest>
   : false
 
-export type ExtractPlaceholderValues<T extends string> =
-  T extends `${infer Start}<$${infer Value}$>${infer Rest}`
-    ? Value | ExtractPlaceholderValues<Rest>
-    : T extends `${infer Start}<$${infer Value}`
-    ? Value
-    : never
+export type ArrayOfStrToObjectAsKey<T extends readonly string[]> = {
+  [K in T[number]]: string
+}
+
+export type SplitStringBySpace<S extends string> = S extends ''
+  ? []
+  : S extends `${infer First} ${infer Rest}`
+  ? [First, ...SplitStringBySpace<Rest>]
+  : [S]
 
 export type DeepReadonly<T> = {
   readonly [K in keyof T]: T[K] extends Record<string, any>
@@ -52,9 +53,15 @@ export type DeepReadonly<T> = {
     : T[K]
 }
 
+export type ReadonlyArray<T extends any[]> = readonly [...T]
 export type FormatTupleToNeverTuple<T> = T extends { length: 0 } ? never[] : T
 
-export type ReadonlyArray<T extends any[]> = readonly [...T]
+export type CapitalizeString<S extends string> =
+  S extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : S
+
+export type CapitalizeStrArray<T extends string[]> = {
+  [K in keyof T]: T[K] extends string ? CapitalizeString<T[K]> : never
+}
 
 export type LowerCaseStrArray<T extends string[]> = {
   [K in keyof T]: T[K] extends string ? Lowercase<T[K]> : never
@@ -62,11 +69,4 @@ export type LowerCaseStrArray<T extends string[]> = {
 
 export type UpperCaseStrArray<T extends string[]> = {
   [K in keyof T]: T[K] extends string ? Uppercase<T[K]> : never
-}
-
-export type CapitalizeString<S extends string> =
-  S extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : S
-
-export type CapitalizeStrArray<T extends string[]> = {
-  [K in keyof T]: T[K] extends string ? CapitalizeString<T[K]> : never
 }
