@@ -171,7 +171,11 @@ const result = schema.parseTyped({
 */
 ```
 
-Note: **_You can use default with everything :)_**
+Note:
+
+- **Works Everywhere**: You can use the `default` method in various situations.
+- **Enhanced Type Support**: Type support is seamlessly integrated with the default method.
+- **Runtime Consideration**: While Rype generally doesn't examine default values right away, remember that for `object` and `tuple` types, a runtime validation takes place during data parsing. Keep in mind, this validation occurs when you're **parsing data**, not when you **initially set the default value**.
 
 ### Example 7: Adding Custom Validation Logic
 
@@ -340,7 +344,7 @@ r.object({
 
 ![image](https://github.com/NazmusSayad/rype/assets/87106526/a432916c-749d-45d0-a8d3-4ba8c785af59)
 
-Note: Please note that this benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, both packages have demonstrated similar speeds. It's worth highlighting that both packages are optimized for speed.
+- Please note that this benchmark may not accurately represent real-world scenarios. Actual performance may vary, and in some cases, both packages have demonstrated similar speeds. It's worth highlighting that both packages are optimized for speed.
 
 <br/>
 <br/>
