@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "npm-ez dev",
     "build": "npm-ez build",
-    "lab": "node --watch ./dist-cjs/_test.js",
+    "lab": "node --watch ./dist-cjs/_lab.js",
     "test": "jest --watch",
     "jest": "jest"
   },

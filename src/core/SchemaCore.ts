@@ -227,17 +227,15 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   _checkCore(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     if (input == null) {
       if ('defaultValue' in this.config) {
-        return new RypeOk(this.config.defaultValue)
-      }
-
-      if (this.config.isRequired) {
+        if (this.name === names.Object || this.name === names.Tuple) {
+          input = this.config.defaultValue
+        } else return new RypeOk(this.config.defaultValue)
+      } else if (this.config.isRequired) {
         return this._getRequiredErr(
           input,
           messages.getRequiredErr(conf.path, {})
         )
-      }
-
-      return new RypeOk(undefined)
+      } else return new RypeOk(undefined)
     }
 
     const formattedInput = this._preCheckInputFormatter(input)

@@ -145,7 +145,7 @@ describe('r.object() Additional Tests', () => {
         })
         .default({})
         .parseTyped({})
-    ).toEqual({ person: {} })
+    ).toEqual({ person: { name: 'Anonymous', age: 18 } })
   })
 
   it('should handle arrays with default values', () => {

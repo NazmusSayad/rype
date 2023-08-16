@@ -1,14 +1,21 @@
-import r from './index'
+import r, { InferOutput } from './index'
 
-const result = r
-  .object({
-    name: r.string('John Doe'),
-    age: r.o.number().default(0),
-    hobbies: r.tuple(r.string('Play')),
-    intro: r.object({ address: r.string('BD') }),
-    jobs: r.tuple(r.object({ name: r.number(200) })),
-    asdf: r.tuple(r.string()),
+const schema = r.tuple(
+  r.object({
+    name: r.string(),
   })
-  .filter({})
+)
 
-console.log(result)
+/* 
+{
+  person: {
+    name: "Lol",
+    age: 18
+  }
+}
+*/
+
+// console.log(schema.parse([]))
+
+type Output = InferOutput<typeof schema>
+type Input = Parameters<typeof schema.parseTyped>[0]

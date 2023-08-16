@@ -28,7 +28,7 @@ type AdjustSchemaInput<
   R
 > = T['config']['isRequired'] extends true ? R : R | undefined
 
-type AdjustRootSchemaOutput<
+type AdjustSchemaOutput<
   T extends Type.Types,
   R
 > = T['config']['isRequired'] extends true
@@ -37,32 +37,37 @@ type AdjustRootSchemaOutput<
   ? R
   : R | undefined
 
-type ExtractSchemaCore<T extends Type.Types> =
+type ExtractSchemaCore<T extends Type.Types, TMode extends 'input' | 'output'> =
   // Primitive:
   T extends Type.TypePrimitive
     ? ExtractPrimitive<T>
     : // Tuple:
     T extends Type.TypeTuple
-    ? ExtractTuple<T>
+    ? ExtractTuple<T, TMode>
     : // Array:
     T extends Type.TypeArray
-    ? ExtractArray<T>
+    ? ExtractArray<T, TMode>
     : // Or:
     T extends Type.TypeOr
-    ? ExtractOr<T>
+    ? ExtractOr<T, TMode>
     : // Object:
     T extends Type.TypeObject
-    ? ExtractObject<T>
+    ? ExtractObject<T, TMode>
     : // It's never gonna happen!
       never
 
 export type InferInput<T> = T extends Type.Types
-  ? AdjustSchemaInput<T, ExtractSchemaCore<T>>
+  ? AdjustSchemaInput<T, ExtractSchemaCore<T, 'input'>>
   : never
 
 export type InferOutput<T> = T extends Type.Types
-  ? AdjustRootSchemaOutput<T, ExtractSchemaCore<T>>
+  ? AdjustSchemaOutput<T, ExtractSchemaCore<T, 'output'>>
   : never
+
+export type InferSchema<
+  T,
+  TMode extends 'input' | 'output'
+> = TMode extends 'input' ? InferInput<T> : InferOutput<T>
 
 export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:
