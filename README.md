@@ -23,6 +23,8 @@ In today's fast-paced development landscape, every millisecond counts, and type 
 
 ### Bundlephobia results:
 
+**Significantly Compact Size Compared to Alternatives**
+
 ![image](https://github.com/NazmusSayad/rype/assets/87106526/7e607aef-5e39-4ba9-8a69-dc959fd72589)
 
 Note: This information may be outdated; please refer to the latest version of [Bundlephobia(rype)](https://bundlephobia.com/package/rype@latest) for the most current data.
