@@ -410,7 +410,11 @@ export class SchemaFreezableCore<
     return this as unknown as InferClassFromSchema<
       typeof this,
       T,
-      Prettify<R & { convertToReadonly: true }>
+      {
+        convertToReadonly: true
+        isRequired: R['isRequired']
+        defaultValue: R['defaultValue']
+      }
     >
   }
 
