@@ -270,6 +270,8 @@ r.boolean()
 r.tuple()
 r.array()
 r.object()
+r.record()
+r.instance()
 r.or()
 
 r.optional.string()
@@ -278,6 +280,8 @@ r.optional.boolean()
 r.optional.tuple()
 r.optional.array()
 r.optional.object()
+r.optional.record()
+r.optional.instance()
 r.optional.or()
 
 // Shorthand for optional
