@@ -118,6 +118,14 @@ schema.parseTyped({
 })
 ```
 
+### Example 2.75: Instance
+
+```ts
+const schema = r.instance(Array)
+
+schema.parseTyped(['string', 100])
+```
+
 ### Example 3: Object with Array
 
 ```ts

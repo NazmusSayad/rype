@@ -236,6 +236,28 @@ export class SchemaBoolean<
   name = names.Boolean
 }
 
+export class SchemaInstance<
+  T extends Type.InputInstance,
+  R extends SchemaConfig
+> extends SchemaCore<T, R> {
+  name = names.Instance
+
+  _getType() {
+    return [this.schema.name]
+  }
+
+  _checkType(input: ValidObject, conf: SchemaCheckConf): RypeOk | RypeError {
+    if (input instanceof this.schema) {
+      return new RypeOk(input)
+    }
+
+    return this._getErr(
+      input,
+      messages.getInstanceErr(conf.path, { Instance: this.type })
+    )
+  }
+}
+
 export class SchemaObject<
   T extends Type.InputObject,
   R extends SchemaConfig

@@ -7,6 +7,7 @@ import {
   SchemaObject,
   SchemaBoolean,
   SchemaRecord,
+  SchemaInstance,
 } from './Schema'
 import {
   ExtractOr,
@@ -15,6 +16,7 @@ import {
   ExtractObject,
   ExtractPrimitive,
   ExtractRecord,
+  ExtractInstance,
 } from './ExtractSchema.type'
 import * as Type from './Schema.type'
 import { SchemaConfig } from '../types'
@@ -52,6 +54,9 @@ type ExtractSchemaCore<T extends Type.Types, TMode extends 'input' | 'output'> =
     : // Or:
     T extends Type.TypeOr
     ? ExtractOr<T, TMode>
+    : // Instance:
+    T extends Type.TypeInstance
+    ? ExtractInstance<T>
     : // Object:
     T extends Type.TypeObject
     ? ExtractObject<T, TMode>
@@ -109,6 +114,11 @@ export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
     T extends Type.TypeObject
     ? TFormat extends Type.InputObject
       ? SchemaObject<TFormat, TConfig>
+      : never
+    : // Object:
+    T extends Type.TypeInstance
+    ? TFormat extends Type.InputInstance
+      ? SchemaInstance<TFormat, TConfig>
       : never
     : // Object:
     T extends Type.TypeRecord

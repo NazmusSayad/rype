@@ -31,7 +31,11 @@ export default {
 
   getTypeErr: $<'TYPE'>(
     (data) =>
-      `Input does not match the expected type: ${data.TYPE} ${data.PATH}'`
+      `Input does not match the expected type: ${data.TYPE} ${data.PATH}`
+  ),
+
+  getInstanceErr: $<'Instance'>(
+    (data) => `Input isn't an instance of ${data.Instance} ${data.PATH}`
   ),
 
   getTupleLengthError: $<'LENGTH'>(

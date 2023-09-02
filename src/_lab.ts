@@ -1,9 +1,6 @@
 console.clear()
 import r from './index'
 
-const result = r
-  .record(r.string('Boom', 'Test'))
-  .toReadonly()
-  .parseTyped({ name: 'Boom' })
+const schema = r.instance(Array)
 
-console.log(result)
+console.log(schema.parseTyped(['string', 100]))

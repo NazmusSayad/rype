@@ -4,6 +4,18 @@ import { Mutable, ReadonlyArray } from './utils.type'
 
 function createMethods<R extends boolean>(required: R) {
   return {
+    instance<T extends Types.InputInstance[]>(...args: T) {
+      if (args.length === 1) {
+        return new Schema.SchemaInstance(args[0], { isRequired: required })
+      }
+
+      return new Schema.SchemaOr(
+        args.map(
+          (arg) => new Schema.SchemaInstance(arg, { isRequired: required })
+        ),
+        { isRequired: required }
+      )
+    },
     object<T extends Types.InputObject>(arg: T) {
       return new Schema.SchemaObject(arg, { isRequired: required })
     },

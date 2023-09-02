@@ -7,6 +7,7 @@ import {
   SchemaString,
   SchemaNumber,
   SchemaBoolean,
+  SchemaInstance,
 } from './Schema'
 
 export type InputString = string[]
@@ -26,12 +27,14 @@ export type TypeBoolean = SchemaBoolean<any, any>
 
 export type TypeOr = SchemaOr<any, any>
 export type TypeObject = SchemaObject<any, any>
+export type TypeInstance = SchemaInstance<any, any>
 export type TypeRecord = SchemaRecord<any, any>
 export type TypeArray = SchemaArray<any, any>
 export type TypeTuple = SchemaTuple<any, any>
 
 export type TypePrimitive = TypeString | TypeNumber | TypeBoolean
 export type Types =
+  | TypeInstance
   | TypeObject
   | TypeRecord
   | TypeOr

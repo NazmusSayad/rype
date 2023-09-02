@@ -3,6 +3,9 @@ import { FormatTupleToNeverTuple, MakeOptional, Prettify } from '../utils.type'
 import { AdjustReadonlyObject, InferSchema } from './Extract.type'
 
 export type ExtractPrimitive<T extends Type.TypePrimitive> = T['schema'][number]
+export type ExtractInstance<T extends Type.TypeInstance> = InstanceType<
+  T['schema']
+>
 
 export type ExtractObject<
   T extends Type.TypeObject,
