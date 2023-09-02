@@ -1,6 +1,5 @@
 console.clear()
 import r from './index'
 
-const schema = r.instance(Array)
-
-console.log(schema.parseTyped(['string', 100]))
+const parse = r.object({ name: r.instance(Array<string>, String) }).parseTyped
+type result = Parameters<typeof parse>[0]

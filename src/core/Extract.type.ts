@@ -115,12 +115,12 @@ export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
     ? TFormat extends Type.InputObject
       ? SchemaObject<TFormat, TConfig>
       : never
-    : // Object:
+    : // Instance:
     T extends Type.TypeInstance
     ? TFormat extends Type.InputInstance
       ? SchemaInstance<TFormat, TConfig>
       : never
-    : // Object:
+    : // Record:
     T extends Type.TypeRecord
     ? TFormat extends Type.InputRecord
       ? SchemaRecord<TFormat, TConfig>
