@@ -6,6 +6,7 @@ import {
   SchemaNumber,
   SchemaObject,
   SchemaBoolean,
+  SchemaRecord,
 } from './Schema'
 import {
   ExtractOr,
@@ -13,6 +14,7 @@ import {
   ExtractTuple,
   ExtractObject,
   ExtractPrimitive,
+  ExtractRecord,
 } from './ExtractSchema.type'
 import * as Type from './Schema.type'
 import { SchemaConfig } from '../types'
@@ -53,6 +55,9 @@ type ExtractSchemaCore<T extends Type.Types, TMode extends 'input' | 'output'> =
     : // Object:
     T extends Type.TypeObject
     ? ExtractObject<T, TMode>
+    : // Record:
+    T extends Type.TypeRecord
+    ? ExtractRecord<T, TMode>
     : // It's never gonna happen!
       never
 
@@ -72,27 +77,43 @@ export type InferSchema<
 export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:
   T extends Type.TypeString
-    ? SchemaString<TFormat extends Type.InputString ? TFormat : never, TConfig>
+    ? TFormat extends Type.InputString
+      ? SchemaString<TFormat, TConfig>
+      : never
     : // Number:
     T extends Type.TypeNumber
-    ? SchemaNumber<TFormat extends Type.InputNumber ? TFormat : never, TConfig>
+    ? TFormat extends Type.InputNumber
+      ? SchemaNumber<TFormat, TConfig>
+      : never
     : // Boolean:
     T extends Type.TypeBoolean
-    ? SchemaBoolean<
-        TFormat extends Type.InputBoolean ? TFormat : never,
-        TConfig
-      >
+    ? TFormat extends Type.InputBoolean
+      ? SchemaBoolean<TFormat, TConfig>
+      : never
     : // Tuple:
     T extends Type.TypeTuple
-    ? SchemaTuple<TFormat extends Type.InputTuple ? TFormat : never, TConfig>
+    ? TFormat extends Type.InputTuple
+      ? SchemaTuple<TFormat, TConfig>
+      : never
     : // Array:
     T extends Type.TypeArray
-    ? SchemaArray<TFormat extends Type.InputArray ? TFormat : never, TConfig>
+    ? TFormat extends Type.InputArray
+      ? SchemaArray<TFormat, TConfig>
+      : never
     : // Or:
     T extends Type.TypeOr
-    ? SchemaOr<TFormat extends Type.InputOr ? TFormat : never, TConfig>
+    ? TFormat extends Type.InputOr
+      ? SchemaOr<TFormat, TConfig>
+      : never
     : // Object:
     T extends Type.TypeObject
-    ? SchemaObject<TFormat extends Type.InputObject ? TFormat : never, TConfig>
+    ? TFormat extends Type.InputObject
+      ? SchemaObject<TFormat, TConfig>
+      : never
+    : // Object:
+    T extends Type.TypeRecord
+    ? TFormat extends Type.InputRecord
+      ? SchemaRecord<TFormat, TConfig>
+      : never
     : // It's never gonna happen!
       never

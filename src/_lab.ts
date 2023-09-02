@@ -1,12 +1,9 @@
+console.clear()
 import r from './index'
 
-const schema = r
-  .object({
-    person: r
-      .object({
-        name: r.string(),
-        age: r.number().default(18),
-      })
-      .default({ name: 'Lol' }),
-  })
-  .default({})
+const result = r
+  .record(r.string('Boom', 'Test'))
+  .toReadonly()
+  .parseTyped({ name: 'Boom' })
+
+console.log(result)

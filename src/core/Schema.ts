@@ -248,7 +248,30 @@ export class SchemaObject<
     for (let key in this.schema) {
       const schema = this.schema[key]
       const value = input[key]
+
       output[key] = schema._checkAndGetResult(value, {
+        ...conf,
+        path: `${conf.path || 'object'}.${key}`,
+      })
+    }
+
+    return new RypeOk(output)
+  }
+}
+
+export class SchemaRecord<
+  T extends Type.InputRecord,
+  R extends SchemaConfig
+> extends SchemaFreezableCore<T, R> {
+  name = names.Record
+
+  _checkType(input: ValidObject, conf: SchemaCheckConf): RypeOk | RypeError {
+    const output: ValidObject = {}
+
+    for (let key in input) {
+      const value = input[key]
+
+      output[key] = this.schema._checkAndGetResult(value, {
         ...conf,
         path: `${conf.path || 'object'}.${key}`,
       })

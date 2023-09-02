@@ -3,6 +3,7 @@ import {
   SchemaTuple,
   SchemaArray,
   SchemaObject,
+  SchemaRecord,
   SchemaString,
   SchemaNumber,
   SchemaBoolean,
@@ -13,6 +14,7 @@ export type InputNumber = number[]
 export type InputBoolean = boolean[]
 
 export type InputObject = { [key: string]: Types }
+export type InputRecord = Types
 export type InputInstance = new (...args: any[]) => any
 export type InputArray = Types[]
 export type InputTuple = Types[]
@@ -24,8 +26,15 @@ export type TypeBoolean = SchemaBoolean<any, any>
 
 export type TypeOr = SchemaOr<any, any>
 export type TypeObject = SchemaObject<any, any>
+export type TypeRecord = SchemaRecord<any, any>
 export type TypeArray = SchemaArray<any, any>
 export type TypeTuple = SchemaTuple<any, any>
 
 export type TypePrimitive = TypeString | TypeNumber | TypeBoolean
-export type Types = TypeObject | TypeOr | TypeArray | TypeTuple | TypePrimitive
+export type Types =
+  | TypeObject
+  | TypeRecord
+  | TypeOr
+  | TypeArray
+  | TypeTuple
+  | TypePrimitive

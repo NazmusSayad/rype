@@ -9,5 +9,6 @@ export default {
   Tuple: 'tuple' as const,
   Array: 'array' as const,
   Object: 'object' as const,
+  Record: 'record' as const,
   Or: 'or' as const,
 }

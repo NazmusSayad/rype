@@ -107,6 +107,17 @@ schema.parseTyped({
 })
 ```
 
+### Example 2.5: Record
+
+```ts
+const schema = r.record(r.string())
+
+schema.parseTyped({
+  name: 'John Doe',
+  father: 'Parent Doe',
+})
+```
+
 ### Example 3: Object with Array
 
 ```ts

@@ -399,7 +399,11 @@ export class SchemaPrimitiveCore<
 }
 
 export class SchemaFreezableCore<
-  T extends Type.InputObject | Type.InputArray | Type.InputTuple,
+  T extends
+    | Type.InputObject
+    | Type.InputArray
+    | Type.InputTuple
+    | Type.InputRecord,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
   name = names.FreezableObject

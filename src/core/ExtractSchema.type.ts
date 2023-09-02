@@ -16,6 +16,18 @@ export type ExtractObject<
   >
 >
 
+export type ExtractRecord<
+  T extends Type.TypeRecord,
+  TMode extends 'input' | 'output'
+> = AdjustReadonlyObject<
+  T,
+  Prettify<
+    MakeOptional<{
+      [K: string]: InferSchema<T['schema'], TMode>
+    }>
+  >
+>
+
 export type ExtractTuple<
   T extends Type.TypeTuple,
   TMode extends 'input' | 'output'

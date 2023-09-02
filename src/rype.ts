@@ -7,6 +7,9 @@ function createMethods<R extends boolean>(required: R) {
     object<T extends Types.InputObject>(arg: T) {
       return new Schema.SchemaObject(arg, { isRequired: required })
     },
+    record<T extends Types.InputRecord>(arg: T) {
+      return new Schema.SchemaRecord(arg, { isRequired: required })
+    },
 
     or<const T extends ReadonlyArray<Types.InputOr>>(...args: T) {
       return new Schema.SchemaOr(args as Mutable<typeof args>, {
