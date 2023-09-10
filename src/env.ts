@@ -46,7 +46,9 @@ function formatString(
   }
 }
 
-export function env<T extends InputEnv>(schema: T) {
+export function env<T extends InputEnv>(
+  schema: T
+): InferOutput<SchemaObject<T, { isRequired: true }>> {
   const result: ValidObject = {}
 
   for (let key in schema) {
@@ -70,5 +72,5 @@ export function env<T extends InputEnv>(schema: T) {
     }
   }
 
-  return result as InferOutput<SchemaObject<T, { isRequired: true }>>
+  return result as any
 }
