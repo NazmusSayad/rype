@@ -2,11 +2,13 @@ import r from '..'
 import { env } from '..'
 
 describe('Env function should handle number, boolean and string', () => {
-  it('should validate and parse environment variables', () => {
-    delete process.env.VARIABLE_ONE
-    delete process.env.VARIABLE_TWO
-    delete process.env.VARIABLE_THREE
+  beforeEach(() => {
+    for (let key in process.env) {
+      if (key.startsWith('VARIABLE_')) delete process.env[key]
+    }
+  })
 
+  it('should validate and parse environment variables', () => {
     process.env.VARIABLE_ONE = '123'
     process.env.VARIABLE_TWO = 'true'
     process.env.VARIABLE_THREE = 'hello'
@@ -25,10 +27,6 @@ describe('Env function should handle number, boolean and string', () => {
   })
 
   it('should handle missing optional variables', () => {
-    delete process.env.VARIABLE_ONE
-    delete process.env.VARIABLE_TWO
-    delete process.env.VARIABLE_THREE
-
     process.env.VARIABLE_ONE = '123'
 
     const result = env({
@@ -42,10 +40,6 @@ describe('Env function should handle number, boolean and string', () => {
   })
 
   it('should handle default values', () => {
-    delete process.env.VARIABLE_ONE
-    delete process.env.VARIABLE_TWO
-    delete process.env.VARIABLE_THREE
-
     process.env.VARIABLE_ONE = '123'
 
     const result = env({

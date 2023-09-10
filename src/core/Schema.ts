@@ -198,6 +198,16 @@ export class SchemaNumber<
     input: unknown,
     conf: SchemaCheckConf
   ) {
+    if (Number.isNaN(input)) {
+      return this._getErr(
+        input,
+        messages.getPrimitiveTypeError(conf.path, {
+          INPUT: "'NaN'",
+          TYPE: this.type,
+        })
+      )
+    }
+
     if (
       typeof this.minValue === 'number' &&
       (input as number) < this.minValue
