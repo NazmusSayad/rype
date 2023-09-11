@@ -44,7 +44,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @returns The updated schema with the specified default value.
    */
   public default<T extends Exclude<InferInput<typeof this>, undefined>>(
-    value: T
+    value: T | (() => T)
   ) {
     this.config.isRequired = false
     this.config.defaultValue = value
@@ -226,11 +226,23 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    */
   _checkCore(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     if (input == null) {
+      // When input is null
+
       if ('defaultValue' in this.config) {
+        // Has default value
+        const defaultValue =
+          typeof this.config.defaultValue === 'function'
+            ? this.config.defaultValue()
+            : this.config.defaultValue
+
         if (this.name === names.Object || this.name === names.Tuple) {
-          input = this.config.defaultValue
-        } else return new RypeOk(this.config.defaultValue)
+          input = defaultValue
+        } else {
+          return new RypeOk(defaultValue)
+        }
       } else if (this.config.isRequired) {
+        // Doesn't have default value and is required
+
         return this._getRequiredErr(
           input,
           messages.getRequiredErr(conf.path, {})

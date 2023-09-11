@@ -255,6 +255,7 @@ const result = schema.parseTyped({ name: 0 })
 const schema = r.object({
   name: r.string().setRequiredErrMsg('User must have a name'),
   age: r.number().default(18),
+  score: r.number().default(() => 100),
 })
 
 const result = schema.parseTyped({})
