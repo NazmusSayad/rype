@@ -281,10 +281,14 @@ export class SchemaObject<
       const schema = this.schema[key]
       const value = input[key]
 
-      output[key] = schema._checkAndGetResult(value, {
+      const result = schema._checkAndGetResult(value, {
         ...conf,
         path: `${conf.path || 'object'}.${key}`,
       })
+
+      if (result !== undefined) {
+        output[key] = result
+      }
     }
 
     return new RypeOk(output)
