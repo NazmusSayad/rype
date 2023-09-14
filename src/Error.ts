@@ -1,13 +1,18 @@
 import { SchemaConfig } from './types'
 
-export class RypeError extends Error {}
+export class RypeError extends Error {
+  isRypeError = true
+}
 
-export class RypeDevError extends RypeError {}
+export class RypeDevError extends RypeError {
+  isRypeDevError = true
+}
 
 export class RypeClientError extends RypeError {
   input: unknown
   schema: unknown
   config?: SchemaConfig
+  isRypeClientError = true
 
   constructor(
     message: string,
@@ -20,5 +25,9 @@ export class RypeClientError extends RypeError {
   }
 }
 
-export class RypeTypeError extends RypeClientError {}
-export class RypeRequiredError extends RypeClientError {}
+export class RypeTypeError extends RypeClientError {
+  isRypeTypeError = true
+}
+export class RypeRequiredError extends RypeClientError {
+  isRypeRequiredError = true
+}
