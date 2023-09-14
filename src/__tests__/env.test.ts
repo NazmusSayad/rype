@@ -1,5 +1,4 @@
-import r from '..'
-import { env } from '..'
+import { env, r } from '..'
 
 describe('Env function should handle number, boolean and string', () => {
   beforeEach(() => {

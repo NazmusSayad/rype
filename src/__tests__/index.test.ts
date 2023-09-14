@@ -1,138 +1,138 @@
-import rype from '..'
+import { r } from '..'
 import * as Schema from '../core/Schema'
 
 describe('Rype Methods as exists', () => {
   it('required methods', () => {
-    expect(typeof rype.object).toBe('function')
-    expect(typeof rype.or).toBe('function')
-    expect(typeof rype.tuple).toBe('function')
-    expect(typeof rype.array).toBe('function')
-    expect(typeof rype.string).toBe('function')
-    expect(typeof rype.number).toBe('function')
-    expect(typeof rype.boolean).toBe('function')
+    expect(typeof r.object).toBe('function')
+    expect(typeof r.or).toBe('function')
+    expect(typeof r.tuple).toBe('function')
+    expect(typeof r.array).toBe('function')
+    expect(typeof r.string).toBe('function')
+    expect(typeof r.number).toBe('function')
+    expect(typeof r.boolean).toBe('function')
   })
 
   it('optional methods at .o', () => {
-    expect(typeof rype.o.object).toBe('function')
-    expect(typeof rype.o.or).toBe('function')
-    expect(typeof rype.o.tuple).toBe('function')
-    expect(typeof rype.o.array).toBe('function')
-    expect(typeof rype.o.string).toBe('function')
-    expect(typeof rype.o.number).toBe('function')
-    expect(typeof rype.o.boolean).toBe('function')
+    expect(typeof r.o.object).toBe('function')
+    expect(typeof r.o.or).toBe('function')
+    expect(typeof r.o.tuple).toBe('function')
+    expect(typeof r.o.array).toBe('function')
+    expect(typeof r.o.string).toBe('function')
+    expect(typeof r.o.number).toBe('function')
+    expect(typeof r.o.boolean).toBe('function')
   })
 
   it('optional methods at .opt', () => {
-    expect(typeof rype.opt.object).toBe('function')
-    expect(typeof rype.opt.or).toBe('function')
-    expect(typeof rype.opt.tuple).toBe('function')
-    expect(typeof rype.opt.array).toBe('function')
-    expect(typeof rype.opt.string).toBe('function')
-    expect(typeof rype.opt.number).toBe('function')
-    expect(typeof rype.opt.boolean).toBe('function')
+    expect(typeof r.opt.object).toBe('function')
+    expect(typeof r.opt.or).toBe('function')
+    expect(typeof r.opt.tuple).toBe('function')
+    expect(typeof r.opt.array).toBe('function')
+    expect(typeof r.opt.string).toBe('function')
+    expect(typeof r.opt.number).toBe('function')
+    expect(typeof r.opt.boolean).toBe('function')
   })
 
   it('optional methods at .optional', () => {
-    expect(typeof rype.optional.object).toBe('function')
-    expect(typeof rype.optional.or).toBe('function')
-    expect(typeof rype.optional.tuple).toBe('function')
-    expect(typeof rype.optional.array).toBe('function')
-    expect(typeof rype.optional.string).toBe('function')
-    expect(typeof rype.optional.number).toBe('function')
-    expect(typeof rype.optional.boolean).toBe('function')
+    expect(typeof r.optional.object).toBe('function')
+    expect(typeof r.optional.or).toBe('function')
+    expect(typeof r.optional.tuple).toBe('function')
+    expect(typeof r.optional.array).toBe('function')
+    expect(typeof r.optional.string).toBe('function')
+    expect(typeof r.optional.number).toBe('function')
+    expect(typeof r.optional.boolean).toBe('function')
   })
 })
 
 describe('Rype Methods should return the schema instances', () => {
   it('required methods', () => {
-    const objectInstance = rype.object({})
+    const objectInstance = r.object({})
     expect(objectInstance).toBeInstanceOf(Schema.SchemaObject)
 
-    const orInstance = rype.or()
+    const orInstance = r.or()
     expect(orInstance).toBeInstanceOf(Schema.SchemaOr)
 
-    const tupleInstance = rype.tuple()
+    const tupleInstance = r.tuple()
     expect(tupleInstance).toBeInstanceOf(Schema.SchemaTuple)
 
-    const arrayInstance = rype.array()
+    const arrayInstance = r.array()
     expect(arrayInstance).toBeInstanceOf(Schema.SchemaArray)
 
-    const stringInstance = rype.string()
+    const stringInstance = r.string()
     expect(stringInstance).toBeInstanceOf(Schema.SchemaString)
 
-    const numberInstance = rype.number()
+    const numberInstance = r.number()
     expect(numberInstance).toBeInstanceOf(Schema.SchemaNumber)
 
-    const booleanInstance = rype.boolean()
+    const booleanInstance = r.boolean()
     expect(booleanInstance).toBeInstanceOf(Schema.SchemaBoolean)
   })
 
   it('optional methods at .o', () => {
-    const objectInstance = rype.o.object({})
+    const objectInstance = r.o.object({})
     expect(objectInstance).toBeInstanceOf(Schema.SchemaObject)
 
-    const orInstance = rype.o.or()
+    const orInstance = r.o.or()
     expect(orInstance).toBeInstanceOf(Schema.SchemaOr)
 
-    const tupleInstance = rype.o.tuple()
+    const tupleInstance = r.o.tuple()
     expect(tupleInstance).toBeInstanceOf(Schema.SchemaTuple)
 
-    const arrayInstance = rype.o.array()
+    const arrayInstance = r.o.array()
     expect(arrayInstance).toBeInstanceOf(Schema.SchemaArray)
 
-    const stringInstance = rype.o.string()
+    const stringInstance = r.o.string()
     expect(stringInstance).toBeInstanceOf(Schema.SchemaString)
 
-    const numberInstance = rype.o.number()
+    const numberInstance = r.o.number()
     expect(numberInstance).toBeInstanceOf(Schema.SchemaNumber)
 
-    const booleanInstance = rype.o.boolean()
+    const booleanInstance = r.o.boolean()
     expect(booleanInstance).toBeInstanceOf(Schema.SchemaBoolean)
   })
 
   it('optional methods at .opt', () => {
-    const objectInstance = rype.opt.object({})
+    const objectInstance = r.opt.object({})
     expect(objectInstance).toBeInstanceOf(Schema.SchemaObject)
 
-    const orInstance = rype.opt.or()
+    const orInstance = r.opt.or()
     expect(orInstance).toBeInstanceOf(Schema.SchemaOr)
 
-    const tupleInstance = rype.opt.tuple()
+    const tupleInstance = r.opt.tuple()
     expect(tupleInstance).toBeInstanceOf(Schema.SchemaTuple)
 
-    const arrayInstance = rype.opt.array()
+    const arrayInstance = r.opt.array()
     expect(arrayInstance).toBeInstanceOf(Schema.SchemaArray)
 
-    const stringInstance = rype.opt.string()
+    const stringInstance = r.opt.string()
     expect(stringInstance).toBeInstanceOf(Schema.SchemaString)
 
-    const numberInstance = rype.opt.number()
+    const numberInstance = r.opt.number()
     expect(numberInstance).toBeInstanceOf(Schema.SchemaNumber)
 
-    const booleanInstance = rype.opt.boolean()
+    const booleanInstance = r.opt.boolean()
     expect(booleanInstance).toBeInstanceOf(Schema.SchemaBoolean)
   })
 
   it('optional methods at .optional', () => {
-    const objectInstance = rype.optional.object({})
+    const objectInstance = r.optional.object({})
     expect(objectInstance).toBeInstanceOf(Schema.SchemaObject)
 
-    const orInstance = rype.optional.or()
+    const orInstance = r.optional.or()
     expect(orInstance).toBeInstanceOf(Schema.SchemaOr)
 
-    const tupleInstance = rype.optional.tuple()
+    const tupleInstance = r.optional.tuple()
     expect(tupleInstance).toBeInstanceOf(Schema.SchemaTuple)
 
-    const arrayInstance = rype.optional.array()
+    const arrayInstance = r.optional.array()
     expect(arrayInstance).toBeInstanceOf(Schema.SchemaArray)
 
-    const stringInstance = rype.optional.string()
+    const stringInstance = r.optional.string()
     expect(stringInstance).toBeInstanceOf(Schema.SchemaString)
 
-    const numberInstance = rype.optional.number()
+    const numberInstance = r.optional.number()
     expect(numberInstance).toBeInstanceOf(Schema.SchemaNumber)
 
-    const booleanInstance = rype.optional.boolean()
+    const booleanInstance = r.optional.boolean()
     expect(booleanInstance).toBeInstanceOf(Schema.SchemaBoolean)
   })
 })

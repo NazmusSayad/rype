@@ -1,4 +1,4 @@
-import r from '../..'
+import { r } from '../..'
 
 describe('Boolean Validation - Comprehensive Tests', () => {
   it('should validate boolean values', () => {
