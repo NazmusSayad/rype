@@ -4,16 +4,25 @@ import {
   RypeClientError,
   RypeRequiredError,
 } from '../Error'
-import names from './names'
 import { RypeOk } from '../RypeOk'
-import * as Type from './Schema.type'
+import * as Schema from './Schema'
 import messages from '../errorMessages'
 import { DeepOptional } from '../utils.type'
 import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../types'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
 
 export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
-  name = names.Core
+  name = 'core' as
+    | 'instance'
+    | 'boolean'
+    | 'number'
+    | 'string'
+    | 'object'
+    | 'record'
+    | 'tuple'
+    | 'array'
+    | 'or'
+
   schema: TFormat
   config: TConfig
   private customValidator?: CustomValidator<any>
@@ -235,7 +244,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
             ? this.config.defaultValue()
             : this.config.defaultValue
 
-        if (this.name === names.Object || this.name === names.Tuple) {
+        if (this.name === 'object' || this.name === 'tuple') {
           input = defaultValue
         } else {
           return new RypeOk(defaultValue)
@@ -381,10 +390,10 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
 }
 
 export class SchemaPrimitiveCore<
-  T extends Type.InputString | Type.InputNumber | Type.InputBoolean,
+  T extends Schema.InputString | Schema.InputNumber | Schema.InputBoolean,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = names.Primitive;
+  name = 'primitive' as 'number' | 'string' | 'boolean';
 
   ['~getType']() {
     return this.schema.length
@@ -412,13 +421,13 @@ export class SchemaPrimitiveCore<
 
 export class SchemaFreezableCore<
   T extends
-    | Type.InputObject
-    | Type.InputArray
-    | Type.InputTuple
-    | Type.InputRecord,
+    | Schema.InputObject
+    | Schema.InputArray
+    | Schema.InputTuple
+    | Schema.InputRecord,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = names.FreezableObject
+  name = 'freezableObject' as 'object' | 'array' | 'tuple' | 'record'
   private isReadonly?: boolean
 
   /**

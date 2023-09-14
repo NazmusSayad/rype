@@ -1,10 +1,9 @@
 import * as Schema from './core/Schema'
-import * as Types from './core/Schema.type'
 import { Mutable, ReadonlyArray } from './utils.type'
 
 function createMethods<R extends boolean>(required: R) {
   return {
-    instance<T extends Types.InputInstance[]>(
+    instance<T extends Schema.InputInstance[]>(
       ...args: T
     ): T extends [any]
       ? Schema.SchemaInstance<T[0], { isRequired: R }>
@@ -27,40 +26,40 @@ function createMethods<R extends boolean>(required: R) {
         { isRequired: required }
       ) as any /* Typescript sucks!! */
     },
-    object<T extends Types.InputObject>(arg: T) {
+    object<T extends Schema.InputObject>(arg: T) {
       return new Schema.SchemaObject(arg, { isRequired: required })
     },
-    record<T extends Types.InputRecord>(arg: T) {
+    record<T extends Schema.InputRecord>(arg: T) {
       return new Schema.SchemaRecord(arg, { isRequired: required })
     },
 
-    or<const T extends ReadonlyArray<Types.InputOr>>(...args: T) {
+    or<const T extends ReadonlyArray<Schema.InputOr>>(...args: T) {
       return new Schema.SchemaOr(args as Mutable<typeof args>, {
         isRequired: required,
       })
     },
-    tuple<const T extends ReadonlyArray<Types.InputTuple>>(...args: T) {
+    tuple<const T extends ReadonlyArray<Schema.InputTuple>>(...args: T) {
       return new Schema.SchemaTuple(args as Mutable<typeof args>, {
         isRequired: required,
       })
     },
-    array<const T extends ReadonlyArray<Types.InputArray>>(...args: T) {
+    array<const T extends ReadonlyArray<Schema.InputArray>>(...args: T) {
       return new Schema.SchemaArray(args as Mutable<typeof args>, {
         isRequired: required,
       })
     },
 
-    string<const T extends ReadonlyArray<Types.InputString>>(...args: T) {
+    string<const T extends ReadonlyArray<Schema.InputString>>(...args: T) {
       return new Schema.SchemaString(args as Mutable<typeof args>, {
         isRequired: required,
       })
     },
-    number<const T extends ReadonlyArray<Types.InputNumber>>(...args: T) {
+    number<const T extends ReadonlyArray<Schema.InputNumber>>(...args: T) {
       return new Schema.SchemaNumber(args as Mutable<typeof args>, {
         isRequired: required,
       })
     },
-    boolean<const T extends ReadonlyArray<Types.InputBoolean>>(...args: T) {
+    boolean<const T extends ReadonlyArray<Schema.InputBoolean>>(...args: T) {
       return new Schema.SchemaBoolean(args as Mutable<typeof args>, {
         isRequired: required,
       })

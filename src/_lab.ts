@@ -1,9 +1,4 @@
 import r from './index'
 console.clear()
 
-const schema = r.number().int('floor')
-const result = schema.parse(100.1)
-
-console.log(result)
-
-
+const schema = r.object({ name: r.string() }).required()

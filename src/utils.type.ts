@@ -15,6 +15,10 @@ export type Mutable<T> = {
   -readonly [K in keyof T]: T[K]
 }
 
+export type ObjectMerge<T extends object, U extends object> = Prettify<
+  Omit<T, keyof U> & U
+>
+
 export type HasUndefined<T> = (T extends undefined ? true : false) extends false
   ? false
   : true

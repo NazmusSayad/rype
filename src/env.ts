@@ -72,5 +72,5 @@ export function env<T extends InputEnv>(
     }
   }
 
-  return result as any
+  return result as any /* Typescript Sucks */
 }

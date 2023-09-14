@@ -1,39 +1,19 @@
-import {
-  SchemaOr,
-  SchemaTuple,
-  SchemaArray,
-  SchemaString,
-  SchemaNumber,
-  SchemaObject,
-  SchemaBoolean,
-  SchemaRecord,
-  SchemaInstance,
-} from './Schema'
-import {
-  ExtractOr,
-  ExtractArray,
-  ExtractTuple,
-  ExtractObject,
-  ExtractPrimitive,
-  ExtractRecord,
-  ExtractInstance,
-} from './ExtractSchema.type'
-import * as Type from './Schema.type'
+import * as Schema from './Schema'
 import { SchemaConfig } from '../types'
 import { DeepReadonly } from '../utils.type'
 
 export type AdjustReadonlyObject<
-  T extends Type.Types,
+  T extends Schema.TypeSchemaUnion,
   R
 > = T['config']['convertToReadonly'] extends true ? DeepReadonly<R> : R
 
 type AdjustSchemaInput<
-  T extends Type.Types,
+  T extends Schema.TypeSchemaUnion,
   R
 > = T['config']['isRequired'] extends true ? R : R | undefined
 
 type AdjustSchemaOutput<
-  T extends Type.Types,
+  T extends Schema.TypeSchemaUnion,
   R
 > = T['config']['isRequired'] extends true
   ? R
@@ -41,36 +21,39 @@ type AdjustSchemaOutput<
   ? R
   : R | undefined
 
-type ExtractSchemaCore<T extends Type.Types, TMode extends 'input' | 'output'> =
+type ExtractSchemaCore<
+  T extends Schema.TypeSchemaUnion,
+  TMode extends 'input' | 'output'
+> =
   // Primitive:
-  T extends Type.TypePrimitive
-    ? ExtractPrimitive<T>
+  T extends Schema.TypePrimitive
+    ? Schema.ExtractPrimitive<T>
     : // Tuple:
-    T extends Type.TypeTuple
-    ? ExtractTuple<T, TMode>
+    T extends Schema.TypeTuple
+    ? Schema.ExtractTuple<T, TMode>
     : // Array:
-    T extends Type.TypeArray
-    ? ExtractArray<T, TMode>
+    T extends Schema.TypeArray
+    ? Schema.ExtractArray<T, TMode>
     : // Or:
-    T extends Type.TypeOr
-    ? ExtractOr<T, TMode>
+    T extends Schema.TypeOr
+    ? Schema.ExtractOr<T, TMode>
     : // Instance:
-    T extends Type.TypeInstance
-    ? ExtractInstance<T>
+    T extends Schema.TypeInstance
+    ? Schema.ExtractInstance<T>
     : // Object:
-    T extends Type.TypeObject
-    ? ExtractObject<T, TMode>
+    T extends Schema.TypeObject
+    ? Schema.ExtractObject<T, TMode>
     : // Record:
-    T extends Type.TypeRecord
-    ? ExtractRecord<T, TMode>
+    T extends Schema.TypeRecord
+    ? Schema.ExtractRecord<T, TMode>
     : // It's never gonna happen!
       never
 
-export type InferInput<T> = T extends Type.Types
+export type InferInput<T> = T extends Schema.TypeSchemaUnion
   ? AdjustSchemaInput<T, ExtractSchemaCore<T, 'input'>>
   : never
 
-export type InferOutput<T> = T extends Type.Types
+export type InferOutput<T> = T extends Schema.TypeSchemaUnion
   ? AdjustSchemaOutput<T, ExtractSchemaCore<T, 'output'>>
   : never
 
@@ -81,49 +64,49 @@ export type InferSchema<
 
 export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:
-  T extends Type.TypeString
-    ? TFormat extends Type.InputString
-      ? SchemaString<TFormat, TConfig>
+  T extends Schema.TypeString
+    ? TFormat extends Schema.InputString
+      ? Schema.SchemaString<TFormat, TConfig>
       : never
     : // Number:
-    T extends Type.TypeNumber
-    ? TFormat extends Type.InputNumber
-      ? SchemaNumber<TFormat, TConfig>
+    T extends Schema.TypeNumber
+    ? TFormat extends Schema.InputNumber
+      ? Schema.SchemaNumber<TFormat, TConfig>
       : never
     : // Boolean:
-    T extends Type.TypeBoolean
-    ? TFormat extends Type.InputBoolean
-      ? SchemaBoolean<TFormat, TConfig>
+    T extends Schema.TypeBoolean
+    ? TFormat extends Schema.InputBoolean
+      ? Schema.SchemaBoolean<TFormat, TConfig>
       : never
     : // Tuple:
-    T extends Type.TypeTuple
-    ? TFormat extends Type.InputTuple
-      ? SchemaTuple<TFormat, TConfig>
+    T extends Schema.TypeTuple
+    ? TFormat extends Schema.InputTuple
+      ? Schema.SchemaTuple<TFormat, TConfig>
       : never
     : // Array:
-    T extends Type.TypeArray
-    ? TFormat extends Type.InputArray
-      ? SchemaArray<TFormat, TConfig>
+    T extends Schema.TypeArray
+    ? TFormat extends Schema.InputArray
+      ? Schema.SchemaArray<TFormat, TConfig>
       : never
     : // Or:
-    T extends Type.TypeOr
-    ? TFormat extends Type.InputOr
-      ? SchemaOr<TFormat, TConfig>
+    T extends Schema.TypeOr
+    ? TFormat extends Schema.InputOr
+      ? Schema.SchemaOr<TFormat, TConfig>
       : never
     : // Object:
-    T extends Type.TypeObject
-    ? TFormat extends Type.InputObject
-      ? SchemaObject<TFormat, TConfig>
+    T extends Schema.TypeObject
+    ? TFormat extends Schema.InputObject
+      ? Schema.SchemaObject<TFormat, TConfig>
       : never
     : // Instance:
-    T extends Type.TypeInstance
-    ? TFormat extends Type.InputInstance
-      ? SchemaInstance<TFormat, TConfig>
+    T extends Schema.TypeInstance
+    ? TFormat extends Schema.InputInstance
+      ? Schema.SchemaInstance<TFormat, TConfig>
       : never
     : // Record:
-    T extends Type.TypeRecord
-    ? TFormat extends Type.InputRecord
-      ? SchemaRecord<TFormat, TConfig>
+    T extends Schema.TypeRecord
+    ? TFormat extends Schema.InputRecord
+      ? Schema.SchemaRecord<TFormat, TConfig>
       : never
     : // It's never gonna happen!
       never
