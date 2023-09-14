@@ -1,6 +1,6 @@
 {
   "name": "rype",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "scripts": {
     "dev": "npm-ez dev",
     "build": "npm-ez build",
@@ -22,7 +22,18 @@
     ".": {
       "require": "./dist-cjs/index.cjs",
       "import": "./dist-mjs/index.mjs",
-      "types": "./dist-mjs/index.d.mts"
+      "types": "./dist-mjs/index.d.mjs"
+    },
+    "./global": {
+      "require": "./dist-cjs/global.cjs",
+      "import": "./dist-mjs/global.mjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "global": [
+        "./dist-mjs/global.d.mjs"
+      ]
     }
   },
   "repository": {
