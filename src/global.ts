@@ -1,4 +1,4 @@
-import rype from './index'
+import { r as rype } from './index'
 
 try {
   globalThis.r = rype

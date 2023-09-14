@@ -1,7 +1,6 @@
-import rype from './rype'
+import r from './rype'
 
-export const r = rype
-export default r
+export { r }
 
 export * from './core/Schema'
 export * from './core/Extract.type'
