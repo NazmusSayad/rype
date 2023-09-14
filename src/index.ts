@@ -1,6 +1,7 @@
 import r from './rype'
 
 export { r }
+export default r
 
 export * from './core/Schema'
 export * from './core/Extract.type'
