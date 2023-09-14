@@ -1,11 +1,9 @@
 import r from './index'
+console.clear()
 
-const schema = r
-  .object({
-    name: r.string(),
-    age: r.number().default(() => 100),
-  })
-  .partial()
+const schema = r.number().int('floor')
+const result = schema.parse(100.1)
 
-const result = schema.parse({})
 console.log(result)
+
+

@@ -14,6 +14,8 @@ export default {
     (data) => `Number must be less than: ${data.MAX} ${data.PATH}`
   ),
 
+  getNumberIntErr: $<''>((data) => `Number must be an integer ${data.PATH}`),
+
   getStringMinLengthErr: $<'MIN'>(
     (data) =>
       `Input should consist of at least: ${data.MIN} characters ${data.PATH}`

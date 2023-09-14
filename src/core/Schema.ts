@@ -207,12 +207,25 @@ export class SchemaNumber<
   name = names.Number
   private minValue?: number
   private maxValue?: number
+  private isInt: boolean = false
+  private autoIntFormat: 'round' | 'ceil' | 'floor' = 'floor'
   private confirmNotUsingCustomValues() {
     if (this.schema.length > 0) {
       throw new RypeDevError(
         "You can't use min/max while using specific number"
       )
     }
+  }
+
+  /**
+   * Sets the schema to only accept integer values and configures the rounding mode for non-integer values.
+   * @param autoFormatMode `round | ceil | floor` - The rounding mode to apply to non-integer values. Default is 'floor'.
+   * @returns The updated SchemaNumber instance with integer validation and rounding mode set.
+   */
+  int(autoFormatMode: typeof this.autoIntFormat = 'floor') {
+    this.isInt = true
+    this.autoIntFormat = autoFormatMode
+    return this
   }
 
   /**
@@ -239,7 +252,7 @@ export class SchemaNumber<
 
   ['~checkType2'](
     result: RypeOk | RypeError,
-    input: unknown,
+    input: number,
     conf: SchemaCheckConf
   ) {
     if (Number.isNaN(input)) {
@@ -252,10 +265,7 @@ export class SchemaNumber<
       )
     }
 
-    if (
-      typeof this.minValue === 'number' &&
-      (input as number) < this.minValue
-    ) {
+    if (typeof this.minValue === 'number' && input < this.minValue) {
       return this['~getErr'](
         input,
         messages.getNumberMinErr(conf.path, {
@@ -264,14 +274,33 @@ export class SchemaNumber<
       )
     }
 
-    if (
-      typeof this.maxValue === 'number' &&
-      (input as number) > this.maxValue
-    ) {
+    if (typeof this.maxValue === 'number' && input > this.maxValue) {
       return this['~getErr'](
         input,
         messages.getNumberMaxErr(conf.path, {
           MAX: String(this.maxValue),
+        })
+      )
+    }
+
+    if (this.isInt && !Number.isInteger(input)) {
+      if (this.autoIntFormat) {
+        return new RypeOk(
+          Number.parseInt(
+            (this.autoIntFormat === 'round'
+              ? Math.round(input)
+              : this.autoIntFormat === 'ceil'
+              ? Math.ceil(input)
+              : input
+            ).toString()
+          )
+        )
+      }
+
+      return this['~getErr'](
+        input,
+        messages.getNumberIntErr(conf.path, {
+          INPUT: JSON.stringify(input),
         })
       )
     }
