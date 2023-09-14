@@ -9,5 +9,4 @@ export class SchemaBoolean<
 }
 
 export type InputBoolean = boolean[]
-
 export type TypeBoolean = SchemaBoolean<any, any>

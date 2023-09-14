@@ -31,7 +31,5 @@ export class SchemaInstance<
 }
 
 export type InputInstance = new (...args: any[]) => any
-
 export type TypeInstance = SchemaInstance<any, any>
-
 export type ExtractInstance<T extends TypeInstance> = InstanceType<T['schema']>

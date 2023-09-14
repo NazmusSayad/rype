@@ -50,9 +50,7 @@ export class SchemaTuple<
 }
 
 export type InputTuple = TypeSchemaUnion[]
-
 export type TypeTuple = SchemaTuple<any, any>
-
 export type ExtractTuple<
   T extends TypeTuple,
   TMode extends 'input' | 'output'

@@ -33,7 +33,6 @@ export class SchemaRecord<
 
 export type InputRecord = TypeSchemaUnion
 export type TypeRecord = SchemaRecord<any, any>
-
 export type ExtractRecord<
   T extends TypeRecord,
   TMode extends 'input' | 'output'

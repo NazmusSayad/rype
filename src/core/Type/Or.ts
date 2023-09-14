@@ -34,9 +34,7 @@ export class SchemaOr<
 }
 
 export type InputOr = TypeSchemaUnion[]
-
 export type TypeOr = SchemaOr<any, any>
-
 export type ExtractOr<
   T extends TypeOr,
   TMode extends 'input' | 'output',

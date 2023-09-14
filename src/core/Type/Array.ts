@@ -51,7 +51,6 @@ export class SchemaArray<
 
 export type InputArray = TypeSchemaUnion[]
 export type TypeArray = SchemaArray<any, any>
-
 export type ExtractArray<
   T extends TypeArray,
   TMode extends 'input' | 'output',

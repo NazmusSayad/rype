@@ -189,5 +189,4 @@ export class SchemaString<
 }
 
 export type InputString = string[]
-
 export type TypeString = SchemaString<any, any>

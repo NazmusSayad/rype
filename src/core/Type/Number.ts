@@ -89,16 +89,15 @@ export class SchemaNumber<
 
     if (this.isInt && !Number.isInteger(input)) {
       if (this.autoIntFormat) {
-        return new RypeOk(
-          Number.parseInt(
-            (this.autoIntFormat === 'round'
-              ? Math.round(input)
-              : this.autoIntFormat === 'ceil'
-              ? Math.ceil(input)
-              : input
-            ).toString()
-          )
-        )
+        const formattedInput = (
+          this.autoIntFormat === 'round'
+            ? Math.round(input)
+            : this.autoIntFormat === 'ceil'
+            ? Math.ceil(input)
+            : input
+        ).toString()
+
+        return new RypeOk(Number.parseInt(formattedInput))
       }
 
       return this['~getErr'](
@@ -114,5 +113,4 @@ export class SchemaNumber<
 }
 
 export type InputNumber = number[]
-
 export type TypeNumber = SchemaNumber<any, any>

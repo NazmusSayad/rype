@@ -122,9 +122,7 @@ export class SchemaObject<
 }
 
 export type InputObject = { [key: string]: TypeSchemaUnion }
-
 export type TypeObject = SchemaObject<any, any>
-
 export type ExtractObject<
   T extends TypeObject,
   TMode extends 'input' | 'output'
