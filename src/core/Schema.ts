@@ -3,6 +3,7 @@ import {
   UpperCaseStrArray,
   LowerCaseStrArray,
   CapitalizeStrArray,
+  Prettify,
 } from '../utils.type'
 import {
   SchemaCore,
@@ -15,6 +16,7 @@ import * as Type from './Schema.type'
 import messages from '../errorMessages'
 import { RypeError, RypeDevError } from '../Error'
 import { SchemaCheckConf, SchemaConfig } from '../types'
+import { InferClassFromSchema } from './Extract.type'
 
 export class SchemaString<
   T extends Type.InputString,
@@ -292,6 +294,64 @@ export class SchemaObject<
     }
 
     return new RypeOk(output)
+  }
+
+  partial() {
+    for (let key in this.schema) {
+      this.schema[key].config.isRequired = false
+    }
+
+    return this as unknown as SchemaObject<
+      {
+        [K in keyof T]: InferClassFromSchema<
+          T[K],
+          T[K]['schema'],
+          Prettify<Omit<T[K]['config'], 'isRequired'> & { isRequired: false }>
+        >
+      },
+      R
+    >
+  }
+
+  required() {
+    for (let key in this.schema) {
+      this.schema[key].config.isRequired = true
+    }
+
+    return this as unknown as SchemaObject<
+      {
+        [K in keyof T]: InferClassFromSchema<
+          T[K],
+          T[K]['schema'],
+          Prettify<Omit<T[K]['config'], 'isRequired'> & { isRequired: true }>
+        >
+      },
+      R
+    >
+  }
+
+  pick<Key extends (keyof T)[]>(...args: Key) {
+    for (let key in this.schema) {
+      if (!args.includes(key as any)) {
+        delete this.schema[key]
+      }
+    }
+
+    return this as unknown as Key[number] extends never
+      ? SchemaObject<{}, R>
+      : SchemaObject<Pick<T, Key[number]>, R>
+  }
+
+  omit<Key extends (keyof T)[]>(...args: Key) {
+    for (let key in this.schema) {
+      if (args.includes(key as any)) {
+        delete this.schema[key]
+      }
+    }
+
+    return this as unknown as Key[number] extends never
+      ? typeof this
+      : SchemaObject<Omit<T, Key[number]>, R>
   }
 }
 

@@ -1,12 +1,11 @@
 import r from './index'
 
-console.log(
-  r
-    .object({
-      name: r.string(),
-      age: r.number().default(() => 100),
-    })
-    .parse({
-      name: 'Dave',
-    })
-)
+const schema = r
+  .object({
+    name: r.string(),
+    age: r.number().default(() => 100),
+  })
+  .partial()
+
+const result = schema.parse({})
+console.log(result)
