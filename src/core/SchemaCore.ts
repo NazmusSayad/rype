@@ -8,7 +8,7 @@ import names from './names'
 import { RypeOk } from '../RypeOk'
 import * as Type from './Schema.type'
 import messages from '../errorMessages'
-import { DeepOptional, Prettify } from '../utils.type'
+import { DeepOptional } from '../utils.type'
 import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../types'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
 
@@ -32,7 +32,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @returns A string representing the type of the schema.
    */
   get type(): string {
-    return [...new Set([this._getType()].flat())].join(' | ')
+    return [...new Set([this['~getType']()].flat())].join(' | ')
   }
 
   /**
@@ -59,9 +59,9 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * Modify the schema by applying a custom validation function.
    *
-   * @param {CustomValidator} fn - A function that returns `string` (for validation failure) or `void` (for success).
+   * @param fn - A function that returns `string` (for validation failure) or `void` (for success).
    * If the custom validation function returns a string, the validation will fail, and the string will be used as the error message.
-   * @returns {this} - The schema with the customized validation behavior.
+   * @returns The schema with the customized validation behavior.
    */
   public validate(fn: CustomValidator<InferOutput<typeof this>>) {
     this.customValidator = fn
@@ -93,13 +93,13 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * Validates the input against the schema and returns the validation result or throws an error.
    *
-   * @param {unknown} input - The value to be validated against the schema.
-   * @param {string} [name] - A descriptive name or label for the validation point (optional).
-   * @throws {RypeError} If validation fails, an error is thrown.
-   * @returns  The result of the validation if successful.
+   * @param input - The value to be validated against the schema.
+   * @param name - A descriptive name or label for the validation point (optional). `default: ""`
+   * @throws If validation fails, an error is thrown.
+   * @returns The result of the validation if successful.
    */
   public parse(input: unknown, name: string = '') {
-    return this._checkAndGetResult(input, {
+    return this['~checkAndGetResult'](input, {
       path: name,
       throw: true,
     }) as InferOutput<typeof this>
@@ -111,14 +111,14 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * Validates the input against the schema and returns the validation result or returns undefined
    *
-   * @param {unknown} input - The value to be validated against the schema.
-   * @param {string} [name] - A descriptive name or label for the validation point (optional).
+   * @param input - The value to be validated against the schema.
+   * @param name - A descriptive name or label for the validation point (optional). `default: ""`
    * @returns  The result of the validation if successful else undefined.
    *
    * ⚠️: The type of the result may not be perfect.
    */
   public filter(input: unknown, name: string = '') {
-    return this._checkAndGetResult(input, {
+    return this['~checkAndGetResult'](input, {
       path: name,
       throw: false,
     }) as DeepOptional<InferOutput<typeof this>>
@@ -130,13 +130,13 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * Validates the input against the schema and returns the validation result or returns the errors
    *
-   * @param {unknown} input - The value to be validated against the schema.
-   * @param {string} [name] - A descriptive name or label for the validation point (optional).
+   * @param input - The value to be validated against the schema.
+   * @param name - A descriptive name or label for the validation point (optional). `default: ""`
    * @returns An array containing the validated data as the first element if successful, or the errors as the second element if not.
    */
   public safeParse(input: unknown, name: string = '') {
     const metaParseRef = { current: false }
-    const output = this._checkAndGetResult(input, {
+    const output = this['~checkAndGetResult'](input, {
       path: name,
       throw: false,
       safeParseRef: metaParseRef,
@@ -153,13 +153,13 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * Validates the input against the schema and returns the validation result or returns the errors
    *
-   * @param {unknown} input - The value to be validated against the schema.
-   * @param {string} [name] - A descriptive name or label for the validation point (optional).
+   * @param input - The value to be validated against the schema.
+   * @param name - A descriptive name or label for the validation point (optional). `default: ""`
    * @returns An array containing the validated data as the first element if successful, or an array of errors as the second element if not.
    */
   public safeParseList(input: unknown, name: string = '') {
     const safeParseErrors: RypeError[] = []
-    const output = this._checkAndGetResult(input, {
+    const output = this['~checkAndGetResult'](input, {
       path: name,
       throw: false,
       safeParseErrors,
@@ -182,8 +182,8 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param conf - Configuration for schema checking.
    * @returns If successful, returns the result of the check; If 'conf.throw' is false an error is thrown, this returns undefined.
    */
-  _checkAndGetResult(input: unknown, conf: SchemaCheckConf): unknown {
-    const output = this._checkAndThrowError(input, conf)
+  ['~checkAndGetResult'](input: unknown, conf: SchemaCheckConf): unknown {
+    const output = this['~checkAndThrowError'](input, conf)
     if (output instanceof RypeError) {
       if (conf.safeParseErrors) {
         conf.safeParseErrors.push(output)
@@ -207,11 +207,11 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param conf - Configuration for schema checking.
    * @returns If successful, returns the result as a RypeOk object. If an error occurs and 'conf.throw' is true, an error is thrown; otherwise, a RypeError is returned.
    */
-  _checkAndThrowError(
+  ['~checkAndThrowError'](
     input: unknown,
     conf: SchemaCheckConf
   ): RypeOk | RypeError {
-    const output = this._checkCore(input, conf)
+    const output = this['~checkCore'](input, conf)
     if (output instanceof RypeError && conf.throw) throw output
     return output
   }
@@ -224,7 +224,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param conf - Configuration for checking the schema.
    * @returns If successful, returns the result as a RypeOk object; otherwise, returns a RypeError.
    */
-  _checkCore(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
+  ['~checkCore'](input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     if (input == null) {
       // When input is null
 
@@ -243,28 +243,28 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
       } else if (this.config.isRequired) {
         // Doesn't have default value and is required
 
-        return this._getRequiredErr(
+        return this.getRequiredErr(
           input,
           messages.getRequiredErr(conf.path, {})
         )
       } else return new RypeOk(undefined)
     }
 
-    const formattedInput = this._preCheckInputFormatter(input)
+    const formattedInput = this['~preCheckInputFormatter'](input)
 
-    const result = this._checkType(formattedInput, conf)
+    const result = this['~checkType'](formattedInput, conf)
     if (result instanceof RypeError) return result
 
-    const result2 = this._checkType2(result, formattedInput, conf)
+    const result2 = this['~checkType2'](result, formattedInput, conf)
     if (result2 instanceof RypeError) return result2
 
     if (this.customValidator) {
       const message = this.customValidator(formattedInput)
       if (typeof message === 'string')
-        return this._getClientErr(formattedInput, message)
+        return this.getClientErr(formattedInput, message)
     }
 
-    return this._postCheckFormatter(result2)
+    return this['~postCheckFormatter'](result2)
   }
 
   /**
@@ -275,19 +275,19 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param conf - Configuration for schema checking.
    * @returns If successful, returns the result as a RypeOk object; otherwise, returns a RypeError.
    */
-  _checkType(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
+  ['~checkType'](input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     return new RypeError(this.name + " isn't implemented yet!")
   }
 
   /**
    * An optional secondary method for checking the type of the input against the schema.
-   * This method is used when the primary _checkType method is not sufficient.
+   * This method is used when the primary ~checkType method is not sufficient.
    *
    * @param input - The value to be checked against the schema.
    * @param conf - Configuration for checking the schema.
    * @returns If successful, returns a RypeOk object; otherwise, returns a RypeError.
    */
-  _checkType2(
+  ['~checkType2'](
     prevResult: RypeOk | RypeError,
     input: unknown,
     conf: SchemaCheckConf
@@ -298,20 +298,20 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * Formats the input value before performing any checks.
    *
-   * @param {unknown} input - The value from user input.
-   * @returns {unknown} The formatted input value.
+   * @param input - The value from user input.
+   * @returns The formatted input value.
    */
-  _preCheckInputFormatter(input: unknown) {
+  ['~preCheckInputFormatter'](input: unknown) {
     return input
   }
 
   /**
    * Formats the result after all checks have been completed.
    *
-   * @param {RypeOk} result - The result of the checks.
-   * @returns {RypeOk} The formatted result.
+   * @param result - The result of the checks.
+   * @returns The formatted result.
    */
-  _postCheckFormatter(result: RypeOk) {
+  ['~postCheckFormatter'](result: RypeOk) {
     return result
   }
 
@@ -320,7 +320,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    *
    * @returns An array containing the name and other custom values of the schema.
    */
-  _getType(): string[] {
+  ['~getType'](): string[] {
     return [this.name]
   }
 
@@ -331,7 +331,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param message - The error message to be displayed.
    * @returns A RypeTypeError object with the specified error message, schema, input, and configuration.
    */
-  _getErr(input: unknown, message: string) {
+  ['~getErr'](input: unknown, message: string) {
     const msgOrCustomMsg =
       typeof this.errorMessage.type === 'string'
         ? this.errorMessage.type
@@ -351,7 +351,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param message - The error message to be displayed.
    * @returns A RypeTypeError object with the specified error message, schema, input, and configuration.
    */
-  private _getClientErr(input: unknown, message: string) {
+  private getClientErr(input: unknown, message: string) {
     return new RypeClientError(message, {
       input,
       schema: this.schema,
@@ -366,7 +366,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param message - The error message to be displayed.
    * @returns A RypeRequiredError object with the specified error message, schema, input, and configuration.
    */
-  private _getRequiredErr(input: unknown, message: string) {
+  private getRequiredErr(input: unknown, message: string) {
     const msgOrCustomMsg =
       typeof this.errorMessage.required === 'string'
         ? this.errorMessage.required
@@ -384,20 +384,20 @@ export class SchemaPrimitiveCore<
   T extends Type.InputString | Type.InputNumber | Type.InputBoolean,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
-  name = names.Primitive
+  name = names.Primitive;
 
-  _getType() {
+  ['~getType']() {
     return this.schema.length
       ? this.schema.map((arg) => JSON.stringify(arg))
       : [this.name]
   }
 
-  _checkType(input: unknown, conf: SchemaCheckConf): RypeError | RypeOk {
+  ['~checkType'](input: unknown, conf: SchemaCheckConf): RypeError | RypeOk {
     if (
       typeof input !== this.name ||
       (this.schema.length && !this.schema.includes(input as never))
     ) {
-      return this._getErr(
+      return this['~getErr'](
         input,
         messages.getPrimitiveTypeError(conf.path, {
           INPUT: JSON.stringify(input),
@@ -421,6 +421,10 @@ export class SchemaFreezableCore<
   name = names.FreezableObject
   private isReadonly?: boolean
 
+  /**
+   * Marks the parsed output of the schema as readonly, preventing further modifications.
+   * @returns A new schema instance with the parsed output marked as readonly.
+   */
   toReadonly() {
     this.isReadonly = true
     return this as unknown as InferClassFromSchema<
@@ -434,7 +438,7 @@ export class SchemaFreezableCore<
     >
   }
 
-  _postCheckFormatter(result: RypeOk): RypeOk {
+  ['~postCheckFormatter'](result: RypeOk): RypeOk {
     if (this.isReadonly && result.value !== undefined) {
       return new RypeOk(Object.freeze(result.value))
     }
