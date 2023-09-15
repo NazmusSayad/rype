@@ -1,7 +1,5 @@
 import { RypeError } from './Error'
-import { TypePrimitive } from './core/Schema'
 
-export type InputEnv = { [key: string]: TypePrimitive }
 export type CustomValidator<T> = (result: T) => string | void
 
 export type SchemaConfig = {

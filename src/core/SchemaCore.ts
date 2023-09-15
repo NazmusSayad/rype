@@ -80,6 +80,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * Sets a custom error message for type mismatch errors.
    *
+   * @deprecated Use `typeErr` instead, will be removed in v2
    * @param message The error message as a string.
    * @returns The updated schema with the specified error message.
    */
@@ -87,16 +88,29 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     this.errorMessage.type = message
     return this
   }
+  /**
+   *  Shorthand for `setTypeErrMsg` method.
+   */
+  public typeErr(message: string) {
+    return this.setTypeErrMsg(message)
+  }
 
   /**
    * Sets a custom error message for required errors, which occur when the schema is required but the value is undefined or null.
    *
+   * @deprecated Use `missingErr` instead, will be removed in v2
    * @param message The error message as a string.
    * @returns The updated schema with the specified error message.
    */
   public setRequiredErrMsg(message: string) {
     this.errorMessage.required = message
     return this
+  }
+  /**
+   * Shorthand for `setRequiredErrMsg` method.
+   */
+  public missingErr(message: string) {
+    return this.setRequiredErrMsg(message)
   }
 
   /**

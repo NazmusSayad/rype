@@ -3,10 +3,11 @@ import {
   SchemaObject,
   SchemaString,
   SchemaBoolean,
+  TypePrimitive,
 } from './core/Schema'
 import r from './rype'
 import { ValidObject } from './utils.type'
-import { InputEnv, SchemaConfig } from './types'
+import { SchemaConfig } from './types'
 import { InferOutput } from './core/Extract.type'
 
 function formatString(
@@ -74,3 +75,5 @@ export function env<T extends InputEnv>(
 
   return result as any /* Typescript Sucks */
 }
+
+export type InputEnv = { [key: string]: TypePrimitive }

@@ -3,7 +3,7 @@ import { r } from './index'
 console.clear()
 
 const result = env({
-  NAME: r.string().default('lab'),
+  NAME: r.string().setRequiredErrMsg('Name is required'),
 })
 
 console.log(result)
