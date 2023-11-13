@@ -7,7 +7,7 @@ import {
 import { RypeOk } from '../RypeOk'
 import * as Schema from './Schema'
 import messages from '../errorMessages'
-import { DeepOptional } from '../utils.type'
+import { DeepOptional, ObjectMerge, Prettify } from '../utils.type'
 import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../types'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
 
@@ -45,6 +45,37 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   }
 
   /**
+   * Marks the schema as required, indicating that the corresponding input value must be provided.
+   * This method removes any default value previously set and makes the schema mandatory.
+   *
+   * @returns A new schema instance that needs to be required
+   */
+  public required() {
+    this.config.isRequired = true
+    delete this.config.defaultValue
+    return this as unknown as InferClassFromSchema<
+      typeof this,
+      TFormat,
+      ObjectMerge<Omit<TConfig, 'defaultValue'>, { isRequired: true }>
+    >
+  }
+
+  /**
+   * Marks the schema as optional, indicating that the corresponding input value is not required.
+   * This method makes the schema optional.
+   *
+   * @returns A new schema instance that can be optional
+   */
+  public optional() {
+    this.config.isRequired = false
+    return this as unknown as InferClassFromSchema<
+      typeof this,
+      TFormat,
+      ObjectMerge<TConfig, { isRequired: false }>
+    >
+  }
+
+  /**
    * Modify the schema by assigning the provided default value.
    *
    * @param value - Default value that should be matched to the schema.
@@ -55,13 +86,19 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   public default<T extends Exclude<InferInput<typeof this>, undefined>>(
     value: T | (() => T)
   ) {
-    this.config.isRequired = false
+    this.optional()
     this.config.defaultValue = value
 
     return this as unknown as InferClassFromSchema<
       typeof this,
       TFormat,
-      { isRequired: false; defaultValue: T }
+      ObjectMerge<
+        TConfig,
+        {
+          isRequired: false
+          defaultValue: T
+        }
+      >
     >
   }
 
@@ -404,9 +441,9 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
 }
 
 export class SchemaPrimitiveCore<
-  T extends Schema.InputString | Schema.InputNumber | Schema.InputBoolean,
-  R extends SchemaConfig
-> extends SchemaCore<T, R> {
+  TFormat extends Schema.InputString | Schema.InputNumber | Schema.InputBoolean,
+  TConfig extends SchemaConfig
+> extends SchemaCore<TFormat, TConfig> {
   name = 'primitive' as 'number' | 'string' | 'boolean';
 
   ['~getType']() {
@@ -434,13 +471,13 @@ export class SchemaPrimitiveCore<
 }
 
 export class SchemaFreezableCore<
-  T extends
+  TFormat extends
     | Schema.InputObject
     | Schema.InputArray
     | Schema.InputTuple
     | Schema.InputRecord,
-  R extends SchemaConfig
-> extends SchemaCore<T, R> {
+  TConfig extends SchemaConfig
+> extends SchemaCore<TFormat, TConfig> {
   name = 'freezableObject' as 'object' | 'array' | 'tuple' | 'record'
   private isReadonly?: boolean
 
@@ -452,12 +489,8 @@ export class SchemaFreezableCore<
     this.isReadonly = true
     return this as unknown as InferClassFromSchema<
       typeof this,
-      T,
-      {
-        convertToReadonly: true
-        isRequired: R['isRequired']
-        defaultValue: R['defaultValue']
-      }
+      TFormat,
+      ObjectMerge<TConfig, { convertToReadonly: true }>
     >
   }
 

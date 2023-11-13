@@ -1,9 +1,6 @@
-import { env } from './env'
-import { r } from './index'
 console.clear()
+import { r } from './index'
 
-const result = env({
-  NAME: r.string().setRequiredErrMsg('Name is required'),
-})
+const schema = r.string().default('value')
 
-console.log(result)
+type input = Parameters<typeof schema.parseTyped>[0]

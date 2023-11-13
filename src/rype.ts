@@ -69,10 +69,21 @@ function createMethods<R extends boolean>(required: R) {
 
 const requiredMethods = createMethods(true)
 const optionalMethods = createMethods(false)
-
 export default {
   ...requiredMethods,
+
+  /**
+   * @deprecated Use `schema.optional()` or `schema.required()` instead.
+   */
   o: optionalMethods,
+
+  /**
+   * @deprecated Use `schema.optional()` or `schema.required()` instead.
+   */
   opt: optionalMethods,
+
+  /**
+   * @deprecated Use `schema.optional()` or `schema.required()` instead.
+   */
   optional: optionalMethods,
 }

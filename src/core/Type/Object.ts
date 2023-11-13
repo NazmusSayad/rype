@@ -69,7 +69,7 @@ export class SchemaObject<
    * Creates a new schema where all properties are marked as required.
    * @returns A new schema with required properties.
    */
-  required(): SchemaObject<
+  impartial(): SchemaObject<
     {
       [K in keyof T]: InferClassFromSchema<
         T[K],
