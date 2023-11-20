@@ -1,6 +1,15 @@
-console.clear()
-import { r, InferOutput } from './index'
+import r from './index'
 
-const schema = r.string().default('value')
-
-type Result = InferOutput<typeof schema>
+console.log(
+  r
+    .object({
+      person: r
+        .object({
+          name: r.string().default('Anonymous'),
+          age: r.number().default(18),
+        })
+        .default({}),
+    })
+    .default({})
+    .parseTyped({})
+)

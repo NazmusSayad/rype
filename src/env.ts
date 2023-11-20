@@ -1,13 +1,13 @@
 import {
+  SchemaObject,
   SchemaNumber,
   SchemaString,
   SchemaBoolean,
   TypePrimitive,
 } from './core/Schema'
-import r from './rype'
+import r from './index'
 import { ValidObject } from './utils.type'
-import { SchemaConfig } from './types'
-import { InferEnv } from './core/Extract.type'
+import { SchemaConfig } from './config'
 
 function formatString(
   schema: any,
@@ -74,3 +74,6 @@ export function env<T extends InputEnv>(schema: T): InferEnv<T> {
 }
 
 export type InputEnv = { [key: string]: TypePrimitive }
+export type InferEnv<T extends InputEnv> = r.inferOut<
+  SchemaObject<T, { isRequired: true }>
+>

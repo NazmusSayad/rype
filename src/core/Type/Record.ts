@@ -1,9 +1,9 @@
 import { RypeOk } from '../../RypeOk'
 import { RypeError } from '../../Error'
-import { TypeSchemaUnion } from './_common.type'
+import { InferSchema } from '../Extract.type'
 import { SchemaFreezableCore } from '../SchemaCore'
-import { SchemaCheckConf, SchemaConfig } from '../../types'
-import { AdjustReadonlyObject, InferSchema } from '../Extract.type'
+import { SchemaCheckConf, SchemaConfig } from '../../config'
+import { TypeSchemaUnion, AdjustReadonlyObject } from './_common.type'
 import { ValidObject, Prettify, MakeOptional } from '../../utils.type'
 
 export class SchemaRecord<

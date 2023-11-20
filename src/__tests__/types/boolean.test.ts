@@ -26,7 +26,7 @@ describe('Boolean Validation - Comprehensive Tests', () => {
     const invalidValues = ['true', 1, {}, null]
     invalidValues.forEach((val) => {
       expect(() => {
-        r.boolean().parse(val)
+        console.log(r.boolean().parse(val))
       }).toThrow()
     })
   })

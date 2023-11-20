@@ -1,4 +1,4 @@
-import { SchemaConfig } from '../../types'
+import { SchemaConfig } from '../../config'
 import { SchemaPrimitiveCore } from '../SchemaCore'
 
 export class SchemaBoolean<
