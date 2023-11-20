@@ -3,9 +3,8 @@ import { Mutable, ReadonlyArray } from './utils.type'
 import { DefaultSchemaConfig, defaultSchemaConfig } from './config'
 import { InferSchema, InferInput, InferOutput } from './core/Extract.type'
 
-export { InferSchema as infer }
-export { InferInput as inferIn }
-export { InferOutput as inferOut }
+export { InferInput as inferInput }
+export { InferOutput as inferOutput }
 
 export function string<const T extends ReadonlyArray<Schema.InputString>>(
   ...args: T
