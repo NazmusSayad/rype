@@ -8,6 +8,7 @@ import {
 import r from './index'
 import { SchemaConfig } from './config'
 import { ValidObject } from './utils.type'
+import { InferOutput } from './core/Extract.type'
 
 function formatString(
   schema: any,
@@ -74,6 +75,6 @@ export function env<T extends InputEnv>(schema: T): InferEnv<T> {
 }
 
 export type InputEnv = { [key: string]: TypePrimitive }
-export type InferEnv<T extends InputEnv> = r.inferOut<
+export type InferEnv<T extends InputEnv> = InferOutput<
   SchemaObject<T, { isRequired: true }>
 >

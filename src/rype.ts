@@ -1,7 +1,7 @@
 import * as Schema from './core/Schema'
 import { Mutable, ReadonlyArray } from './utils.type'
+import { InferInput, InferOutput } from './core/Extract.type'
 import { DefaultSchemaConfig, defaultSchemaConfig } from './config'
-import { InferSchema, InferInput, InferOutput } from './core/Extract.type'
 
 export { InferInput as inferInput }
 export { InferOutput as inferOutput }
