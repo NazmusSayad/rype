@@ -1,6 +1,7 @@
 import * as Schema from './Schema'
 import { SchemaConfig } from '../types'
 import { DeepReadonly } from '../utils.type'
+import * as ENV from '../env'
 
 export type AdjustReadonlyObject<
   T extends Schema.TypeSchemaUnion,
@@ -49,6 +50,11 @@ type ExtractSchemaCore<
     : // It's never gonna happen!
       never
 
+export type InferSchema<
+  T,
+  TMode extends 'input' | 'output'
+> = TMode extends 'input' ? InferInput<T> : InferOutput<T>
+
 export type InferInput<T> = T extends Schema.TypeSchemaUnion
   ? AdjustSchemaInput<T, ExtractSchemaCore<T, 'input'>>
   : never
@@ -57,10 +63,9 @@ export type InferOutput<T> = T extends Schema.TypeSchemaUnion
   ? AdjustSchemaOutput<T, ExtractSchemaCore<T, 'output'>>
   : never
 
-export type InferSchema<
-  T,
-  TMode extends 'input' | 'output'
-> = TMode extends 'input' ? InferInput<T> : InferOutput<T>
+export type InferEnv<T extends ENV.InputEnv> = InferOutput<
+  Schema.SchemaObject<T, { isRequired: true }>
+>
 
 export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:

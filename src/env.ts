@@ -1,6 +1,5 @@
 import {
   SchemaNumber,
-  SchemaObject,
   SchemaString,
   SchemaBoolean,
   TypePrimitive,
@@ -8,7 +7,7 @@ import {
 import r from './rype'
 import { ValidObject } from './utils.type'
 import { SchemaConfig } from './types'
-import { InferOutput } from './core/Extract.type'
+import { InferEnv } from './core/Extract.type'
 
 function formatString(
   schema: any,
@@ -47,9 +46,7 @@ function formatString(
   }
 }
 
-export function env<T extends InputEnv>(
-  schema: T
-): InferOutput<SchemaObject<T, { isRequired: true }>> {
+export function env<T extends InputEnv>(schema: T): InferEnv<T> {
   const result: ValidObject = {}
 
   for (let key in schema) {

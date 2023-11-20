@@ -1,6 +1,6 @@
 console.clear()
-import { r } from './index'
+import { r, InferOutput } from './index'
 
 const schema = r.string().default('value')
 
-type input = Parameters<typeof schema.parseTyped>[0]
+type Result = InferOutput<typeof schema>
