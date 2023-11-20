@@ -10,7 +10,7 @@ describe('Boolean Validation - Comprehensive Tests', () => {
   })
 
   it('should handle optional values', () => {
-    const result = r.o.boolean().parse(undefined)
+    const result = r.boolean().optional().parse(undefined)
     expect(result).toBe(undefined)
   })
 
@@ -26,7 +26,7 @@ describe('Boolean Validation - Comprehensive Tests', () => {
     const invalidValues = ['true', 1, {}, null]
     invalidValues.forEach((val) => {
       expect(() => {
-        console.log(r.boolean().parse(val))
+        r.boolean().parse(val)
       }).toThrow()
     })
   })
@@ -71,7 +71,7 @@ describe('Boolean Validation - Additional Tests', () => {
   })
 
   it('should handle optional values with parseTyped', () => {
-    const result = r.o.boolean(true).parse(undefined)
+    const result = r.boolean(true).optional().parse(undefined)
     expect(result).toBe(undefined)
   })
 

@@ -3,7 +3,6 @@ import messages from '../errorMessages' // Update the path accordingly
 describe('messages', () => {
   it('should create messages with placeholders', () => {
     const getRequiredErr = messages.getRequiredErr('/user/name', {})
-
     expect(getRequiredErr).toEqual('Value is required at /user/name')
   })
 

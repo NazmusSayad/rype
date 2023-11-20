@@ -13,7 +13,7 @@ describe('Number Validation', () => {
   })
 
   it('should handle optional values', () => {
-    const result1 = r.o.number().parse(undefined)
+    const result1 = r.number().optional().parse(undefined)
     expect(result1).toBe(undefined)
   })
 
@@ -119,7 +119,7 @@ describe('Number Validation - Comprehensive Tests', () => {
   })
 
   it('should handle optional values', () => {
-    const result = r.o.number().parse(undefined)
+    const result = r.number().optional().parse(undefined)
     expect(result).toBe(undefined)
   })
 

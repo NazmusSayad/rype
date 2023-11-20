@@ -30,7 +30,7 @@ describe('Env function should handle number, boolean and string', () => {
 
     const result = env({
       VARIABLE_ONE: r.number(),
-      VARIABLE_TWO: r.o.number(),
+      VARIABLE_TWO: r.number().optional(),
     })
 
     expect(result).toEqual({

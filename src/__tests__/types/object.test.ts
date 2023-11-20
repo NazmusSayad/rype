@@ -63,7 +63,7 @@ describe('r.object() Tests', () => {
 
   it('should handle optional fields', () => {
     expect(
-      r.object({ name: r.string(), age: r.o.number() }).parseTyped({
+      r.object({ name: r.string(), age: r.number().optional() }).parseTyped({
         name: 'Charlie',
       })
     ).toBeTruthy()
@@ -71,7 +71,7 @@ describe('r.object() Tests', () => {
 
   it('should throw validation error for invalid optional fields', () => {
     expect(() =>
-      r.object({ name: r.string(), age: r.o.number() }).parse({
+      r.object({ name: r.string(), age: r.number().optional() }).parse({
         name: 'Dave',
         age: '40',
       })
@@ -163,7 +163,7 @@ describe('r.object() Additional Tests', () => {
       r
         .object({
           name: r.string(),
-          age: r.o.number().default(25),
+          age: r.number().optional().default(25),
         })
         .parse({ name: 'Alice' })
     ).toEqual({ name: 'Alice', age: 25 })

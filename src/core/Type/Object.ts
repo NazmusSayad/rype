@@ -58,7 +58,7 @@ export class SchemaObject<
       this.schema[key].config.isRequired = false
     }
 
-    return this as any /* Typescript Sucks */
+    return this as any // Typescript Sucks
   }
 
   /**
@@ -79,7 +79,7 @@ export class SchemaObject<
       this.schema[key].config.isRequired = true
     }
 
-    return this as any /* Typescript Sucks */
+    return this as any // Typescript Sucks
   }
 
   /**
