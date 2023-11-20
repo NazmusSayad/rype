@@ -3,7 +3,7 @@ import { RypeError } from '../../Error'
 import messages from '../../errorMessages'
 import { SchemaCore } from '../SchemaCore'
 import { ValidObject } from '../../utils.type'
-import { SchemaCheckConf, SchemaConfig } from '../../types'
+import { SchemaCheckConf, SchemaConfig } from '../../config'
 
 export class SchemaInstance<
   T extends InputInstance,

@@ -14,3 +14,6 @@ export type SchemaCheckConf = {
   safeParseRef?: { current: boolean }
   safeParseErrors?: RypeError[]
 }
+
+export type DefaultSchemaConfig = { isRequired: true }
+export const defaultSchemaConfig: DefaultSchemaConfig = { isRequired: true }

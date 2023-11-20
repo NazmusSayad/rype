@@ -1,4 +1,4 @@
-import { SchemaConfig } from './types'
+import { SchemaConfig } from './config'
 
 export class RypeError extends Error {
   isRypeError = true

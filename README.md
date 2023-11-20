@@ -274,25 +274,6 @@ r.object()
 r.record()
 r.instance()
 r.or()
-
-r.optional.string()
-r.optional.number()
-r.optional.boolean()
-r.optional.tuple()
-r.optional.array()
-r.optional.object()
-r.optional.record()
-r.optional.instance()
-r.optional.or()
-
-// Shorthand for optional
-r.o //...
-r.opt //...
-
-// Example (All of them are same):
-r.o.string()
-r.opt.string()
-r.optional.string()
 ```
 
 ### Different Parsing Methods
@@ -352,7 +333,7 @@ import { r } from 'rype'
 
 r.object({
   name: r.string('John Doe'),
-  age: r.o.number(),
+  age: r.number().optional(),
   hobbies: r.tuple(r.string('Play')),
   intro: r.object({ address: r.string('BD') }),
   jobs: r.tuple(r.object({ name: r.number(200) })),

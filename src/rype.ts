@@ -1,89 +1,78 @@
 import * as Schema from './core/Schema'
 import { Mutable, ReadonlyArray } from './utils.type'
+import { DefaultSchemaConfig, defaultSchemaConfig } from './config'
+import { InferSchema, InferInput, InferOutput } from './core/Extract.type'
 
-function createMethods<R extends boolean>(required: R) {
-  return {
-    instance<T extends Schema.InputInstance[]>(
-      ...args: T
-    ): T extends [any]
-      ? Schema.SchemaInstance<T[0], { isRequired: R }>
-      : Schema.SchemaOr<
-          {
-            [K in keyof T]: Schema.SchemaInstance<T[K], { isRequired: R }>
-          },
-          { isRequired: R }
-        > {
-      if (args.length === 1) {
-        return new Schema.SchemaInstance(args[0], {
-          isRequired: required,
-        }) as any /* Typescript sucks!! */
-      }
+export { InferSchema as infer }
+export { InferInput as inferIn }
+export { InferOutput as inferOut }
 
-      return new Schema.SchemaOr(
-        args.map(
-          (arg) => new Schema.SchemaInstance(arg, { isRequired: required })
-        ),
-        { isRequired: required }
-      ) as any /* Typescript sucks!! */
-    },
-    object<T extends Schema.InputObject>(arg: T) {
-      return new Schema.SchemaObject(arg, { isRequired: required })
-    },
-    record<T extends Schema.InputRecord>(arg: T) {
-      return new Schema.SchemaRecord(arg, { isRequired: required })
-    },
-
-    or<const T extends ReadonlyArray<Schema.InputOr>>(...args: T) {
-      return new Schema.SchemaOr(args as Mutable<typeof args>, {
-        isRequired: required,
-      })
-    },
-    tuple<const T extends ReadonlyArray<Schema.InputTuple>>(...args: T) {
-      return new Schema.SchemaTuple(args as Mutable<typeof args>, {
-        isRequired: required,
-      })
-    },
-    array<const T extends ReadonlyArray<Schema.InputArray>>(...args: T) {
-      return new Schema.SchemaArray(args as Mutable<typeof args>, {
-        isRequired: required,
-      })
-    },
-
-    string<const T extends ReadonlyArray<Schema.InputString>>(...args: T) {
-      return new Schema.SchemaString(args as Mutable<typeof args>, {
-        isRequired: required,
-      })
-    },
-    number<const T extends ReadonlyArray<Schema.InputNumber>>(...args: T) {
-      return new Schema.SchemaNumber(args as Mutable<typeof args>, {
-        isRequired: required,
-      })
-    },
-    boolean<const T extends ReadonlyArray<Schema.InputBoolean>>(...args: T) {
-      return new Schema.SchemaBoolean(args as Mutable<typeof args>, {
-        isRequired: required,
-      })
-    },
-  }
+export function string<const T extends ReadonlyArray<Schema.InputString>>(
+  ...args: T
+) {
+  return new Schema.SchemaString(args as Mutable<typeof args>, {
+    ...defaultSchemaConfig,
+  })
+}
+export function number<const T extends ReadonlyArray<Schema.InputNumber>>(
+  ...args: T
+) {
+  return new Schema.SchemaNumber(args as Mutable<typeof args>, {
+    ...defaultSchemaConfig,
+  })
+}
+export function boolean<const T extends ReadonlyArray<Schema.InputBoolean>>(
+  ...args: T
+) {
+  return new Schema.SchemaBoolean(args as Mutable<typeof args>, {
+    ...defaultSchemaConfig,
+  })
 }
 
-const requiredMethods = createMethods(true)
-const optionalMethods = createMethods(false)
-export default {
-  ...requiredMethods,
+export function or<const T extends ReadonlyArray<Schema.InputOr>>(...args: T) {
+  return new Schema.SchemaOr(args as Mutable<typeof args>, {
+    ...defaultSchemaConfig,
+  })
+}
+export function tuple<const T extends ReadonlyArray<Schema.InputTuple>>(
+  ...args: T
+) {
+  return new Schema.SchemaTuple(args as Mutable<typeof args>, {
+    ...defaultSchemaConfig,
+  })
+}
+export function array<const T extends ReadonlyArray<Schema.InputArray>>(
+  ...args: T
+) {
+  return new Schema.SchemaArray(args as Mutable<typeof args>, {
+    ...defaultSchemaConfig,
+  })
+}
 
-  /**
-   * @deprecated Use `schema.optional()` or `schema.required()` instead.
-   */
-  o: optionalMethods,
+export function instance<T extends Schema.InputInstance[]>(
+  ...args: T
+): T extends [any]
+  ? Schema.SchemaInstance<T[0], DefaultSchemaConfig>
+  : Schema.SchemaOr<
+      {
+        [K in keyof T]: Schema.SchemaInstance<T[K], DefaultSchemaConfig>
+      },
+      DefaultSchemaConfig
+    > {
+  if (args.length === 1) {
+    return new Schema.SchemaInstance(args[0], { ...defaultSchemaConfig }) as any // Typescript sucks!!
+  }
 
-  /**
-   * @deprecated Use `schema.optional()` or `schema.required()` instead.
-   */
-  opt: optionalMethods,
-
-  /**
-   * @deprecated Use `schema.optional()` or `schema.required()` instead.
-   */
-  optional: optionalMethods,
+  return new Schema.SchemaOr(
+    args.map(
+      (arg) => new Schema.SchemaInstance(arg, { ...defaultSchemaConfig })
+    ),
+    { ...defaultSchemaConfig }
+  ) as any // Typescript sucks!!
+}
+export function object<T extends Schema.InputObject>(arg: T) {
+  return new Schema.SchemaObject(arg, { ...defaultSchemaConfig })
+}
+export function record<T extends Schema.InputRecord>(arg: T) {
+  return new Schema.SchemaRecord(arg, { ...defaultSchemaConfig })
 }

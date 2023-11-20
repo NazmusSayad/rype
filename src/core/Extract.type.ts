@@ -1,12 +1,5 @@
 import * as Schema from './Schema'
-import { SchemaConfig } from '../types'
-import { DeepReadonly } from '../utils.type'
-import * as ENV from '../env'
-
-export type AdjustReadonlyObject<
-  T extends Schema.TypeSchemaUnion,
-  R
-> = T['config']['convertToReadonly'] extends true ? DeepReadonly<R> : R
+import { SchemaConfig } from '../config'
 
 type AdjustSchemaInput<
   T extends Schema.TypeSchemaUnion,
@@ -62,10 +55,6 @@ export type InferInput<T> = T extends Schema.TypeSchemaUnion
 export type InferOutput<T> = T extends Schema.TypeSchemaUnion
   ? AdjustSchemaOutput<T, ExtractSchemaCore<T, 'output'>>
   : never
-
-export type InferEnv<T extends ENV.InputEnv> = InferOutput<
-  Schema.SchemaObject<T, { isRequired: true }>
->
 
 export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:

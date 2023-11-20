@@ -8,7 +8,7 @@ import { RypeOk } from '../RypeOk'
 import * as Schema from './Schema'
 import messages from '../errorMessages'
 import { DeepOptional, ObjectMerge, Prettify } from '../utils.type'
-import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../types'
+import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../config'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
 
 export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
@@ -50,14 +50,14 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    *
    * @returns A new schema instance that needs to be required
    */
-  public required() {
+  public required(): InferClassFromSchema<
+    typeof this,
+    TFormat,
+    ObjectMerge<Omit<TConfig, 'defaultValue'>, { isRequired: true }>
+  > {
     this.config.isRequired = true
     delete this.config.defaultValue
-    return this as unknown as InferClassFromSchema<
-      typeof this,
-      TFormat,
-      ObjectMerge<Omit<TConfig, 'defaultValue'>, { isRequired: true }>
-    >
+    return this as any // Typescript Sucks
   }
 
   /**
@@ -66,13 +66,13 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    *
    * @returns A new schema instance that can be optional
    */
-  public optional() {
+  public optional(): InferClassFromSchema<
+    typeof this,
+    TFormat,
+    ObjectMerge<TConfig, { isRequired: false }>
+  > {
     this.config.isRequired = false
-    return this as unknown as InferClassFromSchema<
-      typeof this,
-      TFormat,
-      ObjectMerge<TConfig, { isRequired: false }>
-    >
+    return this as any // Typescript Sucks
   }
 
   /**
@@ -85,21 +85,15 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    */
   public default<T extends Exclude<InferInput<typeof this>, undefined>>(
     value: T | (() => T)
-  ) {
+  ): InferClassFromSchema<
+    typeof this,
+    TFormat,
+    ObjectMerge<TConfig, { isRequired: false; defaultValue: T }>
+  > {
     this.optional()
     this.config.defaultValue = value
 
-    return this as unknown as InferClassFromSchema<
-      typeof this,
-      TFormat,
-      ObjectMerge<
-        TConfig,
-        {
-          isRequired: false
-          defaultValue: T
-        }
-      >
-    >
+    return this as any // Typescript Sucks
   }
 
   /**
@@ -485,13 +479,13 @@ export class SchemaFreezableCore<
    * Marks the parsed output of the schema as readonly, preventing further modifications.
    * @returns A new schema instance with the parsed output marked as readonly.
    */
-  toReadonly() {
+  toReadonly(): InferClassFromSchema<
+    typeof this,
+    TFormat,
+    ObjectMerge<TConfig, { convertToReadonly: true }>
+  > {
     this.isReadonly = true
-    return this as unknown as InferClassFromSchema<
-      typeof this,
-      TFormat,
-      ObjectMerge<TConfig, { convertToReadonly: true }>
-    >
+    return this as any // Typescript Sucks
   }
 
   ['~postCheckFormatter'](result: RypeOk): RypeOk {

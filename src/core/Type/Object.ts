@@ -4,16 +4,12 @@ import {
   ValidObject,
   MakeOptional,
 } from '../../utils.type'
-import {
-  InferSchema,
-  AdjustReadonlyObject,
-  InferClassFromSchema,
-} from '../Extract.type'
 import { RypeOk } from '../../RypeOk'
 import { RypeError } from '../../Error'
-import { TypeSchemaUnion } from './_common.type'
 import { SchemaFreezableCore } from '../SchemaCore'
-import { SchemaCheckConf, SchemaConfig } from '../../types'
+import { SchemaCheckConf, SchemaConfig } from '../../config'
+import { InferSchema, InferClassFromSchema } from '../Extract.type'
+import { TypeSchemaUnion, AdjustReadonlyObject } from './_common.type'
 
 export class SchemaObject<
   T extends InputObject,
@@ -62,7 +58,7 @@ export class SchemaObject<
       this.schema[key].config.isRequired = false
     }
 
-    return this as any /* Typescript Sucks */
+    return this as any // Typescript Sucks
   }
 
   /**
@@ -83,7 +79,7 @@ export class SchemaObject<
       this.schema[key].config.isRequired = true
     }
 
-    return this as any /* Typescript Sucks */
+    return this as any // Typescript Sucks
   }
 
   /**

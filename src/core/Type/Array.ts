@@ -1,12 +1,15 @@
+import {
+  TypeSchemaUnion,
+  ExtractArrayLike,
+  AdjustReadonlyObject,
+} from './_common.type'
 import { SchemaOr } from './Or'
 import { RypeOk } from '../../RypeOk'
 import { RypeError } from '../../Error'
 import messages from '../../errorMessages'
 import { Prettify } from '../../utils.type'
 import { SchemaFreezableCore } from '../SchemaCore'
-import { AdjustReadonlyObject } from '../Extract.type'
-import { SchemaCheckConf, SchemaConfig } from '../../types'
-import { ExtractArrayLike, TypeSchemaUnion } from './_common.type'
+import { SchemaCheckConf, SchemaConfig } from '../../config'
 
 export class SchemaArray<
   T extends InputArray,

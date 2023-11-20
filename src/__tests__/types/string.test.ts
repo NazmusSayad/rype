@@ -13,13 +13,13 @@ describe('String Validation', () => {
   })
 
   it('Should handle optional values', () => {
-    const result1 = r.o.string().parse(undefined)
+    const result1 = r.string().optional().parse(undefined)
     expect(result1).toBe(undefined)
 
-    const result2 = r.o.string('bar').parse(undefined)
+    const result2 = r.string('bar').optional().parse(undefined)
     expect(result2).toBe(undefined)
 
-    const result3 = r.o.string('fo', 'bar').parse(undefined)
+    const result3 = r.string('fo', 'bar').optional().parse(undefined)
     expect(result3).toBe(undefined)
   })
 
@@ -48,44 +48,54 @@ describe('String Validation', () => {
   })
 
   it('Should handle `minLength` with optional schema', () => {
-    const result1 = r.o.string().minLength(2).parse('fo')
+    const result1 = r.string().optional().minLength(2).parse('fo')
     expect(result1).toBe('fo')
 
-    const result2 = r.o.string().minLength(3).parse('bar')
+    const result2 = r.string().optional().minLength(3).parse('bar')
     expect(result2).toBe('bar')
 
-    const result3 = r.o.string().minLength(2).parse(undefined)
+    const result3 = r.string().optional().minLength(2).parse(undefined)
     expect(result3).toBe(undefined)
 
-    const result4 = r.o.string().minLength(3).parse(undefined)
+    const result4 = r.string().optional().minLength(3).parse(undefined)
     expect(result4).toBe(undefined)
   })
 
   it('Should handle `maxLength` with optional schema', () => {
-    const result1 = r.o.string().maxLength(2).parse('fo')
+    const result1 = r.string().optional().maxLength(2).parse('fo')
     expect(result1).toBe('fo')
 
-    const result2 = r.o.string().maxLength(3).parse('bar')
+    const result2 = r.string().optional().maxLength(3).parse('bar')
     expect(result2).toBe('bar')
 
-    const result3 = r.o.string().maxLength(2).parse(undefined)
+    const result3 = r.string().optional().maxLength(2).parse(undefined)
     expect(result3).toBe(undefined)
 
-    const result4 = r.o.string().maxLength(3).parse(undefined)
+    const result4 = r.string().optional().maxLength(3).parse(undefined)
     expect(result4).toBe(undefined)
   })
 
   it('Should handle `minLength` and `maxLength` with optional schema', () => {
-    const result1 = r.o.string().minLength(2).maxLength(2).parse('fo')
+    const result1 = r.string().optional().minLength(2).maxLength(2).parse('fo')
     expect(result1).toBe('fo')
 
-    const result2 = r.o.string().minLength(3).maxLength(3).parse('bar')
+    const result2 = r.string().optional().minLength(3).maxLength(3).parse('bar')
     expect(result2).toBe('bar')
 
-    const result3 = r.o.string().minLength(2).maxLength(2).parse(undefined)
+    const result3 = r
+      .string()
+      .optional()
+      .minLength(2)
+      .maxLength(2)
+      .parse(undefined)
     expect(result3).toBe(undefined)
 
-    const result4 = r.o.string().minLength(3).maxLength(3).parse(undefined)
+    const result4 = r
+      .string()
+      .optional()
+      .minLength(3)
+      .maxLength(3)
+      .parse(undefined)
     expect(result4).toBe(undefined)
   })
 
@@ -98,10 +108,10 @@ describe('String Validation', () => {
   })
 
   it('Should handle defualt values with optional schema', () => {
-    const result1 = r.o.string().default('fo').parse(undefined)
+    const result1 = r.string().optional().default('fo').parse(undefined)
     expect(result1).toBe('fo')
 
-    const result2 = r.o.string().default('fo').parse('bar')
+    const result2 = r.string().optional().default('fo').parse('bar')
     expect(result2).toBe('bar')
   })
 
@@ -114,14 +124,20 @@ describe('String Validation', () => {
   })
 
   it('Should handle `minLength` with optional schema with default', () => {
-    const result1 = r.o
+    const result1 = r
       .string()
+      .optional()
       .minLength(2)
       .default('default')
       .parse(undefined)
     expect(result1).toBe('default')
 
-    const result2 = r.o.string().minLength(2).default('default').parse('bar')
+    const result2 = r
+      .string()
+      .optional()
+      .minLength(2)
+      .default('default')
+      .parse('bar')
     expect(result2).toBe('bar')
   })
 
@@ -134,14 +150,20 @@ describe('String Validation', () => {
   })
 
   it('Should handle `maxLength` with optional schema with default', () => {
-    const result1 = r.o
+    const result1 = r
       .string()
+      .optional()
       .maxLength(2)
       .default('default')
       .parse(undefined)
     expect(result1).toBe('default')
 
-    const result2 = r.o.string().maxLength(3).default('default').parse('bar')
+    const result2 = r
+      .string()
+      .optional()
+      .maxLength(3)
+      .default('default')
+      .parse('bar')
     expect(result2).toBe('bar')
   })
 
@@ -164,16 +186,18 @@ describe('String Validation', () => {
   })
 
   it('Should handle `minLength` and `maxLength` with optional schema with default', () => {
-    const result1 = r.o
+    const result1 = r
       .string()
+      .optional()
       .minLength(2)
       .maxLength(4)
       .default('default')
       .parse(undefined)
     expect(result1).toBe('default')
 
-    const result2 = r.o
+    const result2 = r
       .string()
+      .optional()
       .minLength(2)
       .maxLength(4)
       .default('default')
@@ -193,19 +217,19 @@ describe('String Validation', () => {
   })
 
   it('Should handle regular expression with optional schema', () => {
-    const result1 = r.o.string().regex(/abc/).parse('abc')
+    const result1 = r.string().optional().regex(/abc/).parse('abc')
     expect(result1).toBe('abc')
 
-    const result2 = r.o.string().regex(/def/).parse('def')
+    const result2 = r.string().optional().regex(/def/).parse('def')
     expect(result2).toBe('def')
 
-    const result3 = r.o.string().regex(/ghi/).parse('ghi')
+    const result3 = r.string().optional().regex(/ghi/).parse('ghi')
     expect(result3).toBe('ghi')
 
-    const result4 = r.o.string().regex(/abc/).parse(undefined)
+    const result4 = r.string().optional().regex(/abc/).parse(undefined)
     expect(result4).toBe(undefined)
 
-    const result5 = r.o.string().regex(/def/).parse(undefined)
+    const result5 = r.string().optional().regex(/def/).parse(undefined)
     expect(result5).toBe(undefined)
   })
 
@@ -270,16 +294,18 @@ describe('String Validation - ChatGPT', () => {
       .parse('bar')
     expect(result2).toBe('bar')
 
-    const result3 = r.o
+    const result3 = r
       .string()
+      .optional()
       .minLength(3)
       .maxLength(10)
       .default('default')
       .parse(undefined)
     expect(result3).toBe('default')
 
-    const result4 = r.o
+    const result4 = r
       .string()
+      .optional()
       .minLength(3)
       .maxLength(10)
       .default('default')
@@ -363,15 +389,15 @@ describe('String Validation should Throw - ChatGPT', () => {
 describe('String Validation should Throw - ChatGPT v2', () => {
   it('should throw error for non-string optional value', () => {
     expect(() => {
-      r.o.string().parse(123)
+      r.string().optional().parse(123)
     }).toThrow()
 
     expect(() => {
-      r.o.string().parse(true)
+      r.string().optional().parse(true)
     }).toThrow()
 
     expect(() => {
-      r.o.string().parse({})
+      r.string().optional().parse({})
     }).toThrow()
   })
 
@@ -476,28 +502,34 @@ describe('String Validation should Throw - ChatGPT v2', () => {
 
 describe('String Validation - Additional Tests', () => {
   it('should handle optional value with minLength constraint', () => {
-    const result = r.o.string().minLength(3).parse(undefined)
+    const result = r.string().optional().minLength(3).parse(undefined)
     expect(result).toBe(undefined)
   })
 
   it('should handle optional value with maxLength constraint', () => {
-    const result = r.o.string().maxLength(5).parse(undefined)
+    const result = r.string().optional().maxLength(5).parse(undefined)
     expect(result).toBe(undefined)
   })
 
   it('should handle optional value with regex constraint', () => {
-    const result = r.o.string().regex(/abc/).parse(undefined)
+    const result = r.string().optional().regex(/abc/).parse(undefined)
     expect(result).toBe(undefined)
   })
 
   it('should handle optional value with minLength and maxLength constraints', () => {
-    const result = r.o.string().minLength(2).maxLength(4).parse(undefined)
+    const result = r
+      .string()
+      .optional()
+      .minLength(2)
+      .maxLength(4)
+      .parse(undefined)
     expect(result).toBe(undefined)
   })
 
   it('should handle optional value with minLength, maxLength, and regex constraints', () => {
-    const result = r.o
+    const result = r
       .string()
+      .optional()
       .minLength(2)
       .maxLength(4)
       .regex(/abc/)
@@ -506,12 +538,12 @@ describe('String Validation - Additional Tests', () => {
   })
 
   it('should handle optional value with default value', () => {
-    const result = r.o.string().default('default').parse(undefined)
+    const result = r.string().optional().default('default').parse(undefined)
     expect(result).toBe('default')
   })
 
   it('should handle non-string optional value with default', () => {
-    const result = r.o.string().default('default').parse(undefined)
+    const result = r.string().optional().default('default').parse(undefined)
     expect(result).toBe('default')
   })
 
@@ -542,8 +574,9 @@ describe('String Validation - Additional Tests', () => {
   })
 
   it('should handle non-string optional value with minLength, maxLength, and regex constraints and default', () => {
-    const result = r.o
+    const result = r
       .string()
+      .optional()
       .minLength(2)
       .maxLength(4)
       .regex(/abc/)
@@ -644,8 +677,8 @@ describe('String Validation - Additional Tests', () => {
 
   it('should throw error for non-string optional value with minLength, maxLength, regex, and default value', () => {
     expect(() => {
-      r.o
-        .string()
+      r.string()
+        .optional()
         .minLength(3)
         .maxLength(6)
         .regex(/abc/)

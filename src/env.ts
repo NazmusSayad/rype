@@ -1,13 +1,13 @@
 import {
+  SchemaObject,
   SchemaNumber,
   SchemaString,
   SchemaBoolean,
   TypePrimitive,
 } from './core/Schema'
-import r from './rype'
+import r from './index'
+import { SchemaConfig } from './config'
 import { ValidObject } from './utils.type'
-import { SchemaConfig } from './types'
-import { InferEnv } from './core/Extract.type'
 
 function formatString(
   schema: any,
@@ -53,7 +53,7 @@ export function env<T extends InputEnv>(schema: T): InferEnv<T> {
     const oldSchema = schema[key as keyof typeof schema]
     const config = oldSchema.config as SchemaConfig
 
-    const newSchema = config.isRequired ? r.string() : r.o.string()
+    const newSchema = config.isRequired ? r.string() : r.string().optional()
     const withDefaultValue =
       'defaultValue' in config
         ? newSchema.default(config.defaultValue as string)
@@ -70,7 +70,10 @@ export function env<T extends InputEnv>(schema: T): InferEnv<T> {
     }
   }
 
-  return result as any /* Typescript Sucks */
+  return result as any // Typescript Sucks
 }
 
 export type InputEnv = { [key: string]: TypePrimitive }
+export type InferEnv<T extends InputEnv> = r.inferOut<
+  SchemaObject<T, { isRequired: true }>
+>

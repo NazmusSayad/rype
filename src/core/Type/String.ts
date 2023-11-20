@@ -7,7 +7,7 @@ import { RypeOk } from '../../RypeOk'
 import messages from '../../errorMessages'
 import { SchemaPrimitiveCore } from '../SchemaCore'
 import { RypeError, RypeDevError } from '../../Error'
-import { SchemaCheckConf, SchemaConfig } from '../../types'
+import { SchemaCheckConf, SchemaConfig } from '../../config'
 
 export class SchemaString<
   T extends InputString,
