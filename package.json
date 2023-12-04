@@ -5,8 +5,7 @@
     "dev": "jspac dev",
     "build": "jspac build",
     "lab": "nodemon ./src/_lab.ts",
-    "test": "jest --watch --watchAll",
-    "build:test": "jest --watchAll"
+    "test": "jest --watch --watchAll"
   },
   "devDependencies": {
     "@types/jest": "^29.5.8",
