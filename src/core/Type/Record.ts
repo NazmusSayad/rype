@@ -5,6 +5,7 @@ import { SchemaFreezableCore } from '../SchemaCore'
 import { SchemaCheckConf, SchemaConfig } from '../../config'
 import { TypeSchemaUnion, AdjustReadonlyObject } from './_common.type'
 import { ValidObject, Prettify, MakeOptional } from '../../utils.type'
+import { object } from '../../rype'
 
 export class SchemaRecord<
   T extends InputRecord,
@@ -28,6 +29,17 @@ export class SchemaRecord<
     }
 
     return new RypeOk(output)
+  }
+
+  pick<T extends string[]>(...keys: T) {
+    type Input = Prettify<Record<T[number], typeof this.schema>>
+    const objectInput = {} as Input
+
+    for (let key of keys) {
+      objectInput[key as T[number]] = this.schema
+    }
+
+    return object(objectInput)
   }
 }
 
