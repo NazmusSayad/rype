@@ -16,13 +16,13 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: yarn
+        run: npm i
 
       - name: Run tests
-        run: yarn jest
+        run: npm run jest
 
       - name: Build the project
-        run: yarn build
+        run: npm run build
 
       - name: Set Npm Toknen
         run: npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}
