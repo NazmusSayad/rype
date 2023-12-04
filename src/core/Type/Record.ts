@@ -31,15 +31,23 @@ export class SchemaRecord<
     return new RypeOk(output)
   }
 
-  pick<T extends string[]>(...keys: T) {
-    type Input = Prettify<Record<T[number], typeof this.schema>>
-    const objectInput = {} as Input
-
+  pick<T extends string[]>(
+    ...keys: T
+  ): ReturnType<
+    typeof object<{
+      [K in T[number]]: typeof this.schema
+    }>
+  > {
+    const objectInput: any = {}
     for (let key of keys) {
-      objectInput[key as T[number]] = this.schema
+      objectInput[key] = this.schema
     }
 
-    return object(objectInput)
+    return object(
+      objectInput as {
+        [K in T[number]]: typeof this.schema
+      }
+    )
   }
 }
 
