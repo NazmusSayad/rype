@@ -19,7 +19,7 @@ jobs:
         run: npm i
 
       - name: Run tests
-        run: npm run build:test
+        run: npx jest
 
       - name: Build the project
         run: npm run build
