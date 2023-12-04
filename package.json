@@ -2,8 +2,8 @@
   "name": "rype",
   "version": "2.0.2",
   "scripts": {
-    "dev": "npm-ez dev",
-    "build": "npm-ez build",
+    "dev": "jspac dev",
+    "build": "jspac build",
     "lab": "nodemon ./src/_lab.ts",
     "test": "jest --watch --watchAll"
   },
@@ -11,7 +11,7 @@
     "@types/jest": "^29.5.8",
     "@types/node": "^20.4.10",
     "jest": "^29.7.0",
-    "npm-ez": "^2.0.6",
+    "jspac": "^1.0.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6"
   },
