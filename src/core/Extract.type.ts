@@ -39,9 +39,10 @@ type ExtractSchemaCore<
     ? Schema.ExtractObject<T, TMode>
     : // Record:
     T extends Schema.TypeRecord
-    ? Schema.ExtractRecord<T, TMode>
-    : // It's never gonna happen!
-      never
+    ? Schema.ExtractRecord<T, TMode> // Fixed:
+    : T extends Schema.TypeFixed
+    ? Schema.ExtractFixed<T, TMode>
+    : never
 
 export type InferSchema<
   T,
@@ -101,6 +102,11 @@ export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
     T extends Schema.TypeRecord
     ? TFormat extends Schema.InputRecord
       ? Schema.SchemaRecord<TFormat, TConfig>
+      : never
+    : // Fixed:
+    T extends Schema.TypeFixed
+    ? TFormat extends Schema.InputFixed
+      ? Schema.SchemaFixed<TFormat, TConfig>
       : never
     : // It's never gonna happen!
       never

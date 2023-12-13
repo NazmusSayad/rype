@@ -9,6 +9,7 @@ import { TypeBoolean } from './Boolean'
 import { TypeInstance } from './Instance'
 import { InferSchema } from '../Extract.type'
 import { DeepReadonly } from '../../utils.type'
+import { TypeFixed } from './Fixed'
 
 export type TypePrimitive = TypeString | TypeNumber | TypeBoolean
 export type TypeSchemaUnion =
@@ -19,6 +20,7 @@ export type TypeSchemaUnion =
   | TypeArray
   | TypeTuple
   | TypePrimitive
+  | TypeFixed
 
 export type ExtractPrimitive<T extends TypePrimitive> = T['schema'][number]
 export type ExtractArrayLike<

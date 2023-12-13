@@ -12,3 +12,5 @@ export * from './Type/Instance'
 export * from './Type/Object'
 export * from './Type/Record'
 export * from './Type/Or'
+
+export * from './Type/Fixed'

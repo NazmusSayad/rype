@@ -1,6 +1,6 @@
 {
   "name": "rype",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "scripts": {
     "dev": "jspac dev",
     "build": "jspac build",

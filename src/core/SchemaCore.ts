@@ -7,7 +7,7 @@ import {
 import { RypeOk } from '../RypeOk'
 import * as Schema from './Schema'
 import messages from '../errorMessages'
-import { DeepOptional, ObjectMerge, Prettify } from '../utils.type'
+import { DeepOptional, ObjectMerge } from '../utils.type'
 import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../config'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
 
@@ -22,6 +22,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     | 'tuple'
     | 'array'
     | 'or'
+    | 'fixed'
 
   schema: TFormat
   config: TConfig
@@ -152,11 +153,11 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @throws If validation fails, an error is thrown.
    * @returns The result of the validation if successful.
    */
-  public parse(input: unknown, name: string = '') {
+  public parse(input: unknown, name: string = ''): InferOutput<typeof this> {
     return this['~checkAndGetResult'](input, {
       path: name,
       throw: true,
-    }) as InferOutput<typeof this>
+    }) as any
   }
   public parseTyped(input: InferInput<typeof this>, name: string = '') {
     return this.parse(input, name)
@@ -171,11 +172,14 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    *
    * ⚠️: The type of the result may not be perfect.
    */
-  public filter(input: unknown, name: string = '') {
+  public filter(
+    input: unknown,
+    name: string = ''
+  ): DeepOptional<InferOutput<typeof this>> {
     return this['~checkAndGetResult'](input, {
       path: name,
       throw: false,
-    }) as DeepOptional<InferOutput<typeof this>>
+    }) as any
   }
   public filterTyped(input: InferInput<typeof this>, name: string = '') {
     return this.filter(input, name)

@@ -75,3 +75,9 @@ export function object<T extends Schema.InputObject>(arg: T) {
 export function record<T extends Schema.InputRecord>(arg: T) {
   return new Schema.SchemaRecord(arg, { ...defaultSchemaConfig })
 }
+
+export function fixed<T extends Schema.InputFixed>(arg: T) {
+  return new Schema.SchemaFixed(arg, {
+    ...defaultSchemaConfig,
+  }).default(arg as any)
+}
