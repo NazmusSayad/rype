@@ -201,8 +201,8 @@ describe('r.object() Additional Tests', () => {
     expect(() =>
       r
         .object({
-          name: r.string().setTypeErrMsg('Name must be a string'),
-          age: r.number().setRequiredErrMsg('Age is required'),
+          name: r.string().typeErr('Name must be a string'),
+          age: r.number().requiredErr('Age is required'),
         })
         .parse({ name: 123 })
     ).toThrow('Name must be a string')

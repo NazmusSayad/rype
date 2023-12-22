@@ -25,6 +25,11 @@ export class SchemaNumber<
    * Sets the schema to only accept integer values and configures the rounding mode for non-integer values.
    * @param autoFormatMode `round | ceil | floor` - The rounding mode to apply to non-integer values. Default is 'floor'.
    * @returns The updated SchemaNumber instance with integer validation and rounding mode set.
+   * @example
+   * ```ts
+   * const schema = r.number().int('round')
+   * const result = schema.parseTyped(1.5) // 2
+   * ```
    */
   int(autoFormatMode: typeof this.autoIntFormat = 'floor') {
     this.isInt = true
@@ -36,6 +41,11 @@ export class SchemaNumber<
    * Sets the minimum allowed value for the schema.
    * @param number - The minimum value that is acceptable for the schema.
    * @returns The updated SchemaNumber instance with the minimum value set.
+   * @example
+   * ```ts
+   * const schema = r.number().min(5)
+   * const result = schema.parseTyped(4) // Error
+   * ```
    */
   public min(number: number) {
     this.confirmNotUsingCustomValues()
@@ -47,6 +57,11 @@ export class SchemaNumber<
    * Sets the maximum allowed value for the schema.
    * @param number - The maximum value that is acceptable for the schema.
    * @returns The updated SchemaNumber instance with the maximum value set.
+   * @example
+   * ```ts
+   * const schema = r.number().max(5)
+   * const result = schema.parseTyped(6) // Error
+   * ```
    */
   public max(number: number) {
     this.confirmNotUsingCustomValues()

@@ -25,15 +25,17 @@ export class SchemaObject<
 
     for (let key in this.schema) {
       const schema = this.schema[key]
-      const value = input[key]
 
-      const result = schema['~checkAndGetResult'](value, {
-        ...conf,
-        path: `${conf.path || 'object'}.${key}`,
-      })
+      const result = schema['~checkAndGetResult'](
+        input[schema.config.inputAsKey ?? key],
+        {
+          ...conf,
+          path: `${conf.path || 'object'}.${schema.config.inputAsKey ?? key}`,
+        }
+      )
 
       if (result !== undefined) {
-        output[key] = result
+        output[schema.config.outputAsKey ?? key] = result
       }
     }
 
@@ -43,6 +45,14 @@ export class SchemaObject<
   /**
    * Creates a new schema where all properties are marked as optional (not required).
    * @returns A new schema with optional properties.
+   * @example
+   * ```ts
+   * const schema = r.object({
+   *   name: r.string().required(),
+   *   age: r.number().required(),
+   * }).partial()
+   * const result = schema.parseTyped({ name: 'John' }) // { name: 'John' }
+   * ```
    */
   partial(): SchemaObject<
     {
@@ -64,6 +74,14 @@ export class SchemaObject<
   /**
    * Creates a new schema where all properties are marked as required.
    * @returns A new schema with required properties.
+   * @example
+   * ```ts
+   * const schema = r.object({
+   *   name: r.string().optional(),
+   *   age: r.number().optional(),
+   * }).impartial()
+   * const result = schema.parseTyped({ name: 'John' }) // Error
+   * ```
    */
   impartial(): SchemaObject<
     {
@@ -86,6 +104,14 @@ export class SchemaObject<
    * Creates a new schema by selecting specific properties from the original schema.
    * @param args - The keys of the properties to include in the new schema.
    * @returns A new schema with selected properties or an empty schema if no properties are selected.
+   * @example
+   * ```ts
+   * const schema = r.object({
+   *   name: r.string(),
+   *   age: r.number(),
+   * }).pick('name')
+   * const result = schema.parseTyped({ name: 'John', age: 20 }) // { name: 'John' }
+   * ```
    */
   pick<Key extends (keyof T)[]>(...args: Key) {
     for (let key in this.schema) {
@@ -103,6 +129,14 @@ export class SchemaObject<
    * Creates a new schema by omitting specific properties from the original schema.
    * @param args - The keys of the properties to exclude from the new schema.
    * @returns A new schema with omitted properties or the original schema if no properties are omitted.
+   * @example
+   * ```ts
+   * const schema = r.object({
+   *   name: r.string(),
+   *   age: r.number(),
+   * }).omit('age')
+   * const result = schema.parseTyped({ name: 'John', age: 20 }) // { name: 'John' }
+   * ```
    */
   omit<Key extends (keyof T)[]>(...args: Key) {
     for (let key in this.schema) {
@@ -126,7 +160,15 @@ export type ExtractObject<
   T,
   Prettify<
     MakeOptional<{
-      [K in keyof T['schema']]: InferSchema<T['schema'][K], TMode>
+      [K in keyof T['schema'] as TMode extends 'input'
+        ? T['schema'][K]['config']['inputAsKey'] extends string
+          ? T['schema'][K]['config']['inputAsKey']
+          : K
+        : TMode extends 'output'
+        ? T['schema'][K]['config']['outputAsKey'] extends string
+          ? T['schema'][K]['config']['outputAsKey']
+          : K
+        : K]: InferSchema<T['schema'][K], TMode>
     }>
   >
 >

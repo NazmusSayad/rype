@@ -46,10 +46,65 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   }
 
   /**
+   * Sets the key to be used for the input value.
+   * @returns A new schema instance with the specified input key.
+   * @remarks This method is only applicable to object schemas.
+   * @example
+   * ```ts
+   * const schema = r.object({
+   *   name: r.string().input('username')
+   * })
+   * const result = schema.parseTyped({ username: 'John' })
+   * console.log(result) // { name: 'John' }
+   * ```
+   */
+  input<TInputAs extends string>(
+    key: TInputAs
+  ): InferClassFromSchema<
+    typeof this,
+    TFormat,
+    ObjectMerge<TConfig, { inputAsKey: TInputAs }>
+  > {
+    delete this.config.outputAsKey
+    this.config.inputAsKey = key
+    return this as any // Typescript Sucks
+  }
+
+  /**
+   * Sets the key to be used for the output value.
+   * @returns A new schema instance with the specified input key.
+   * @remarks This method is only applicable to object schemas.
+   * @example
+   * ```ts
+   * const schema = r.object({
+   *   name: r.string().output('username')
+   * })
+   * const result = schema.parseTyped({ name: 'John' })
+   * console.log(result) // { username: 'John' }
+   * ```
+   */
+  output<TOutputAs extends string>(
+    key: TOutputAs
+  ): InferClassFromSchema<
+    typeof this,
+    TFormat,
+    ObjectMerge<TConfig, { outputAsKey: TOutputAs }>
+  > {
+    delete this.config.inputAsKey
+    this.config.outputAsKey = key
+    return this as any // Typescript Sucks
+  }
+
+  /**
    * Marks the schema as required, indicating that the corresponding input value must be provided.
    * This method removes any default value previously set and makes the schema mandatory.
-   *
    * @returns A new schema instance that needs to be required
+   * @example
+   * ```ts
+   * const schema = r.string().default('John').required()
+   * const result = schema.parseTyped(undefined)
+   * console.log(result) // Error: "Required field is missing"
+   * ```
    */
   public required(): InferClassFromSchema<
     typeof this,
@@ -64,8 +119,13 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
   /**
    * Marks the schema as optional, indicating that the corresponding input value is not required.
    * This method makes the schema optional.
-   *
    * @returns A new schema instance that can be optional
+   * @example
+   * ```ts
+   * const schema = r.string().optional()
+   * const result = schema.parseTyped(undefined)
+   * console.log(result) // undefined
+   * ```
    */
   public optional(): InferClassFromSchema<
     typeof this,
@@ -83,6 +143,12 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @remarks This method makes the schema optional.
    * @remarks This method does not perform schema validity checks at runtime for the given default value.
    * @returns The updated schema with the specified default value.
+   * @example
+   * ```ts
+   * const schema = r.string().default('John')
+   * const result = schema.parseTyped(undefined)
+   * console.log(result) // 'John'
+   * ```
    */
   public default<T extends Exclude<InferInput<typeof this>, undefined>>(
     value: T | (() => T)
@@ -103,6 +169,14 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param fn - A function that returns `string` (for validation failure) or `void` (for success).
    * If the custom validation function returns a string, the validation will fail, and the string will be used as the error message.
    * @returns The schema with the customized validation behavior.
+   * @example
+   * ```ts
+   * const schema = r.string().validate((input) => {
+   *   if (input.length < 3) return 'Must be at least 3 characters long'
+   * })
+   * const result = schema.parseTyped('Jo')
+   * console.log(result) // Error: "Must be at least 3 characters long"
+   * ```
    */
   public validate(fn: CustomValidator<InferOutput<typeof this>>) {
     this.customValidator = fn
@@ -111,47 +185,48 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
 
   /**
    * Sets a custom error message for type mismatch errors.
-   *
-   * @deprecated Use `typeErr` instead, will be removed in v2
    * @param message The error message as a string.
    * @returns The updated schema with the specified error message.
-   */
-  public setTypeErrMsg(message: string) {
-    this.errorMessage.type = message
-    return this
-  }
-  /**
-   *  Shorthand for `setTypeErrMsg` method.
+   * @example
+   * ```ts
+   * const schema = r.string().typeErr('Must be a string')
+   * const result = schema.parseTyped(123)
+   * console.log(result) // Error: "Must be a string"
+   * ```
    */
   public typeErr(message: string) {
-    return this.setTypeErrMsg(message)
+    this.errorMessage.type = message
+    return this
   }
 
   /**
    * Sets a custom error message for required errors, which occur when the schema is required but the value is undefined or null.
-   *
-   * @deprecated Use `missingErr` instead, will be removed in v2
    * @param message The error message as a string.
    * @returns The updated schema with the specified error message.
+   * @example
+   * ```ts
+   * const schema = r.string().requiredErr('Required field is missing')
+   * const result = schema.parseTyped(undefined)
+   * console.log(result) // Error: "Required field is missing"
+   * ```
    */
-  public setRequiredErrMsg(message: string) {
+  public requiredErr(message: string) {
     this.errorMessage.required = message
     return this
-  }
-  /**
-   * Shorthand for `setRequiredErrMsg` method.
-   */
-  public missingErr(message: string) {
-    return this.setRequiredErrMsg(message)
   }
 
   /**
    * Validates the input against the schema and returns the validation result or throws an error.
-   *
    * @param input - The value to be validated against the schema.
    * @param name - A descriptive name or label for the validation point (optional). `default: ""`
    * @throws If validation fails, an error is thrown.
    * @returns The result of the validation if successful.
+   * @example
+   * ```ts
+   * const schema = r.string()
+   * const result = schema.parseTyped(123)
+   * console.log(result) // Error: "Expected a string but received a number"
+   * ```
    */
   public parse(input: unknown, name: string = ''): InferOutput<typeof this> {
     return this['~checkAndGetResult'](input, {
@@ -171,6 +246,13 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @returns  The result of the validation if successful else undefined.
    *
    * ⚠️: The type of the result may not be perfect.
+   *
+   * @example
+   * ```ts
+   * const schema = r.string()
+   * const result = schema.parseTyped(123)
+   * console.log(result) // undefined
+   * ```
    */
   public filter(
     input: unknown,
@@ -191,6 +273,12 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param input - The value to be validated against the schema.
    * @param name - A descriptive name or label for the validation point (optional). `default: ""`
    * @returns An array containing the validated data as the first element if successful, or the errors as the second element if not.
+   * @example
+   * ```ts
+   * const schema = r.string()
+   * const result = schema.parseTyped(123)
+   * console.log(result) // [undefined, Error: "Expected a string but received a number"]
+   * ```
    */
   public safeParse(input: unknown, name: string = '') {
     const metaParseRef = { current: false }
@@ -214,6 +302,12 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
    * @param input - The value to be validated against the schema.
    * @param name - A descriptive name or label for the validation point (optional). `default: ""`
    * @returns An array containing the validated data as the first element if successful, or an array of errors as the second element if not.
+   * @example
+   * ```ts
+   * const schema = r.string()
+   * const result = schema.parseTyped(123)
+   * console.log(result) // [undefined, [Error: "Expected a string but received a number"]]
+   * ```
    */
   public safeParseList(input: unknown, name: string = '') {
     const safeParseErrors: RypeError[] = []
@@ -482,6 +576,14 @@ export class SchemaFreezableCore<
   /**
    * Marks the parsed output of the schema as readonly, preventing further modifications.
    * @returns A new schema instance with the parsed output marked as readonly.
+   * @example
+   * ```ts
+   * const schema = r.object({
+   *   name: r.string().toReadonly()
+   * })
+   * const result = schema.parseTyped({ name: 'John' })
+   * result.name = 'Jane' // Error: "Cannot assign to read only property 'name' of object"
+   * ```
    */
   toReadonly(): InferClassFromSchema<
     typeof this,

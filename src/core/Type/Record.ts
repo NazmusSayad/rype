@@ -31,6 +31,15 @@ export class SchemaRecord<
     return new RypeOk(output)
   }
 
+  /**
+   * Creates a new schema where all properties are marked as optional (not required).
+   * @returns A new schema with optional properties.
+   * @example
+   * ```ts
+   * const schema = r.record(r.string()).pick("name")
+   * const result = schema.parseTyped({ name: 'John' }) // { name: 'John' }
+   * ```
+   */
   pick<T extends string[]>(
     ...keys: T
   ): ReturnType<

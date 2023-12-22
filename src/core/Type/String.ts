@@ -28,7 +28,7 @@ export class SchemaString<
   private confirmNotUsingCustomValues() {
     if (this.schema.length > 0) {
       throw new RypeDevError(
-        "You can't use min/max while using specefic string"
+        "You can't use min/max while using specific string"
       )
     }
   }
@@ -36,6 +36,11 @@ export class SchemaString<
   /**
    * Converts the **output** strings to lowercase.
    * @returns The updated SchemaString instance with lowercase transformation applied to **output** strings.
+   * @example
+   * ```ts
+   * const schema = r.string().toLowerCase()
+   * const result = schema.parseTyped('JOHN') // 'john'
+   * ```
    */
   public toLowerCase() {
     this.transformerMode = 'lower'
@@ -46,6 +51,11 @@ export class SchemaString<
   /**
    * Converts the **output** strings to uppercase.
    * @returns The updated SchemaString instance with uppercase transformation applied to **output** strings.
+   * @example
+   * ```ts
+   * const schema = r.string().toUpperCase()
+   * const result = schema.parseTyped('john') // 'JOHN'
+   * ```
    */
   public toUpperCase() {
     this.transformerMode = 'upper'
@@ -56,6 +66,11 @@ export class SchemaString<
   /**
    * Capitalizes the first letter of **output** strings.
    * @returns The updated SchemaString instance with capitalization transformation applied to **output** strings.
+   * @example
+   * ```ts
+   * const schema = r.string().toCapitalize()
+   * const result = schema.parseTyped('john') // 'John'
+   * ```
    */
   public toCapitalize() {
     this.transformerMode = 'capital'
@@ -66,6 +81,12 @@ export class SchemaString<
   /**
    * Enables case-sensitive comparison of input strings.
    * @returns The updated SchemaString instance with case-sensitive input comparison enabled.
+   * @example
+   * ```ts
+   * const schema = r.string().caseSensitiveInput()
+   * const result = schema.parseTyped('John') // 'John'
+   * const result2 = schema.parseTyped('john') // Error
+   * ```
    */
   public caseSensitiveInput() {
     this.isCaseSensitiveInput = true
@@ -76,6 +97,12 @@ export class SchemaString<
    * Sets the minimum allowed character length for input strings.
    * @param number - The minimum character length.
    * @returns The updated SchemaString instance with the minimum character length set.
+   * @example
+   * ```ts
+   * const schema = r.string().minLength(3)
+   * const result = schema.parseTyped('John') // 'John'
+   * const result2 = schema.parseTyped('Jo') // Error
+   * ```
    */
   public minLength(number: number) {
     this.confirmNotUsingCustomValues()
@@ -88,6 +115,13 @@ export class SchemaString<
    * @param number - The maximum character length.
    * @param autoSlice - Whether to automatically slice input strings if they exceed the maximum length. `default: true`
    * @returns The updated SchemaString instance with the maximum character length set.
+   * @example
+   * ```ts
+   * const schema = r.string().maxLength(3)
+   * const result = schema.parseTyped('John') // 'Joh'
+   * const result2 = schema.parseTyped('John', false) // Error
+   * const result2 = schema.parseTyped('Jo') // 'Jo'
+   * ```
    */
   public maxLength(number: number, autoSlice: boolean = true) {
     this.confirmNotUsingCustomValues()
@@ -100,6 +134,12 @@ export class SchemaString<
    * Sets a regular expression pattern for validating input strings.
    * @param regex - The regular expression pattern.
    * @returns The updated SchemaString instance with the regex pattern set.
+   * @example
+   * ```ts
+   * const schema = r.string().regex(/^[a-z]+$/)
+   * const result = schema.parseTyped('John') // Error
+   * const result2 = schema.parseTyped('john') // 'john'
+   * ```
    */
   public regex(regex: RegExp) {
     this.confirmNotUsingCustomValues()

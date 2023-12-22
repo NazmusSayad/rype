@@ -6,6 +6,8 @@ export type SchemaConfig = {
   isRequired: boolean
   defaultValue?: unknown
   convertToReadonly?: boolean
+  outputAsKey?: string
+  inputAsKey?: string
 }
 
 export type SchemaCheckConf = {
