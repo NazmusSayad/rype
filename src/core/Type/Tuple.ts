@@ -8,7 +8,7 @@ import { Prettify, FormatTupleToNeverTuple } from '../../utils.type'
 import { AdjustReadonlyObject, TypeSchemaUnion } from './_common.type'
 
 export class SchemaTuple<
-  T extends InputTuple,
+  T extends SchemaTuple.Input,
   R extends SchemaConfig
 > extends SchemaFreezableCore<T, R> {
   name = 'tuple' as const;
@@ -49,20 +49,22 @@ export class SchemaTuple<
   }
 }
 
-export type InputTuple = TypeSchemaUnion[]
-export type TypeTuple = SchemaTuple<any, any>
-export type ExtractTuple<
-  T extends TypeTuple,
-  TMode extends 'input' | 'output'
-> = AdjustReadonlyObject<
-  T,
-  Prettify<
-    FormatTupleToNeverTuple<
-      {
-        [K in keyof T['schema'] as K extends `${number}`
-          ? K
-          : never]: InferSchema<T['schema'][K], TMode>
-      } & Pick<T['schema'], 'length'>
+export module SchemaTuple {
+  export type Input = TypeSchemaUnion[]
+  export type Sample = SchemaTuple<any, any>
+  export type Extract<
+    T extends Sample,
+    TMode extends 'input' | 'output'
+  > = AdjustReadonlyObject<
+    T,
+    Prettify<
+      FormatTupleToNeverTuple<
+        {
+          [K in keyof T['schema'] as K extends `${number}`
+            ? K
+            : never]: InferSchema<T['schema'][K], TMode>
+        } & Pick<T['schema'], 'length'>
+      >
     >
   >
->
+}

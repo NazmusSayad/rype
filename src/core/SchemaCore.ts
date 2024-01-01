@@ -3,6 +3,7 @@ import {
   RypeTypeError,
   RypeClientError,
   RypeRequiredError,
+  RypeDevError,
 } from '../Error'
 import { RypeOk } from '../RypeOk'
 import * as Schema from './Schema'
@@ -21,6 +22,7 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
     | 'record'
     | 'tuple'
     | 'array'
+    | 'set'
     | 'or'
     | 'fixed'
 
@@ -533,7 +535,10 @@ export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {
 }
 
 export class SchemaPrimitiveCore<
-  TFormat extends Schema.InputString | Schema.InputNumber | Schema.InputBoolean,
+  TFormat extends
+    | Schema.SchemaString.Input
+    | Schema.SchemaNumber.Input
+    | Schema.SchemaBoolean.Input,
   TConfig extends SchemaConfig
 > extends SchemaCore<TFormat, TConfig> {
   name = 'primitive' as 'number' | 'string' | 'boolean';
@@ -564,13 +569,13 @@ export class SchemaPrimitiveCore<
 
 export class SchemaFreezableCore<
   TFormat extends
-    | Schema.InputObject
-    | Schema.InputArray
-    | Schema.InputTuple
-    | Schema.InputRecord,
+    | Schema.SchemaObject.Input
+    | Schema.SchemaArray.Input
+    | Schema.SchemaTuple.Input
+    | Schema.SchemaRecord.Input,
   TConfig extends SchemaConfig
 > extends SchemaCore<TFormat, TConfig> {
-  name = 'freezableObject' as 'object' | 'array' | 'tuple' | 'record'
+  name = 'freezableObject' as 'object' | 'array' | 'tuple' | 'record' | 'set'
   private isReadonly?: boolean
 
   /**
@@ -590,9 +595,15 @@ export class SchemaFreezableCore<
     TFormat,
     ObjectMerge<TConfig, { convertToReadonly: true }>
   > {
+    if (!this['~canConvertToReadonly']) {
+      throw new RypeDevError(`Cannot convert ${this.type} to readonly.`)
+    }
+
     this.isReadonly = true
     return this as any // Typescript Sucks
   }
+
+  ['~canConvertToReadonly'] = true as boolean;
 
   ['~postCheckFormatter'](result: RypeOk): RypeOk {
     if (this.isReadonly && result.value !== undefined) {

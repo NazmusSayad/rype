@@ -10,10 +10,10 @@ import { RypeError, RypeDevError } from '../../Error'
 import { SchemaCheckConf, SchemaConfig } from '../../config'
 
 export class SchemaString<
-  T extends InputString,
+  T extends SchemaString.Input,
   TConf extends SchemaConfig
 > extends SchemaPrimitiveCore<
-  T[number] extends never ? InputString : T,
+  T[number] extends never ? SchemaString.Input : T,
   TConf
 > {
   name = 'string' as const
@@ -228,5 +228,7 @@ export class SchemaString<
   }
 }
 
-export type InputString = string[]
-export type TypeString = SchemaString<any, any>
+export module SchemaString {
+  export type Input = string[]
+  export type Sample = SchemaString<any, any>
+}

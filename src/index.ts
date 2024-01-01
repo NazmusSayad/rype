@@ -1,4 +1,4 @@
-import * as r from './rype'
+import * as r from './r'
 
 export { r }
 export default r

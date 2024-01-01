@@ -5,7 +5,7 @@ import { ValidObject } from '../../utils.type'
 import { SchemaCheckConf, SchemaConfig } from '../../config'
 
 export class SchemaFixed<
-  T extends InputFixed,
+  T extends SchemaFixed.Input,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
   name = 'fixed' as const;
@@ -18,9 +18,11 @@ export class SchemaFixed<
   }
 }
 
-export type InputFixed = any
-export type TypeFixed = SchemaFixed<any, any>
-export type ExtractFixed<
-  T extends TypeFixed,
-  TMode extends 'input' | 'output'
-> = TMode extends 'input' ? never | null | undefined : T['schema']
+export module SchemaFixed {
+  export type Input = any
+  export type Sample = SchemaFixed<any, any>
+  export type Extract<
+    T extends Sample,
+    TMode extends 'input' | 'output'
+  > = TMode extends 'input' ? never | null | undefined : T['schema']
+}

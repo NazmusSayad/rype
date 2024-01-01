@@ -12,7 +12,7 @@ import { InferSchema, InferClassFromSchema } from '../Extract.type'
 import { TypeSchemaUnion, AdjustReadonlyObject } from './_common.type'
 
 export class SchemaObject<
-  T extends InputObject,
+  T extends SchemaObject.Input,
   R extends SchemaConfig
 > extends SchemaFreezableCore<T, R> {
   name = 'object' as const;
@@ -150,25 +150,26 @@ export class SchemaObject<
       : SchemaObject<Omit<T, Key[number]>, R>
   }
 }
-
-export type InputObject = { [key: string]: TypeSchemaUnion }
-export type TypeObject = SchemaObject<any, any>
-export type ExtractObject<
-  T extends TypeObject,
-  TMode extends 'input' | 'output'
-> = AdjustReadonlyObject<
-  T,
-  Prettify<
-    MakeOptional<{
-      [K in keyof T['schema'] as TMode extends 'input'
-        ? T['schema'][K]['config']['inputAsKey'] extends string
-          ? T['schema'][K]['config']['inputAsKey']
-          : K
-        : TMode extends 'output'
-        ? T['schema'][K]['config']['outputAsKey'] extends string
-          ? T['schema'][K]['config']['outputAsKey']
-          : K
-        : K]: InferSchema<T['schema'][K], TMode>
-    }>
+export module SchemaObject {
+  export type Input = { [key: string]: TypeSchemaUnion }
+  export type Sample = SchemaObject<any, any>
+  export type Extract<
+    T extends Sample,
+    TMode extends 'input' | 'output'
+  > = AdjustReadonlyObject<
+    T,
+    Prettify<
+      MakeOptional<{
+        [K in keyof T['schema'] as TMode extends 'input'
+          ? T['schema'][K]['config']['inputAsKey'] extends string
+            ? T['schema'][K]['config']['inputAsKey']
+            : K
+          : TMode extends 'output'
+          ? T['schema'][K]['config']['outputAsKey'] extends string
+            ? T['schema'][K]['config']['outputAsKey']
+            : K
+          : K]: InferSchema<T['schema'][K], TMode>
+      }>
+    >
   >
->
+}

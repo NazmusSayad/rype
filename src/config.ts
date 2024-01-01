@@ -17,5 +17,5 @@ export type SchemaCheckConf = {
   safeParseErrors?: RypeError[]
 }
 
-export type DefaultSchemaConfig = { isRequired: true }
-export const defaultSchemaConfig: DefaultSchemaConfig = { isRequired: true }
+export const defaultSchemaConfig = { isRequired: true } as const
+export type DefaultSchemaConfig = typeof defaultSchemaConfig

@@ -23,25 +23,25 @@ type ExtractSchemaCore<
   T extends Schema.TypePrimitive
     ? Schema.ExtractPrimitive<T>
     : // Tuple:
-    T extends Schema.TypeTuple
-    ? Schema.ExtractTuple<T, TMode>
+    T extends Schema.SchemaTuple.Sample
+    ? Schema.SchemaTuple.Extract<T, TMode>
     : // Array:
-    T extends Schema.TypeArray
-    ? Schema.ExtractArray<T, TMode>
+    T extends Schema.SchemaArray.Sample
+    ? Schema.SchemaArray.Extract<T, TMode>
     : // Or:
-    T extends Schema.TypeOr
-    ? Schema.ExtractOr<T, TMode>
+    T extends Schema.SchemaOr.Sample
+    ? Schema.SchemaOr.Extract<T, TMode>
     : // Instance:
-    T extends Schema.TypeInstance
-    ? Schema.ExtractInstance<T>
+    T extends Schema.SchemaInstance.Sample
+    ? Schema.SchemaInstance.Extract<T>
     : // Object:
-    T extends Schema.TypeObject
-    ? Schema.ExtractObject<T, TMode>
+    T extends Schema.SchemaObject.Sample
+    ? Schema.SchemaObject.Extract<T, TMode>
     : // Record:
-    T extends Schema.TypeRecord
-    ? Schema.ExtractRecord<T, TMode> // Fixed:
-    : T extends Schema.TypeFixed
-    ? Schema.ExtractFixed<T, TMode>
+    T extends Schema.SchemaRecord.Sample
+    ? Schema.SchemaRecord.Extract<T, TMode> // Fixed:
+    : T extends Schema.SchemaFixed.Sample
+    ? Schema.SchemaFixed.Extract<T, TMode>
     : never
 
 export type InferSchema<
@@ -59,53 +59,53 @@ export type InferOutput<T> = T extends Schema.TypeSchemaUnion
 
 export type InferClassFromSchema<T, TFormat, TConfig extends SchemaConfig> =
   // String:
-  T extends Schema.TypeString
-    ? TFormat extends Schema.InputString
+  T extends Schema.SchemaString.Sample
+    ? TFormat extends Schema.SchemaString.Input
       ? Schema.SchemaString<TFormat, TConfig>
       : never
     : // Number:
-    T extends Schema.TypeNumber
-    ? TFormat extends Schema.InputNumber
+    T extends Schema.SchemaNumber.Sample
+    ? TFormat extends Schema.SchemaNumber.Input
       ? Schema.SchemaNumber<TFormat, TConfig>
       : never
     : // Boolean:
-    T extends Schema.TypeBoolean
-    ? TFormat extends Schema.InputBoolean
+    T extends Schema.SchemaBoolean.Sample
+    ? TFormat extends Schema.SchemaBoolean.Input
       ? Schema.SchemaBoolean<TFormat, TConfig>
       : never
     : // Tuple:
-    T extends Schema.TypeTuple
-    ? TFormat extends Schema.InputTuple
+    T extends Schema.SchemaTuple.Sample
+    ? TFormat extends Schema.SchemaTuple.Input
       ? Schema.SchemaTuple<TFormat, TConfig>
       : never
     : // Array:
-    T extends Schema.TypeArray
-    ? TFormat extends Schema.InputArray
+    T extends Schema.SchemaArray.Sample
+    ? TFormat extends Schema.SchemaArray.Input
       ? Schema.SchemaArray<TFormat, TConfig>
       : never
     : // Or:
-    T extends Schema.TypeOr
-    ? TFormat extends Schema.InputOr
+    T extends Schema.SchemaOr.Sample
+    ? TFormat extends Schema.SchemaOr.Input
       ? Schema.SchemaOr<TFormat, TConfig>
       : never
     : // Object:
-    T extends Schema.TypeObject
-    ? TFormat extends Schema.InputObject
+    T extends Schema.SchemaObject.Sample
+    ? TFormat extends Schema.SchemaObject.Input
       ? Schema.SchemaObject<TFormat, TConfig>
       : never
     : // Instance:
-    T extends Schema.TypeInstance
-    ? TFormat extends Schema.InputInstance
+    T extends Schema.SchemaInstance.Sample
+    ? TFormat extends Schema.SchemaInstance.Input
       ? Schema.SchemaInstance<TFormat, TConfig>
       : never
     : // Record:
-    T extends Schema.TypeRecord
-    ? TFormat extends Schema.InputRecord
+    T extends Schema.SchemaRecord.Sample
+    ? TFormat extends Schema.SchemaRecord.Input
       ? Schema.SchemaRecord<TFormat, TConfig>
       : never
     : // Fixed:
-    T extends Schema.TypeFixed
-    ? TFormat extends Schema.InputFixed
+    T extends Schema.SchemaFixed.Sample
+    ? TFormat extends Schema.SchemaFixed.Input
       ? Schema.SchemaFixed<TFormat, TConfig>
       : never
     : // It's never gonna happen!

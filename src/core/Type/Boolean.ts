@@ -2,11 +2,16 @@ import { SchemaConfig } from '../../config'
 import { SchemaPrimitiveCore } from '../SchemaCore'
 
 export class SchemaBoolean<
-  T extends InputBoolean,
+  T extends SchemaBoolean.Input,
   R extends SchemaConfig
-> extends SchemaPrimitiveCore<T[number] extends never ? InputBoolean : T, R> {
+> extends SchemaPrimitiveCore<
+  T[number] extends never ? SchemaBoolean.Input : T,
+  R
+> {
   name = 'boolean' as const
 }
 
-export type InputBoolean = boolean[]
-export type TypeBoolean = SchemaBoolean<any, any>
+export module SchemaBoolean {
+  export type Input = boolean[]
+  export type Sample = SchemaBoolean<any, any>
+}

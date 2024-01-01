@@ -5,9 +5,12 @@ import { RypeError, RypeDevError } from '../../Error'
 import { SchemaCheckConf, SchemaConfig } from '../../config'
 
 export class SchemaNumber<
-  T extends InputNumber,
+  T extends SchemaNumber.Input,
   R extends SchemaConfig
-> extends SchemaPrimitiveCore<T[number] extends never ? InputNumber : T, R> {
+> extends SchemaPrimitiveCore<
+  T[number] extends never ? SchemaNumber.Input : T,
+  R
+> {
   name = 'number' as const
   private minValue?: number
   private maxValue?: number
@@ -127,5 +130,7 @@ export class SchemaNumber<
   }
 }
 
-export type InputNumber = number[]
-export type TypeNumber = SchemaNumber<any, any>
+export module SchemaNumber {
+  export type Input = number[]
+  export type Sample = SchemaNumber<any, any>
+}

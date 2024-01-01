@@ -7,15 +7,20 @@ import { SchemaOr } from './Or'
 import { RypeOk } from '../../RypeOk'
 import { RypeError } from '../../Error'
 import messages from '../../errorMessages'
-import { Prettify } from '../../utils.type'
+import { ObjectMerge, Prettify } from '../../utils.type'
 import { SchemaFreezableCore } from '../SchemaCore'
 import { SchemaCheckConf, SchemaConfig } from '../../config'
+import { InferClassFromSchema } from '../Extract.type'
 
 export class SchemaArray<
-  T extends InputArray,
-  R extends SchemaConfig
+  T extends SchemaArray.Input,
+  R extends SchemaConfig & SchemaArray.Config
 > extends SchemaFreezableCore<T, R> {
   name = 'array' as const;
+
+  ['~getType'](): string[] {
+    return [this.config.convertToSet ? 'set' : this.name]
+  }
 
   ['~checkType'](inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
     if (!Array.isArray(inputs)) {
@@ -32,8 +37,8 @@ export class SchemaArray<
     const output: unknown[] = []
     const schema =
       this.schema.length === 1
-        ? new SchemaOr(this.schema, { isRequired: true })
-        : this.schema[0]
+        ? this.schema[0]
+        : new SchemaOr(this.schema, { isRequired: true })
 
     for (let i = 0; i <= inputs.length - 1; i++) {
       const input = inputs[i]
@@ -50,14 +55,63 @@ export class SchemaArray<
 
     return new RypeOk(output)
   }
+
+  ['~preCheckInputFormatter'](inputs: unknown) {
+    return this.config.convertToSet ? [...new Set(inputs as unknown[])] : inputs
+  }
+
+  ['~postCheckFormatter'](result: RypeOk) {
+    if (this.config.convertToSet) {
+      result.value = new Set(result.value as unknown[])
+    }
+
+    return result
+  }
+
+  /**
+   * Convert the array to a set.
+   * @example
+   * ```ts
+   * const schema = r.array(string(), number()).toSet()
+   * const result = schema.parse(['a', 1, 'a', 2])
+   * const result = schema.parse(new Set(['a', 1, 'a', 2]))
+   * // Set { 'a', 1, 2 }
+   * ```
+   */
+  toSet(): InferClassFromSchema<
+    typeof this,
+    T,
+    ObjectMerge<Omit<R, 'convertToReadonly'>, { convertToSet: true }>
+  > {
+    this.config.convertToSet = true
+    this['~canConvertToReadonly'] = false
+    return this as any // Typescript sucks
+  }
 }
 
-export type InputArray = TypeSchemaUnion[]
-export type TypeArray = SchemaArray<any, any>
-export type ExtractArray<
-  T extends TypeArray,
-  TMode extends 'input' | 'output',
-  U = ExtractArrayLike<T, TMode>
-> = U[keyof U] extends never
-  ? any[]
-  : AdjustReadonlyObject<T, Prettify<U[keyof U][]>>
+export module SchemaArray {
+  export type Config = { convertToSet?: boolean }
+
+  export type Input = TypeSchemaUnion[]
+  export type Sample = SchemaArray<any, any>
+
+  type ArrayOrSet<
+    I,
+    T extends Sample,
+    TMode = 'input' | 'output'
+  > = T['config']['convertToSet'] extends true
+    ? TMode extends 'input'
+      ? Set<I> | I[]
+      : Set<I>
+    : I[]
+
+  export type Extract<
+    T extends Sample,
+    TMode extends 'input' | 'output',
+    // NOTE: Not intended for input.
+    __Z__ = ExtractArrayLike<T, TMode>,
+    Z = __Z__[keyof __Z__]
+  > = Z extends never
+    ? ArrayOrSet<any, T, TMode>
+    : AdjustReadonlyObject<T, ArrayOrSet<Prettify<Z>, T, TMode>>
+}

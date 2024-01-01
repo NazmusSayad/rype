@@ -5,10 +5,10 @@ import { SchemaFreezableCore } from '../SchemaCore'
 import { SchemaCheckConf, SchemaConfig } from '../../config'
 import { TypeSchemaUnion, AdjustReadonlyObject } from './_common.type'
 import { ValidObject, Prettify, MakeOptional } from '../../utils.type'
-import { object } from '../../rype'
+import { object } from '../../r'
 
 export class SchemaRecord<
-  T extends InputRecord,
+  T extends SchemaRecord.Input,
   R extends SchemaConfig
 > extends SchemaFreezableCore<T, R> {
   name = 'record' as const;
@@ -60,16 +60,18 @@ export class SchemaRecord<
   }
 }
 
-export type InputRecord = TypeSchemaUnion
-export type TypeRecord = SchemaRecord<any, any>
-export type ExtractRecord<
-  T extends TypeRecord,
-  TMode extends 'input' | 'output'
-> = AdjustReadonlyObject<
-  T,
-  Prettify<
-    MakeOptional<{
-      [K: string]: InferSchema<T['schema'], TMode>
-    }>
+export module SchemaRecord {
+  export type Input = TypeSchemaUnion
+  export type Sample = SchemaRecord<any, any>
+  export type Extract<
+    T extends Sample,
+    TMode extends 'input' | 'output'
+  > = AdjustReadonlyObject<
+    T,
+    Prettify<
+      MakeOptional<{
+        [K: string]: InferSchema<T['schema'], TMode>
+      }>
+    >
   >
->
+}

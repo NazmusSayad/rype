@@ -6,9 +6,9 @@ import { SchemaCheckConf, SchemaConfig } from '../../config'
 import { ExtractArrayLike, TypeSchemaUnion } from './_common.type'
 
 export class SchemaOr<
-  T extends InputOr,
+  T extends SchemaOr.Input,
   R extends SchemaConfig
-> extends SchemaCore<T[number] extends never ? InputOr : T, R> {
+> extends SchemaCore<T[number] extends never ? SchemaOr.Input : T, R> {
   name = 'or' as const;
 
   ['~getType']() {
@@ -33,10 +33,12 @@ export class SchemaOr<
   }
 }
 
-export type InputOr = TypeSchemaUnion[]
-export type TypeOr = SchemaOr<any, any>
-export type ExtractOr<
-  T extends TypeOr,
-  TMode extends 'input' | 'output',
-  U = ExtractArrayLike<T, TMode>
-> = U[keyof U] extends never ? any : U[keyof U]
+export module SchemaOr {
+  export type Input = TypeSchemaUnion[]
+  export type Sample = SchemaOr<any, any>
+  export type Extract<
+    T extends Sample,
+    TMode extends 'input' | 'output',
+    U = ExtractArrayLike<T, TMode>
+  > = U[keyof U] extends never ? any : U[keyof U]
+}

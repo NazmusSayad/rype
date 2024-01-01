@@ -6,7 +6,7 @@ import { ValidObject } from '../../utils.type'
 import { SchemaCheckConf, SchemaConfig } from '../../config'
 
 export class SchemaInstance<
-  T extends InputInstance,
+  T extends SchemaInstance.Input,
   R extends SchemaConfig
 > extends SchemaCore<T, R> {
   name = 'instance' as const;
@@ -30,6 +30,10 @@ export class SchemaInstance<
   }
 }
 
-export type InputInstance = new (...args: any[]) => any
-export type TypeInstance = SchemaInstance<any, any>
-export type ExtractInstance<T extends TypeInstance> = InstanceType<T['schema']>
+export module SchemaInstance {
+  export type Input = new (...args: any[]) => any
+  export type Sample = SchemaInstance<any, any>
+  export type Extract<T extends Sample> = InstanceType<
+    T['schema']
+  >
+}
