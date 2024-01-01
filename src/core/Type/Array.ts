@@ -109,9 +109,11 @@ export module SchemaArray {
     T extends Sample,
     TMode extends 'input' | 'output',
     // NOTE: Not intended for input.
-    __Z__ = ExtractArrayLike<T, TMode>,
-    Z = __Z__[keyof __Z__]
-  > = Z extends never
+    Z = ExtractArrayLike<T, TMode>
+  > = Z[keyof Z] extends never
     ? ArrayOrSet<any, T, TMode>
-    : AdjustReadonlyObject<T, ArrayOrSet<Prettify<Z>, T, TMode>>
+    : AdjustReadonlyObject<
+        T,
+        ArrayOrSet<Prettify<Z[keyof Z]>, T, TMode>
+      >
 }
