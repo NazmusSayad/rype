@@ -1,10 +1,10 @@
-import { RypeOk } from '../../RypeOk'
-import { RypeError } from '../../Error'
-import messages from '../../errorMessages'
-import { InferSchema } from '../Extract.type'
-import { SchemaFreezableCore } from '../SchemaCore'
-import { SchemaCheckConf, SchemaConfig } from '../../config'
-import { Prettify, FormatTupleToNeverTuple } from '../../utils.type'
+import { RypeOk } from '@/RypeOk'
+import { RypeError } from '@/Error'
+import messages from '@/errorMessages'
+import { InferSchema } from '@/core/Extract.type'
+import { SchemaFreezableCore } from '@/core/SchemaCore'
+import { SchemaCheckConf, SchemaConfig } from '@/config'
+import { Prettify, FormatTupleToNeverTuple } from '@/utils.type'
 import { AdjustReadonlyObject, TypeSchemaUnion } from './_common.type'
 
 export class SchemaTuple<

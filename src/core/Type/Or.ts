@@ -1,8 +1,8 @@
-import { RypeOk } from '../../RypeOk'
-import { RypeError } from '../../Error'
-import messages from '../../errorMessages'
-import { SchemaCore } from '../SchemaCore'
-import { SchemaCheckConf, SchemaConfig } from '../../config'
+import { RypeOk } from '@/RypeOk'
+import { RypeError } from '@/Error'
+import messages from '@/errorMessages'
+import { SchemaCore } from '@/core/SchemaCore'
+import { SchemaCheckConf, SchemaConfig } from '@/config'
 import { ExtractArrayLike, TypeSchemaUnion } from './_common.type'
 
 export class SchemaOr<

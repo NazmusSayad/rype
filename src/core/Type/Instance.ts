@@ -1,9 +1,9 @@
-import { RypeOk } from '../../RypeOk'
-import { RypeError } from '../../Error'
-import messages from '../../errorMessages'
-import { SchemaCore } from '../SchemaCore'
-import { ValidObject } from '../../utils.type'
-import { SchemaCheckConf, SchemaConfig } from '../../config'
+import { RypeOk } from '@/RypeOk'
+import { RypeError } from '@/Error'
+import messages from '@/errorMessages'
+import { SchemaCore } from '@/core/SchemaCore'
+import { ValidObject } from '@/utils.type'
+import { SchemaCheckConf, SchemaConfig } from '@/config'
 
 export class SchemaInstance<
   T extends SchemaInstance.Input,

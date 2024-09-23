@@ -1,15 +1,10 @@
-import {
-  Prettify,
-  ObjectMerge,
-  ValidObject,
-  MakeOptional,
-} from '../../utils.type'
-import { RypeOk } from '../../RypeOk'
-import { RypeError } from '../../Error'
-import { SchemaFreezableCore } from '../SchemaCore'
-import { SchemaCheckConf, SchemaConfig } from '../../config'
-import { InferSchema, InferClassFromSchema } from '../Extract.type'
+import { RypeOk } from '@/RypeOk'
+import { RypeError } from '@/Error'
+import { SchemaFreezableCore } from '@/core/SchemaCore'
+import { SchemaCheckConf, SchemaConfig } from '@/config'
 import { TypeSchemaUnion, AdjustReadonlyObject } from './_common.type'
+import { InferSchema, InferClassFromSchema } from '@/core/Extract.type'
+import { Prettify, ObjectMerge, ValidObject, MakeOptional } from '@/utils.type'
 
 export class SchemaObject<
   T extends SchemaObject.Input,

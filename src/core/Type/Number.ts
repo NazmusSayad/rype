@@ -1,8 +1,8 @@
-import { RypeOk } from '../../RypeOk'
-import messages from '../../errorMessages'
-import { SchemaPrimitiveCore } from '../SchemaCore'
-import { RypeError, RypeDevError } from '../../Error'
-import { SchemaCheckConf, SchemaConfig } from '../../config'
+import { RypeOk } from '@/RypeOk'
+import messages from '@/errorMessages'
+import { SchemaPrimitiveCore } from '@/core/SchemaCore'
+import { RypeError, RypeDevError } from '@/Error'
+import { SchemaCheckConf, SchemaConfig } from '@/config'
 
 export class SchemaNumber<
   T extends SchemaNumber.Input,

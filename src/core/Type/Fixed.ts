@@ -1,8 +1,8 @@
-import { RypeOk } from '../../RypeOk'
-import { RypeError } from '../../Error'
-import { SchemaCore } from '../SchemaCore'
-import { ValidObject } from '../../utils.type'
-import { SchemaCheckConf, SchemaConfig } from '../../config'
+import { RypeOk } from '@/RypeOk'
+import { RypeError } from '@/Error'
+import { ValidObject } from '@/utils.type'
+import { SchemaCore } from '@/core/SchemaCore'
+import { SchemaCheckConf, SchemaConfig } from '@/config'
 
 export class SchemaFixed<
   T extends SchemaFixed.Input,

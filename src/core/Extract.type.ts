@@ -1,5 +1,5 @@
 import * as Schema from './Schema'
-import { SchemaConfig } from '../config'
+import { SchemaConfig } from '@/config'
 
 type AdjustSchemaInput<
   T extends Schema.TypeSchemaUnion,

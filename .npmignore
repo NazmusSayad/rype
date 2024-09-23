@@ -1,7 +1,8 @@
 # npm-ez
 *
-!lib/**
-!dist-cjs/**
-!dist-mjs/**
-!package.json
+!dist/**
 !README.md
+!LISENSE.md
+!package.json
+
+__lab__

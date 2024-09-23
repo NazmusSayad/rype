@@ -5,11 +5,11 @@ import {
   RypeRequiredError,
   RypeDevError,
 } from '../Error'
-import { RypeOk } from '../RypeOk'
+import { RypeOk } from '@/RypeOk'
 import * as Schema from './Schema'
-import messages from '../errorMessages'
-import { DeepOptional, ObjectMerge } from '../utils.type'
-import { CustomValidator, SchemaCheckConf, SchemaConfig } from '../config'
+import messages from '@/errorMessages'
+import { DeepOptional, ObjectMerge } from '@/utils.type'
+import { CustomValidator, SchemaCheckConf, SchemaConfig } from '@/config'
 import { InferInput, InferOutput, InferClassFromSchema } from './Extract.type'
 
 export class SchemaCore<const TFormat, TConfig extends SchemaConfig> {

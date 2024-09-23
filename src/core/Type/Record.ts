@@ -1,11 +1,11 @@
-import { RypeOk } from '../../RypeOk'
-import { RypeError } from '../../Error'
-import { InferSchema } from '../Extract.type'
-import { SchemaFreezableCore } from '../SchemaCore'
-import { SchemaCheckConf, SchemaConfig } from '../../config'
+import { object } from '@/r'
+import { RypeOk } from '@/RypeOk'
+import { RypeError } from '@/Error'
+import { InferSchema } from '@/core/Extract.type'
+import { SchemaFreezableCore } from '@/core/SchemaCore'
+import { SchemaCheckConf, SchemaConfig } from '@/config'
 import { TypeSchemaUnion, AdjustReadonlyObject } from './_common.type'
-import { ValidObject, Prettify, MakeOptional } from '../../utils.type'
-import { object } from '../../r'
+import { ValidObject, Prettify, MakeOptional } from '@/utils.type'
 
 export class SchemaRecord<
   T extends SchemaRecord.Input,

@@ -4,13 +4,13 @@ import {
   AdjustReadonlyObject,
 } from './_common.type'
 import { SchemaOr } from './Or'
-import { RypeOk } from '../../RypeOk'
-import { RypeError } from '../../Error'
-import messages from '../../errorMessages'
-import { ObjectMerge, Prettify } from '../../utils.type'
-import { SchemaFreezableCore } from '../SchemaCore'
-import { SchemaCheckConf, SchemaConfig } from '../../config'
-import { InferClassFromSchema } from '../Extract.type'
+import { RypeOk } from '@/RypeOk'
+import { RypeError } from '@/Error'
+import messages from '@/errorMessages'
+import { ObjectMerge, Prettify } from '@/utils.type'
+import { SchemaFreezableCore } from '@/core/SchemaCore'
+import { SchemaCheckConf, SchemaConfig } from '@/config'
+import { InferClassFromSchema } from '@/core/Extract.type'
 
 export class SchemaArray<
   T extends SchemaArray.Input,
@@ -112,8 +112,5 @@ export module SchemaArray {
     Z = ExtractArrayLike<T, TMode>
   > = Z[keyof Z] extends never
     ? ArrayOrSet<any, T, TMode>
-    : AdjustReadonlyObject<
-        T,
-        ArrayOrSet<Prettify<Z[keyof Z]>, T, TMode>
-      >
+    : AdjustReadonlyObject<T, ArrayOrSet<Prettify<Z[keyof Z]>, T, TMode>>
 }

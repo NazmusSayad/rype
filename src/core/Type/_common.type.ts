@@ -1,5 +1,5 @@
-import { InferSchema } from '../Extract.type'
-import { DeepReadonly } from '../../utils.type'
+import { InferSchema } from '@/core/Extract.type'
+import { DeepReadonly } from '@/utils.type'
 import { SchemaInstance } from './Instance'
 import { SchemaObject } from './Object'
 import { SchemaRecord } from './Record'

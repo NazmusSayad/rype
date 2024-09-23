@@ -1,5 +1,5 @@
-import { SchemaConfig } from '../../config'
-import { SchemaPrimitiveCore } from '../SchemaCore'
+import { SchemaConfig } from '@/config'
+import { SchemaPrimitiveCore } from '@/core/SchemaCore'
 
 export class SchemaBoolean<
   T extends SchemaBoolean.Input,

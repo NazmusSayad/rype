@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES6",
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "declaration": true,
-    "inlineSourceMap": false,
     "pretty": true,
     "strict": true,
-    "strictNullChecks": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "paths": { "@/*": ["./*"] }
   },
-  "include": ["src"],
+  "include": ["./src"],
   "exclude": ["**/*.test.ts"]
 }
