@@ -33,7 +33,7 @@ export class SchemaOr<
 
     return this['~getErr'](
       input,
-      rypeErrors.map((err) => err.message).join(' | ')
+      [...new Set(rypeErrors.map((err) => err.message))].join(' | ')
     )
   }
 }

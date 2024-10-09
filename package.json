@@ -1,6 +1,6 @@
 {
   "name": "rype",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "scripts": {
     "dev": "npmize dev",
     "build": "npmize build",

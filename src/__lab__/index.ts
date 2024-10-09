@@ -14,12 +14,16 @@ const userType = r.or(
   }),
   r.object({
     ...commonUserFields,
+    nidNumber: r.number(),
+  }),
+  r.object({
+    ...commonUserFields,
     birthCertificateNumber: r.number(),
   })
 )
 
 try {
-  const user = userType.safeParse({
+  const user = userType.parse({
     name: 'John',
     password: '123',
     accountType: 'admin',
