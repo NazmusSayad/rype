@@ -11,7 +11,7 @@ export class SchemaBoolean<
   name = 'boolean' as const
 }
 
-export module SchemaBoolean {
+export namespace SchemaBoolean {
   export type Input = boolean[]
   export type Sample = SchemaBoolean<any, any>
 }

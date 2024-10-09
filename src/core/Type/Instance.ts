@@ -30,7 +30,7 @@ export class SchemaInstance<
   }
 }
 
-export module SchemaInstance {
+export namespace SchemaInstance {
   export type Input = new (...args: any[]) => any
   export type Sample = SchemaInstance<any, any>
   export type Extract<T extends Sample> = InstanceType<

@@ -49,7 +49,7 @@ export class SchemaTuple<
   }
 }
 
-export module SchemaTuple {
+export namespace SchemaTuple {
   export type Input = TypeSchemaUnion[]
   export type Sample = SchemaTuple<any, any>
   export type Extract<

@@ -60,7 +60,7 @@ export class SchemaRecord<
   }
 }
 
-export module SchemaRecord {
+export namespace SchemaRecord {
   export type Input = TypeSchemaUnion
   export type Sample = SchemaRecord<any, any>
   export type Extract<

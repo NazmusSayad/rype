@@ -1,8 +1,33 @@
 import r from '../index'
 
-const schema = r.array(r.string(), r.number(2, 4, 5, 4)).toSet()
-schema.parseTyped([2, '2'], '2')
+const commonUserFields = {
+  name: r.string(),
+  password: r.string(),
+  accountType: r.string('admin', 'user'),
+  bloodGroup: r.string('A+', 'B+', 'O+', 'AB+'),
+} as const
 
-type Input = r.inferInput<typeof schema> // Set<string | number>
-type Output = r.inferOutput<typeof schema> // Set<string | number>
-console.log(__dirname)
+const userType = r.or(
+  r.object({
+    ...commonUserFields,
+    nidNumber: r.number(),
+  }),
+  r.object({
+    ...commonUserFields,
+    birthCertificateNumber: r.number(),
+  })
+)
+
+try {
+  const user = userType.safeParse({
+    name: 'John',
+    password: '123',
+    accountType: 'admin',
+    bloodGroup: 'A+',
+    // nidNumber: 123456789,
+    // birthCertificateNumber: 987654321,
+  })
+  console.log(user)
+} catch (err: any) {
+  console.log(err.message)
+}

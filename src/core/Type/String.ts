@@ -228,7 +228,7 @@ export class SchemaString<
   }
 }
 
-export module SchemaString {
+export namespace SchemaString {
   export type Input = string[]
   export type Sample = SchemaString<any, any>
 }

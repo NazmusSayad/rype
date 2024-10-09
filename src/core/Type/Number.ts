@@ -130,7 +130,7 @@ export class SchemaNumber<
   }
 }
 
-export module SchemaNumber {
+export namespace SchemaNumber {
   export type Input = number[]
   export type Sample = SchemaNumber<any, any>
 }

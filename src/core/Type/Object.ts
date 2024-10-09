@@ -145,7 +145,7 @@ export class SchemaObject<
       : SchemaObject<Omit<T, Key[number]>, R>
   }
 }
-export module SchemaObject {
+export namespace SchemaObject {
   export type Input = { [key: string]: TypeSchemaUnion }
   export type Sample = SchemaObject<any, any>
   export type Extract<

@@ -18,7 +18,7 @@ export class SchemaFixed<
   }
 }
 
-export module SchemaFixed {
+export namespace SchemaFixed {
   export type Input = any
   export type Sample = SchemaFixed<any, any>
   export type Extract<

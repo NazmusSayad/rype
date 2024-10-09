@@ -1,20 +1,20 @@
 {
   "name": "rype",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "scripts": {
     "dev": "npmize dev",
     "build": "npmize build",
-    "lab": "run ./src/_lab.ts",
+    "lab": "run ./src/__lab__/index.ts",
     "test": "jest --watch --watchAll"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
-    "@types/node": "^20.16.5",
+    "@types/node": "^20.16.11",
     "jest": "^29.7.0",
-    "npmize": "^1.1.0",
+    "npmize": "^1.1.11",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   },
   "repository": {
     "type": "git",

@@ -1,7 +1,6 @@
 import { RypeOk } from '@/RypeOk'
-import { RypeError } from '@/Error'
-import messages from '@/errorMessages'
 import { SchemaCore } from '@/core/SchemaCore'
+import { RypeClientError, RypeError } from '@/Error'
 import { SchemaCheckConf, SchemaConfig } from '@/config'
 import { ExtractArrayLike, TypeSchemaUnion } from './_common.type'
 
@@ -17,23 +16,29 @@ export class SchemaOr<
 
   ['~checkType'](input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     if (this.schema.length === 0) return new RypeOk(input)
+    let rypeErrors: RypeClientError[] = []
 
     for (let i = 0; i <= this.schema.length - 1; i++) {
       const schema = this.schema[i]
-      const result = schema['~checkCore'](input, { ...conf })
-      if (result instanceof RypeOk) return result
+
+      try {
+        const result = schema['~checkCore'](input, { ...conf })
+        if (result instanceof RypeOk) return result
+      } catch (err) {
+        if (err instanceof RypeClientError) {
+          rypeErrors.push(err)
+        } else throw err
+      }
     }
 
     return this['~getErr'](
       input,
-      messages.getTypeErr(conf.path, {
-        TYPE: this.type,
-      })
+      rypeErrors.map((err) => err.message).join(' | ')
     )
   }
 }
 
-export module SchemaOr {
+export namespace SchemaOr {
   export type Input = TypeSchemaUnion[]
   export type Sample = SchemaOr<any, any>
   export type Extract<

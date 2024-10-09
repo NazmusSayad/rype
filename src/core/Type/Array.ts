@@ -89,7 +89,7 @@ export class SchemaArray<
   }
 }
 
-export module SchemaArray {
+export namespace SchemaArray {
   export type Config = { convertToSet?: boolean }
 
   export type Input = TypeSchemaUnion[]
