@@ -6,16 +6,18 @@ import { SchemaCheckConf, SchemaConfig } from '@/config'
 
 export class SchemaNumber<
   T extends SchemaNumber.Input,
-  R extends SchemaConfig
+  R extends SchemaConfig & {
+    isInt?: boolean
+    autoIntFormat?: 'round' | 'ceil' | 'floor'
+    minValue?: number
+    maxValue?: number
+  }
 > extends SchemaPrimitiveCore<
   T[number] extends never ? SchemaNumber.Input : T,
   R
 > {
-  name = 'number' as const
-  private minValue?: number
-  private maxValue?: number
-  private isInt: boolean = false
-  private autoIntFormat: 'round' | 'ceil' | 'floor' = 'floor'
+  protected name = 'number' as const
+
   private confirmNotUsingCustomValues() {
     if (this.schema.length > 0) {
       throw new RypeDevError(
@@ -34,10 +36,11 @@ export class SchemaNumber<
    * const result = schema.parseTyped(1.5) // 2
    * ```
    */
-  int(autoFormatMode: typeof this.autoIntFormat = 'floor') {
-    this.isInt = true
-    this.autoIntFormat = autoFormatMode
-    return this
+  public int(autoFormatMode: typeof this.config.autoIntFormat = 'floor') {
+    return this.superClone({
+      isInt: true,
+      autoIntFormat: autoFormatMode,
+    })
   }
 
   /**
@@ -52,8 +55,9 @@ export class SchemaNumber<
    */
   public min(number: number) {
     this.confirmNotUsingCustomValues()
-    this.minValue = number
-    return this
+    return this.superClone({
+      minValue: number,
+    })
   }
 
   /**
@@ -68,17 +72,17 @@ export class SchemaNumber<
    */
   public max(number: number) {
     this.confirmNotUsingCustomValues()
-    this.maxValue = number
-    return this
+    return this.superClone({
+      maxValue: number,
+    })
   }
 
-  ['~checkType2'](
-    result: RypeOk | RypeError,
+  protected checkTypeAndGet(
     input: number,
     conf: SchemaCheckConf
-  ) {
+  ): RypeOk | RypeError  {
     if (Number.isNaN(input)) {
-      return this['~getErr'](
+      return this.getErr(
         input,
         messages.getPrimitiveTypeError(conf.path, {
           INPUT: "'NaN'",
@@ -87,30 +91,36 @@ export class SchemaNumber<
       )
     }
 
-    if (typeof this.minValue === 'number' && input < this.minValue) {
-      return this['~getErr'](
+    if (
+      typeof this.config.minValue === 'number' &&
+      input < this.config.minValue
+    ) {
+      return this.getErr(
         input,
         messages.getNumberMinErr(conf.path, {
-          MIN: String(this.minValue),
+          MIN: String(this.config.minValue),
         })
       )
     }
 
-    if (typeof this.maxValue === 'number' && input > this.maxValue) {
-      return this['~getErr'](
+    if (
+      typeof this.config.maxValue === 'number' &&
+      input > this.config.maxValue
+    ) {
+      return this.getErr(
         input,
         messages.getNumberMaxErr(conf.path, {
-          MAX: String(this.maxValue),
+          MAX: String(this.config.maxValue),
         })
       )
     }
 
-    if (this.isInt && !Number.isInteger(input)) {
-      if (this.autoIntFormat) {
+    if (this.config.isInt && !Number.isInteger(input)) {
+      if (this.config.autoIntFormat) {
         const formattedInput = (
-          this.autoIntFormat === 'round'
+          this.config.autoIntFormat === 'round'
             ? Math.round(input)
-            : this.autoIntFormat === 'ceil'
+            : this.config.autoIntFormat === 'ceil'
             ? Math.ceil(input)
             : input
         ).toString()
@@ -118,7 +128,7 @@ export class SchemaNumber<
         return new RypeOk(Number.parseInt(formattedInput))
       }
 
-      return this['~getErr'](
+      return this.getErr(
         input,
         messages.getNumberIntErr(conf.path, {
           INPUT: JSON.stringify(input),
@@ -126,7 +136,7 @@ export class SchemaNumber<
       )
     }
 
-    return result
+    return new RypeOk(input)
   }
 }
 

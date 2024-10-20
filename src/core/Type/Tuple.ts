@@ -11,11 +11,11 @@ export class SchemaTuple<
   T extends SchemaTuple.Input,
   R extends SchemaConfig
 > extends SchemaFreezableCore<T, R> {
-  name = 'tuple' as const;
+  protected name = 'tuple' as const
 
-  ['~checkType'](inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
+  protected checkTypeOnly(inputs: unknown[], conf: SchemaCheckConf) {
     if (!Array.isArray(inputs)) {
-      return this['~getErr'](
+      return this.getErr(
         inputs,
         messages.getTypeErr(conf.path, { TYPE: this.type })
       )
@@ -25,19 +25,24 @@ export class SchemaTuple<
       this.schema.length !== inputs.length &&
       !this.schema.every((schema) => 'defaultValue' in schema.config)
     ) {
-      return this['~getErr'](
+      return this.getErr(
         inputs,
         messages.getTupleLengthError(conf.path, {
           LENGTH: this.schema.length.toString(),
         })
       )
     }
+  }
 
+  protected checkTypeAndGet(
+    inputs: unknown[],
+    conf: SchemaCheckConf
+  ): RypeOk | RypeError {
     const output: unknown[] = []
     for (let i = 0; i <= this.schema.length - 1; i++) {
       const schema = this.schema[i]
       const inputElement = inputs[i]
-      const result = schema['~checkAndGetResult'](inputElement, {
+      const result = (schema as any)['checkAndGetResult'](inputElement, {
         ...conf,
         path: `${conf.path || 'Tuple'}[${i}]`,
       })

@@ -10,18 +10,18 @@ export class SchemaObject<
   T extends SchemaObject.Input,
   R extends SchemaConfig
 > extends SchemaFreezableCore<T, R> {
-  name = 'object' as const;
+  protected name = 'object' as const
 
-  ['~checkType'](
+  protected checkTypeAndGet(
     input: ValidObject,
     conf: SchemaCheckConf
   ): RypeOk | RypeError {
     const output: ValidObject = {}
 
-    for (let key in this.schema) {
+    for (const key in this.schema) {
       const schema = this.schema[key]
 
-      const result = schema['~checkAndGetResult'](
+      const result = (schema as any)['checkAndGetResult'](
         input[schema.config.inputAsKey ?? key],
         {
           ...conf,
@@ -49,7 +49,7 @@ export class SchemaObject<
    * const result = schema.parseTyped({ name: 'John' }) // { name: 'John' }
    * ```
    */
-  partial(): SchemaObject<
+  public partial(): SchemaObject<
     {
       [K in keyof T]: InferClassFromSchema<
         T[K],
@@ -59,11 +59,13 @@ export class SchemaObject<
     },
     R
   > {
-    for (let key in this.schema) {
-      this.schema[key].config.isRequired = false
+    const schema = this.superClone() as any // TypeScript Sucks
+    for (const key in schema.schema) {
+      schema.schema[key] = schema.schema[key].superClone()
+      schema.schema[key].config.isRequired = false
     }
 
-    return this as any // Typescript Sucks
+    return schema
   }
 
   /**
@@ -78,7 +80,7 @@ export class SchemaObject<
    * const result = schema.parseTyped({ name: 'John' }) // Error
    * ```
    */
-  impartial(): SchemaObject<
+  public impartial(): SchemaObject<
     {
       [K in keyof T]: InferClassFromSchema<
         T[K],
@@ -88,11 +90,13 @@ export class SchemaObject<
     },
     R
   > {
-    for (let key in this.schema) {
-      this.schema[key].config.isRequired = true
+    const schema = this.superClone() as any // TypeScript Sucks
+    for (const key in schema.schema) {
+      schema.schema[key] = schema.schema[key].superClone()
+      schema.schema[key].config.isRequired = true
     }
 
-    return this as any // Typescript Sucks
+    return schema
   }
 
   /**
@@ -108,16 +112,20 @@ export class SchemaObject<
    * const result = schema.parseTyped({ name: 'John', age: 20 }) // { name: 'John' }
    * ```
    */
-  pick<Key extends (keyof T)[]>(...args: Key) {
-    for (let key in this.schema) {
+  public pick<Key extends (keyof T)[]>(
+    ...args: Key
+  ): Key[number] extends never
+    ? SchemaObject<{}, R>
+    : SchemaObject<Pick<T, Key[number]>, R> {
+    const schema = this.superClone()
+
+    for (const key in schema.schema) {
       if (!args.includes(key)) {
-        delete this.schema[key]
+        delete schema.schema[key]
       }
     }
 
-    return this as unknown as Key[number] extends never
-      ? SchemaObject<{}, R>
-      : SchemaObject<Pick<T, Key[number]>, R>
+    return schema as any // TypeScript Sucks
   }
 
   /**
@@ -133,16 +141,19 @@ export class SchemaObject<
    * const result = schema.parseTyped({ name: 'John', age: 20 }) // { name: 'John' }
    * ```
    */
-  omit<Key extends (keyof T)[]>(...args: Key) {
-    for (let key in this.schema) {
+  public omit<Key extends (keyof T)[]>(
+    ...args: Key
+  ): Key[number] extends never
+    ? typeof this
+    : SchemaObject<Omit<T, Key[number]>, R> {
+    const schema = this.superClone()
+    for (const key in schema.schema) {
       if (args.includes(key)) {
-        delete this.schema[key]
+        delete schema.schema[key]
       }
     }
 
-    return this as unknown as Key[number] extends never
-      ? typeof this
-      : SchemaObject<Omit<T, Key[number]>, R>
+    return schema as any // TypeScript Sucks
   }
 }
 export namespace SchemaObject {

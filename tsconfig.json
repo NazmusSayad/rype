@@ -7,10 +7,10 @@
     "pretty": true,
     "strict": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "baseUrl": "./src",
     "outDir": "./dist",
     "paths": { "@/*": ["./*"] }
   },
-  "include": ["./src"],
-  "exclude": ["**/*.test.ts"]
+  "include": ["./src"]
 }

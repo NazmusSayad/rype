@@ -8,6 +8,7 @@ export type SchemaConfig = {
   convertToReadonly?: boolean
   outputAsKey?: string
   inputAsKey?: string
+  customValidator?: CustomValidator<any>
 }
 
 export type SchemaCheckConf = {

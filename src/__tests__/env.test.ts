@@ -2,7 +2,7 @@ import { env, r } from '..'
 
 describe('Env function should handle number, boolean and string', () => {
   beforeEach(() => {
-    for (let key in process.env) {
+    for (const key in process.env) {
       if (key.startsWith('VARIABLE_')) delete process.env[key]
     }
   })

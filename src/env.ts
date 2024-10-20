@@ -50,9 +50,9 @@ function formatString(
 export function env<T extends InputEnv>(schema: T): InferEnv<T> {
   const result: ValidObject = {}
 
-  for (let key in schema) {
+  for (const key in schema) {
     const oldSchema = schema[key as keyof typeof schema]
-    const config = oldSchema.config as SchemaConfig
+    const config = oldSchema['config'] as SchemaConfig
 
     const newSchema = config.isRequired ? r.string() : r.string().optional()
     const withDefaultValue =

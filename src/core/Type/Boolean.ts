@@ -8,7 +8,7 @@ export class SchemaBoolean<
   T[number] extends never ? SchemaBoolean.Input : T,
   R
 > {
-  name = 'boolean' as const
+  protected name = 'boolean' as const
 }
 
 export namespace SchemaBoolean {

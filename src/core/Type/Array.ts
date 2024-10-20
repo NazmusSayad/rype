@@ -16,20 +16,25 @@ export class SchemaArray<
   T extends SchemaArray.Input,
   R extends SchemaConfig & SchemaArray.Config
 > extends SchemaFreezableCore<T, R> {
-  name = 'array' as const;
+  protected name = 'array' as const
 
-  ['~getType'](): string[] {
+  protected getType(): string[] {
     return [this.config.convertToSet ? 'set' : this.name]
   }
 
-  ['~checkType'](inputs: unknown[], conf: SchemaCheckConf): RypeOk | RypeError {
+  protected checkTypeOnly(inputs: unknown[], conf: SchemaCheckConf) {
     if (!Array.isArray(inputs)) {
-      return this['~getErr'](
+      return this.getErr(
         inputs,
         messages.getTypeErr(conf.path, { TYPE: this.type })
       )
     }
+  }
 
+  protected checkTypeAndGet(
+    inputs: unknown[],
+    conf: SchemaCheckConf
+  ): RypeError | RypeOk {
     if (this.schema.length === 0 || inputs.length === 0) {
       return new RypeOk(inputs)
     }
@@ -43,7 +48,7 @@ export class SchemaArray<
     for (let i = 0; i <= inputs.length - 1; i++) {
       const input = inputs[i]
       const path = `${conf.path}array[${i}]`
-      const result = schema['~checkAndThrowError'](input, {
+      const result = schema['checkAndThrowError'](input, {
         ...conf,
         path,
       })
@@ -56,11 +61,11 @@ export class SchemaArray<
     return new RypeOk(output)
   }
 
-  ['~preCheckInputFormatter'](inputs: unknown) {
+  protected preCheckInputFormatter(inputs: unknown) {
     return this.config.convertToSet ? [...new Set(inputs as unknown[])] : inputs
   }
 
-  ['~postCheckFormatter'](result: RypeOk) {
+  protected postCheckFormatter(result: RypeOk) {
     if (this.config.convertToSet) {
       result.value = new Set(result.value as unknown[])
     }
@@ -78,14 +83,15 @@ export class SchemaArray<
    * // Set { 'a', 1, 2 }
    * ```
    */
-  toSet(): InferClassFromSchema<
-    typeof this,
-    T,
-    ObjectMerge<Omit<R, 'convertToReadonly'>, { convertToSet: true }>
-  > {
-    this.config.convertToSet = true
-    this['~canConvertToReadonly'] = false
-    return this as any // Typescript sucks
+  public toSet() {
+    const output = this.superClone<{ convertToSet: true }, 'convertToReadonly'>(
+      {
+        convertToSet: true,
+      }
+    )
+
+    output.canConvertToReadonly = false
+    return output
   }
 }
 

@@ -11,21 +11,21 @@ import { SchemaCheckConf, SchemaConfig } from '@/config'
 
 export class SchemaString<
   T extends SchemaString.Input,
-  TConf extends SchemaConfig
+  TConf extends SchemaConfig & {
+    minCharLength?: number
+    maxCharLength?: number
+    cutAtMaxLength?: boolean
+    regexPattern?: RegExp
+    isCaseSensitiveInput?: boolean
+    transformerMode?: 'capital' | 'lower' | 'upper'
+  }
 > extends SchemaPrimitiveCore<
   T[number] extends never ? SchemaString.Input : T,
   TConf
 > {
-  name = 'string' as const
+  protected name = 'string' as const
 
-  private minCharLength?: number
-  private maxCharLength?: number
-  private cutAtMaxLength?: boolean
-  private regexPattern?: RegExp
-  private isCaseSensitiveInput?: boolean
-  private transformerMode?: 'capital' | 'lower' | 'upper'
-
-  private confirmNotUsingCustomValues() {
+  private confirmNotUsingFixedValues() {
     if (this.schema.length > 0) {
       throw new RypeDevError(
         "You can't use min/max while using specific string"
@@ -42,10 +42,10 @@ export class SchemaString<
    * const result = schema.parseTyped('JOHN') // 'john'
    * ```
    */
-  public toLowerCase() {
-    this.transformerMode = 'lower'
-    this.schema = this.schema.map((str) => this.transform(str)) as T
-    return this as unknown as SchemaString<LowerCaseStrArray<T>, TConf>
+  public toLowerCase(): SchemaString<LowerCaseStrArray<T>, TConf> {
+    const schema = this.superClone({ transformerMode: 'lower' })
+    schema.schema = schema.schema.map((str) => schema.transform(str))
+    return schema as any // TypeScript SCREAMS without this
   }
 
   /**
@@ -57,10 +57,10 @@ export class SchemaString<
    * const result = schema.parseTyped('john') // 'JOHN'
    * ```
    */
-  public toUpperCase() {
-    this.transformerMode = 'upper'
-    this.schema = this.schema.map((str) => this.transform(str)) as T
-    return this as unknown as SchemaString<UpperCaseStrArray<T>, TConf>
+  public toUpperCase(): SchemaString<UpperCaseStrArray<T>, TConf> {
+    const schema = this.superClone({ transformerMode: 'upper' })
+    schema.schema = schema.schema.map((str) => schema.transform(str))
+    return schema as any // TypeScript SCREAMS without this
   }
 
   /**
@@ -72,10 +72,11 @@ export class SchemaString<
    * const result = schema.parseTyped('john') // 'John'
    * ```
    */
-  public toCapitalize() {
-    this.transformerMode = 'capital'
-    this.schema = this.schema.map((str) => this.transform(str)) as T
-    return this as unknown as SchemaString<CapitalizeStrArray<T>, TConf>
+  public toCapitalize(): SchemaString<CapitalizeStrArray<T>, TConf> {
+    const schema = this.superClone({ transformerMode: 'capital' })
+    schema.config.transformerMode = 'capital'
+    schema.schema = schema.schema.map((str) => schema.transform(str))
+    return schema as any // TypeScript SCREAMS without this
   }
 
   /**
@@ -89,8 +90,7 @@ export class SchemaString<
    * ```
    */
   public caseSensitiveInput() {
-    this.isCaseSensitiveInput = true
-    return this
+    return this.superClone({ isCaseSensitiveInput: true })
   }
 
   /**
@@ -105,9 +105,8 @@ export class SchemaString<
    * ```
    */
   public minLength(number: number) {
-    this.confirmNotUsingCustomValues()
-    this.minCharLength = number
-    return this
+    this.confirmNotUsingFixedValues()
+    return this.superClone({ minCharLength: number })
   }
 
   /**
@@ -124,10 +123,8 @@ export class SchemaString<
    * ```
    */
   public maxLength(number: number, autoSlice: boolean = true) {
-    this.confirmNotUsingCustomValues()
-    this.maxCharLength = number
-    this.cutAtMaxLength = autoSlice
-    return this
+    this.confirmNotUsingFixedValues()
+    return this.superClone({ maxCharLength: number, cutAtMaxLength: autoSlice })
   }
 
   /**
@@ -142,13 +139,12 @@ export class SchemaString<
    * ```
    */
   public regex(regex: RegExp) {
-    this.confirmNotUsingCustomValues()
-    this.regexPattern = regex
-    return this
+    this.confirmNotUsingFixedValues()
+    return this.superClone({ regexPattern: regex })
   }
 
   private transform(str: string): string {
-    switch (this.transformerMode) {
+    switch (this.config.transformerMode) {
       case 'lower':
         return str.toLowerCase()
 
@@ -163,68 +159,64 @@ export class SchemaString<
     }
   }
 
-  ['~preCheckInputFormatter'](input: unknown) {
-    if (this.maxCharLength && this.cutAtMaxLength) {
-      input = (input as string).slice(0, this.maxCharLength)
+  protected midCheckInputFormatter(input: string) {
+    if (this.config.maxCharLength && this.config.cutAtMaxLength) {
+      input = (input as string).slice(0, this.config.maxCharLength)
     }
 
-    if (this.transformerMode && !this.isCaseSensitiveInput) {
-      return this.transform(input as string)
+    if (this.config.transformerMode && !this.config.isCaseSensitiveInput) {
+      return this.transform(input)
     }
 
     return input
   }
 
-  ['~postCheckFormatter'](result: RypeOk) {
-    if (this.transformerMode) {
+  protected postCheckFormatter(result: RypeOk) {
+    if (this.config.transformerMode) {
       result.value = this.transform(result.value as string)
     }
 
     return result
   }
 
-  ['~checkType2'](
-    result: RypeOk | RypeError,
-    input: unknown,
-    conf: SchemaCheckConf
-  ) {
+  protected checkTypeAndGet(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError  {
     if (
-      typeof this.minCharLength === 'number' &&
-      (input as string).length < this.minCharLength
+      typeof this.config.minCharLength === 'number' &&
+      (input as string).length < this.config.minCharLength
     ) {
-      return this['~getErr'](
+      return this.getErr(
         input,
         messages.getStringMinLengthErr(conf.path, {
-          MIN: String(this.minCharLength),
+          MIN: String(this.config.minCharLength),
         })
       )
     }
 
     if (
-      typeof this.maxCharLength === 'number' &&
-      (input as string).length > this.maxCharLength
+      typeof this.config.maxCharLength === 'number' &&
+      (input as string).length > this.config.maxCharLength
     ) {
-      return this['~getErr'](
+      return this.getErr(
         input,
         messages.getStringMaxLengthErr(conf.path, {
-          MAX: String(this.maxCharLength),
+          MAX: String(this.config.maxCharLength),
         })
       )
     }
 
-    if (this.regexPattern) {
-      if (!this.regexPattern.test(input as string)) {
-        return this['~getErr'](
+    if (this.config.regexPattern) {
+      if (!this.config.regexPattern.test(input as string)) {
+        return this.getErr(
           input,
           messages.getStringRegexErr(conf.path, {
             INPUT: JSON.stringify(input),
-            REGEX: String(this.regexPattern),
+            REGEX: String(this.config.regexPattern),
           })
         )
       }
     }
 
-    return result
+    return new RypeOk(input as string)
   }
 }
 

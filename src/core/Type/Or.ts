@@ -8,21 +8,21 @@ export class SchemaOr<
   T extends SchemaOr.Input,
   R extends SchemaConfig
 > extends SchemaCore<T[number] extends never ? SchemaOr.Input : T, R> {
-  name = 'or' as const;
+  protected name = 'or' as const
 
-  ['~getType']() {
-    return this.schema.map((schema) => schema.type)
+  protected getType() {
+    return this.schema.map((schema) => schema['type'])
   }
 
-  ['~checkType'](input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
+  protected checkTypeAndGet(input: unknown, conf: SchemaCheckConf): RypeOk | RypeError {
     if (this.schema.length === 0) return new RypeOk(input)
-    let rypeErrors: RypeClientError[] = []
+    const rypeErrors: RypeClientError[] = []
 
     for (let i = 0; i <= this.schema.length - 1; i++) {
       const schema = this.schema[i]
 
       try {
-        const result = schema['~checkCore'](input, { ...conf })
+        const result = schema['checkCore'](input, { ...conf })
         if (result instanceof RypeOk) return result
       } catch (err) {
         if (err instanceof RypeClientError) {
@@ -31,7 +31,7 @@ export class SchemaOr<
       }
     }
 
-    return this['~getErr'](
+    return this.getErr(
       input,
       [...new Set(rypeErrors.map((err) => err.message))].join(' | ')
     )

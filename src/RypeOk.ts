@@ -1,6 +1,6 @@
 export class RypeOk {
-  value
-  constructor(value: unknown) {
+  public value
+  public constructor(value: unknown) {
     this.value = value
   }
 }
