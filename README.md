@@ -1,3 +1,5 @@
+> Use `zod/mini` instead of this.
+
 ## Rype: Ultra-Fast Type-Optimized Data Validation
 
 **Rype** is not just another validation package; it's a lightning-fast, type-optimized solution designed specifically for TypeScript projects. Unlike other libraries, Rype has been fine-tuned to fully harness the power of TypeScript, providing unparalleled performance and type safety.
